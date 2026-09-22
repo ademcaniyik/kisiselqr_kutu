@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="305.000mm" height="317.000mm" viewBox="0 0 305.000 317.000">
+<title>Candemsoft QR Kutu Açınımı v1</title>
+<desc>1 birim = 1 mm. Bicak katmanı: spot renk "Bicak" (ekranda #EC008C), 0,25 pt, overprint (overprint ve spot tanımı PDF dosyasında).</desc>
+<g id="Tasma" data-name="Tasma" inkscape:groupmode="layer" inkscape:label="Tasma" transform="translate(26.000 26.000)">
+<path d="M-3.005 68.302 L-2.000 207.511 L-2.000 226.078 L0.969 233.500 L17.531 233.500 L20.500 226.078 L20.500 208.500 L113.000 208.500 L113.000 226.078 L115.969 233.500 L131.500 233.500 L131.500 236.038 L131.507 236.304 L131.530 236.607 L131.568 236.909 L131.622 237.208 L131.691 237.504 L131.774 237.796 L131.873 238.084 L131.985 238.367 L132.112 238.643 L132.253 238.912 L132.407 239.174 L132.575 239.428 L132.755 239.673 L132.947 239.909 L133.151 240.134 L133.366 240.349 L133.591 240.553 L133.827 240.745 L134.072 240.925 L134.326 241.093 L134.588 241.247 L134.857 241.388 L135.133 241.515 L135.416 241.627 L135.704 241.726 L135.996 241.809 L136.292 241.878 L136.591 241.932 L136.893 241.970 L137.196 241.993 L137.462 242.000 L226.038 242.000 L226.304 241.993 L226.607 241.970 L226.909 241.932 L227.208 241.878 L227.504 241.809 L227.796 241.726 L228.084 241.627 L228.367 241.515 L228.643 241.388 L228.912 241.247 L229.174 241.093 L229.428 240.925 L229.673 240.745 L229.909 240.553 L230.134 240.349 L230.349 240.134 L230.553 239.909 L230.745 239.673 L230.925 239.428 L231.093 239.174 L231.247 238.912 L231.388 238.643 L231.515 238.367 L231.627 238.084 L231.726 237.796 L231.809 237.504 L231.878 237.208 L231.932 236.909 L231.970 236.607 L231.993 236.304 L232.000 236.038 L232.000 226.708 L233.000 224.708 L233.000 207.802 L248.000 203.783 L248.000 70.717 L233.000 66.698 L233.000 31.000 L232.500 31.000 L232.500 2.962 L232.493 2.696 L232.470 2.393 L232.432 2.091 L232.378 1.792 L232.309 1.496 L232.226 1.204 L232.127 0.916 L232.015 0.633 L231.888 0.357 L231.747 0.088 L231.593 -0.174 L231.425 -0.428 L231.245 -0.673 L231.053 -0.909 L230.849 -1.134 L230.634 -1.349 L230.409 -1.553 L230.173 -1.745 L229.928 -1.925 L229.674 -2.093 L229.412 -2.247 L229.143 -2.388 L228.867 -2.515 L228.584 -2.627 L228.296 -2.726 L228.004 -2.809 L227.708 -2.878 L227.409 -2.932 L227.107 -2.970 L226.804 -2.993 L226.538 -3.000 L136.962 -3.000 L136.696 -2.993 L136.393 -2.970 L136.091 -2.932 L135.792 -2.878 L135.496 -2.809 L135.204 -2.726 L134.916 -2.627 L134.633 -2.515 L134.357 -2.388 L134.088 -2.247 L133.826 -2.093 L133.572 -1.925 L133.327 -1.745 L133.091 -1.553 L132.866 -1.349 L132.651 -1.134 L132.447 -0.909 L132.255 -0.673 L132.075 -0.428 L131.907 -0.174 L131.753 0.088 L131.612 0.357 L131.485 0.633 L131.373 0.916 L131.274 1.204 L131.191 1.496 L131.122 1.792 L131.068 2.091 L131.030 2.393 L131.007 2.696 L131.000 2.962 L131.000 31.000 L130.500 31.000 L130.500 41.000 L117.000 41.000 L117.000 39.257 L113.243 35.500 L20.257 35.500 L16.500 39.257 L16.500 41.000 L0.969 41.000 L-2.000 48.422 L-2.000 66.292 Z" fill="none" stroke="#4DFFFF" stroke-width="0.0882"/>
+<path d="M183.793 46.000 L193.711 46.000 L193.801 46.002 L193.853 46.006 L193.904 46.013 L193.954 46.022 L194.004 46.034 L194.054 46.048 L194.102 46.065 L194.150 46.085 L194.197 46.106 L194.242 46.131 L194.286 46.157 L194.329 46.186 L194.370 46.217 L194.409 46.250 L194.447 46.285 L194.483 46.321 L194.517 46.360 L194.549 46.400 L194.579 46.442 L194.606 46.486 L194.632 46.530 L194.655 46.577 L194.675 46.624 L194.694 46.672 L194.709 46.721 L194.722 46.771 L194.733 46.821 L194.741 46.872 L194.746 46.923 L194.749 46.974 L194.749 47.026 L194.746 47.077 L194.741 47.128 L194.733 47.179 L194.722 47.229 L194.709 47.279 L194.694 47.328 L194.675 47.376 L194.655 47.423 L194.632 47.470 L194.606 47.514 L194.579 47.558 L194.549 47.600 L194.517 47.640 L194.483 47.679 L194.447 47.715 L194.409 47.750 L194.370 47.783 L194.329 47.814 L194.286 47.843 L194.242 47.869 L194.197 47.894 L194.150 47.915 L194.102 47.935 L194.054 47.952 L194.004 47.966 L193.954 47.978 L193.904 47.987 L193.853 47.994 L193.801 47.998 L193.711 48.000 L183.793 48.000 L182.866 48.659 L182.779 48.714 L182.689 48.765 L182.597 48.811 L182.503 48.852 L182.406 48.888 L182.308 48.919 L182.209 48.946 L182.108 48.967 L182.007 48.982 L181.904 48.993 L181.801 48.998 L181.699 48.998 L181.596 48.993 L181.493 48.982 L181.392 48.967 L181.291 48.946 L181.192 48.919 L181.094 48.888 L180.997 48.852 L180.903 48.811 L180.811 48.765 L180.721 48.714 L180.634 48.659 L179.707 48.000 L169.789 48.000 L169.699 47.998 L169.647 47.994 L169.596 47.987 L169.546 47.978 L169.496 47.966 L169.446 47.952 L169.398 47.935 L169.350 47.915 L169.303 47.894 L169.258 47.869 L169.214 47.843 L169.171 47.814 L169.130 47.783 L169.091 47.750 L169.053 47.715 L169.017 47.679 L168.983 47.640 L168.951 47.600 L168.921 47.558 L168.894 47.514 L168.868 47.470 L168.845 47.423 L168.825 47.376 L168.806 47.328 L168.791 47.279 L168.778 47.229 L168.767 47.179 L168.759 47.128 L168.754 47.077 L168.751 47.026 L168.751 46.974 L168.754 46.923 L168.759 46.872 L168.767 46.821 L168.778 46.771 L168.791 46.721 L168.806 46.672 L168.825 46.624 L168.845 46.577 L168.868 46.530 L168.894 46.486 L168.921 46.442 L168.951 46.400 L168.983 46.360 L169.017 46.321 L169.053 46.285 L169.091 46.250 L169.130 46.217 L169.171 46.186 L169.214 46.157 L169.258 46.131 L169.303 46.106 L169.350 46.085 L169.398 46.065 L169.446 46.048 L169.496 46.034 L169.546 46.022 L169.596 46.013 L169.647 46.006 L169.699 46.002 L169.789 46.000 L179.707 46.000 L180.634 45.341 L180.721 45.286 L180.811 45.235 L180.903 45.189 L180.997 45.148 L181.094 45.112 L181.192 45.081 L181.291 45.054 L181.392 45.033 L181.493 45.018 L181.596 45.007 L181.699 45.002 L181.801 45.002 L181.904 45.007 L182.007 45.018 L182.108 45.033 L182.209 45.054 L182.308 45.081 L182.406 45.112 L182.503 45.148 L182.597 45.189 L182.689 45.235 L182.779 45.286 L182.866 45.341 Z" fill="none" stroke="#4DFFFF" stroke-width="0.0882"/>
+<path d="M183.793 20.000 L193.711 20.000 L193.801 20.002 L193.853 20.006 L193.904 20.013 L193.954 20.022 L194.004 20.034 L194.054 20.048 L194.102 20.065 L194.150 20.085 L194.197 20.106 L194.242 20.131 L194.286 20.157 L194.329 20.186 L194.370 20.217 L194.409 20.250 L194.447 20.285 L194.483 20.321 L194.517 20.360 L194.549 20.400 L194.579 20.442 L194.606 20.486 L194.632 20.530 L194.655 20.577 L194.675 20.624 L194.694 20.672 L194.709 20.721 L194.722 20.771 L194.733 20.821 L194.741 20.872 L194.746 20.923 L194.749 20.974 L194.749 21.026 L194.746 21.077 L194.741 21.128 L194.733 21.179 L194.722 21.229 L194.709 21.279 L194.694 21.328 L194.675 21.376 L194.655 21.423 L194.632 21.470 L194.606 21.514 L194.579 21.558 L194.549 21.600 L194.517 21.640 L194.483 21.679 L194.447 21.715 L194.409 21.750 L194.370 21.783 L194.329 21.814 L194.286 21.843 L194.242 21.869 L194.197 21.894 L194.150 21.915 L194.102 21.935 L194.054 21.952 L194.004 21.966 L193.954 21.978 L193.904 21.987 L193.853 21.994 L193.801 21.998 L193.711 22.000 L183.793 22.000 L182.866 22.659 L182.779 22.714 L182.689 22.765 L182.597 22.811 L182.503 22.852 L182.406 22.888 L182.308 22.919 L182.209 22.946 L182.108 22.967 L182.007 22.982 L181.904 22.993 L181.801 22.998 L181.699 22.998 L181.596 22.993 L181.493 22.982 L181.392 22.967 L181.291 22.946 L181.192 22.919 L181.094 22.888 L180.997 22.852 L180.903 22.811 L180.811 22.765 L180.721 22.714 L180.634 22.659 L179.707 22.000 L169.789 22.000 L169.699 21.998 L169.647 21.994 L169.596 21.987 L169.546 21.978 L169.496 21.966 L169.446 21.952 L169.398 21.935 L169.350 21.915 L169.303 21.894 L169.258 21.869 L169.214 21.843 L169.171 21.814 L169.130 21.783 L169.091 21.750 L169.053 21.715 L169.017 21.679 L168.983 21.640 L168.951 21.600 L168.921 21.558 L168.894 21.514 L168.868 21.470 L168.845 21.423 L168.825 21.376 L168.806 21.328 L168.791 21.279 L168.778 21.229 L168.767 21.179 L168.759 21.128 L168.754 21.077 L168.751 21.026 L168.751 20.974 L168.754 20.923 L168.759 20.872 L168.767 20.821 L168.778 20.771 L168.791 20.721 L168.806 20.672 L168.825 20.624 L168.845 20.577 L168.868 20.530 L168.894 20.486 L168.921 20.442 L168.951 20.400 L168.983 20.360 L169.017 20.321 L169.053 20.285 L169.091 20.250 L169.130 20.217 L169.171 20.186 L169.214 20.157 L169.258 20.131 L169.303 20.106 L169.350 20.085 L169.398 20.065 L169.446 20.048 L169.496 20.034 L169.546 20.022 L169.596 20.013 L169.647 20.006 L169.699 20.002 L169.789 20.000 L179.707 20.000 L180.634 19.341 L180.721 19.286 L180.811 19.235 L180.903 19.189 L180.997 19.148 L181.094 19.112 L181.192 19.081 L181.291 19.054 L181.392 19.033 L181.493 19.018 L181.596 19.007 L181.699 19.002 L181.801 19.002 L181.904 19.007 L182.007 19.018 L182.108 19.033 L182.209 19.054 L182.308 19.081 L182.406 19.112 L182.503 19.148 L182.597 19.189 L182.689 19.235 L182.779 19.286 L182.866 19.341 Z" fill="none" stroke="#4DFFFF" stroke-width="0.0882"/>
+</g>
+<g id="Tutkal_Alani" data-name="Tutkal_Alani" inkscape:groupmode="layer" inkscape:label="Tutkal_Alani" transform="translate(26.000 26.000)">
+<path d="M230.000 69.000 L245.000 73.019 L245.000 201.481 L230.000 205.500 Z" fill="#FFFFB8"/>
+<path d="M230.000 70.000 L230.789 69.211" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 71.600 L232.051 69.549" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 73.200 L233.312 69.888" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 74.800 L234.574 70.226" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 76.400 L235.836 70.564" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 78.000 L237.098 70.902" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 79.600 L238.360 71.240" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 81.200 L239.622 71.578" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 82.800 L240.884 71.916" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 84.400 L242.146 72.254" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 86.000 L243.407 72.593" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 87.600 L244.669 72.931" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 89.200 L245.000 74.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 90.800 L245.000 75.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 92.400 L245.000 77.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 94.000 L245.000 79.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 95.600 L245.000 80.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 97.200 L245.000 82.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 98.800 L245.000 83.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 100.400 L245.000 85.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 102.000 L245.000 87.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 103.600 L245.000 88.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 105.200 L245.000 90.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 106.800 L245.000 91.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 108.400 L245.000 93.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 110.000 L245.000 95.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 111.600 L245.000 96.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 113.200 L245.000 98.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 114.800 L245.000 99.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 116.400 L245.000 101.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 118.000 L245.000 103.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 119.600 L245.000 104.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 121.200 L245.000 106.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 122.800 L245.000 107.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 124.400 L245.000 109.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 126.000 L245.000 111.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 127.600 L245.000 112.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 129.200 L245.000 114.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 130.800 L245.000 115.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 132.400 L245.000 117.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 134.000 L245.000 119.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 135.600 L245.000 120.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 137.200 L245.000 122.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 138.800 L245.000 123.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 140.400 L245.000 125.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 142.000 L245.000 127.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 143.600 L245.000 128.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 145.200 L245.000 130.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 146.800 L245.000 131.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 148.400 L245.000 133.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 150.000 L245.000 135.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 151.600 L245.000 136.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 153.200 L245.000 138.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 154.800 L245.000 139.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 156.400 L245.000 141.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 158.000 L245.000 143.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 159.600 L245.000 144.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 161.200 L245.000 146.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 162.800 L245.000 147.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 164.400 L245.000 149.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 166.000 L245.000 151.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 167.600 L245.000 152.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 169.200 L245.000 154.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 170.800 L245.000 155.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 172.400 L245.000 157.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 174.000 L245.000 159.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 175.600 L245.000 160.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 177.200 L245.000 162.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 178.800 L245.000 163.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 180.400 L245.000 165.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 182.000 L245.000 167.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 183.600 L245.000 168.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 185.200 L245.000 170.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 186.800 L245.000 171.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 188.400 L245.000 173.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 190.000 L245.000 175.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 191.600 L245.000 176.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 193.200 L245.000 178.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 194.800 L245.000 179.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 196.400 L245.000 181.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 198.000 L245.000 183.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 199.600 L245.000 184.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 201.200 L245.000 186.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 202.800 L245.000 187.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.000 204.400 L245.000 189.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M230.683 205.317 L245.000 191.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M232.869 204.731 L245.000 192.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M235.054 204.146 L245.000 194.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M237.240 203.560 L245.000 195.800" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M239.426 202.974 L245.000 197.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M241.611 202.389 L245.000 199.000" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M243.797 201.803 L245.000 200.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M19.500 50.500 L19.500 40.500 L21.500 38.500 L112.000 38.500 L114.000 40.500 L114.000 50.500 Z" fill="#FFFFB8"/>
+<path d="M19.500 41.600 L22.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M19.500 43.200 L24.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M19.500 44.800 L25.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M19.500 46.400 L27.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M19.500 48.000 L29.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M19.500 49.600 L30.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M20.200 50.500 L32.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M21.800 50.500 L33.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M23.400 50.500 L35.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M25.000 50.500 L37.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M26.600 50.500 L38.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M28.200 50.500 L40.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M29.800 50.500 L41.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M31.400 50.500 L43.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M33.000 50.500 L45.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M34.600 50.500 L46.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M36.200 50.500 L48.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M37.800 50.500 L49.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M39.400 50.500 L51.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M41.000 50.500 L53.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M42.600 50.500 L54.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M44.200 50.500 L56.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M45.800 50.500 L57.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M47.400 50.500 L59.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M49.000 50.500 L61.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M50.600 50.500 L62.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M52.200 50.500 L64.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M53.800 50.500 L65.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M55.400 50.500 L67.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M57.000 50.500 L69.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M58.600 50.500 L70.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M60.200 50.500 L72.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M61.800 50.500 L73.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M63.400 50.500 L75.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M65.000 50.500 L77.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M66.600 50.500 L78.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M68.200 50.500 L80.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M69.800 50.500 L81.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M71.400 50.500 L83.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M73.000 50.500 L85.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M74.600 50.500 L86.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M76.200 50.500 L88.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M77.800 50.500 L89.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M79.400 50.500 L91.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M81.000 50.500 L93.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M82.600 50.500 L94.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M84.200 50.500 L96.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M85.800 50.500 L97.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M87.400 50.500 L99.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M89.000 50.500 L101.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M90.600 50.500 L102.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M92.200 50.500 L104.200 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M93.800 50.500 L105.800 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M95.400 50.500 L107.400 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M97.000 50.500 L109.000 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M98.600 50.500 L110.600 38.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M100.200 50.500 L112.100 38.600" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M101.800 50.500 L112.900 39.400" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M103.400 50.500 L113.700 40.200" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M105.000 50.500 L114.000 41.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M106.600 50.500 L114.000 43.100" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M108.200 50.500 L114.000 44.700" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M109.800 50.500 L114.000 46.300" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M111.400 50.500 L114.000 47.900" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+<path d="M113.000 50.500 L114.000 49.500" fill="none" stroke="#CCA352" stroke-width="0.1000"/>
+</g>
+<g id="Lot_Alani" data-name="Lot_Alani" inkscape:groupmode="layer" inkscape:label="Lot_Alani" transform="translate(26.000 26.000)">
+<path d="M119.250 182.500 L129.250 182.500 L129.250 197.500 L119.250 197.500 Z" fill="#D1FFFF" stroke="#1980FF" stroke-width="0.1500"/>
+<text x="124.262" y="195.006" font-family="Helvetica, Arial, sans-serif" font-size="1.7" font-weight="bold" fill="#1452CC" transform="rotate(-90 124.262 195.006)">LOT / TARİH</text>
+<text x="126.654" y="191.966" font-family="Helvetica, Arial, sans-serif" font-size="1.4" font-weight="normal" fill="#1452CC" transform="rotate(-90 126.654 191.966)">10×15</text>
+</g>
+<g id="Muhur_Alani" data-name="Muhur_Alani" inkscape:groupmode="layer" inkscape:label="Muhur_Alani" transform="translate(26.000 26.000)">
+<path d="M56.750 205.500 A10.000 10.000 0 0 1 76.750 205.500 Z" fill="#FFC79E" stroke="#FF4D00" stroke-width="0.1500" stroke-dasharray="1 0.6"/>
+<path d="M171.750 224.000 A10.000 10.000 0 0 1 191.750 224.000 Z" fill="#FFC79E" stroke="#FF4D00" stroke-width="0.1500" stroke-dasharray="1 0.6"/>
+<text x="50.303" y="193.876" font-family="Helvetica, Arial, sans-serif" font-size="1.6" font-weight="normal" fill="#BF3000">MÜHÜR Ø20 – yarısı (metin/ikon/lokal lak yok)</text>
+<text x="193.250" y="221.376" font-family="Helvetica, Arial, sans-serif" font-size="1.6" font-weight="bold" fill="#BF3000">MÜHÜR Ø20 – yarısı</text>
+<text x="193.250" y="223.268" font-family="Helvetica, Arial, sans-serif" font-size="1.3" font-weight="normal" fill="#BF3000">serbest (açılma) kenarına ortalı</text>
+</g>
+<g id="Guvenli_Alan" data-name="Guvenli_Alan" inkscape:groupmode="layer" inkscape:label="Guvenli_Alan" transform="translate(26.000 26.000)">
+<path d="M4.000 73.000 L14.500 73.000 L14.500 201.500 L4.000 201.500 Z" fill="none" stroke="#4DFF00" stroke-width="0.0882" stroke-dasharray="1 1"/>
+<path d="M22.500 73.000 L111.000 73.000 L111.000 201.500 L22.500 201.500 Z" fill="none" stroke="#4DFF00" stroke-width="0.0882" stroke-dasharray="1 1"/>
+<path d="M119.000 73.000 L129.500 73.000 L129.500 201.500 L119.000 201.500 Z" fill="none" stroke="#4DFF00" stroke-width="0.0882" stroke-dasharray="1 1"/>
+<path d="M137.500 38.000 L226.000 38.000 L226.000 201.500 L137.500 201.500 Z" fill="none" stroke="#4DFF00" stroke-width="0.0882" stroke-dasharray="1 1"/>
+<path d="M138.000 4.000 L225.500 4.000 L225.500 30.000 L138.000 30.000 Z" fill="none" stroke="#4DFF00" stroke-width="0.0882" stroke-dasharray="1 1"/>
+<path d="M22.500 54.500 L111.000 54.500 L111.000 65.000 L22.500 65.000 Z" fill="none" stroke="#4DFF00" stroke-width="0.0882" stroke-dasharray="1 1"/>
+<path d="M137.500 209.500 L226.000 209.500 L226.000 220.000 L137.500 220.000 Z" fill="none" stroke="#4DFF00" stroke-width="0.0882" stroke-dasharray="1 1"/>
+<path d="M185.623 40.000 L193.750 40.000 A7.000 7.000 0 0 1 193.750 54.000 L185.623 54.000 A8.000 8.000 0 0 1 177.877 54.000 L169.750 54.000 A7.000 7.000 0 0 1 169.750 40.000 L177.877 40.000 A8.000 8.000 0 0 1 185.623 40.000 Z" fill="none" stroke="#4DFF00" stroke-width="0.0882" stroke-dasharray="0.6 0.6"/>
+<path d="M185.623 14.000 L193.750 14.000 A7.000 7.000 0 0 1 193.750 28.000 L185.623 28.000 A8.000 8.000 0 0 1 177.877 28.000 L169.750 28.000 A7.000 7.000 0 0 1 169.750 14.000 L177.877 14.000 A8.000 8.000 0 0 1 185.623 14.000 Z" fill="none" stroke="#4DFF00" stroke-width="0.0882" stroke-dasharray="0.6 0.6"/>
+</g>
+<g id="Bilgi" data-name="Bilgi" inkscape:groupmode="layer" inkscape:label="Bilgi" transform="translate(26.000 26.000)">
+<text x="9.202" y="144.362" font-family="Helvetica, Arial, sans-serif" font-size="3.2" font-weight="bold" fill="#262626" transform="rotate(-90 9.202 144.362)">SOL YAN</text>
+<text x="12.370" y="142.838" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#4D4D4D" transform="rotate(-90 12.370 142.838)">18,5 × 136,5</text>
+<text x="60.705" y="138.402" font-family="Helvetica, Arial, sans-serif" font-size="3.2" font-weight="bold" fill="#262626">ÖN YÜZ</text>
+<text x="61.162" y="141.570" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#4D4D4D">96,5 × 136,5</text>
+<text x="56.197" y="145.098" font-family="Helvetica, Arial, sans-serif" font-size="1.8" font-weight="normal" fill="#4D4D4D">dış (baskı) yüzü görünümü</text>
+<text x="124.202" y="132.540" font-family="Helvetica, Arial, sans-serif" font-size="3.2" font-weight="bold" fill="#262626" transform="rotate(-90 124.202 132.540)">SAĞ YAN</text>
+<text x="127.370" y="130.838" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#4D4D4D" transform="rotate(-90 127.370 130.838)">18,5 × 136,5</text>
+<text x="173.484" y="138.402" font-family="Helvetica, Arial, sans-serif" font-size="3.2" font-weight="bold" fill="#262626">ARKA YÜZ</text>
+<text x="176.162" y="141.570" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#4D4D4D">96,5 × 136,5</text>
+<text x="237.380" y="147.166" font-family="Helvetica, Arial, sans-serif" font-size="3.0" font-weight="bold" fill="#262626" transform="rotate(-90 237.380 147.166)">TUTKAL PAYI</text>
+<text x="240.712" y="151.421" font-family="Helvetica, Arial, sans-serif" font-size="1.7" font-weight="normal" fill="#4D4D4D" transform="rotate(-90 240.712 151.421)">15 mm – baskısız / selefonsuz / laksız</text>
+<text x="166.214" y="63.864" font-family="Helvetica, Arial, sans-serif" font-size="2.4" font-weight="bold" fill="#262626">BAŞLIK – 1. KAT (arka yüz)</text>
+<text x="169.725" y="66.140" font-family="Helvetica, Arial, sans-serif" font-size="1.5" font-weight="normal" fill="#4D4D4D">iç yüzüne: üst yapıştırma dili + 2. kat</text>
+<text x="196.284" y="27.636" font-family="Helvetica, Arial, sans-serif" font-size="2.4" font-weight="bold" fill="#262626" transform="rotate(180 196.284 27.636)">BAŞLIK – 2. KAT (ön yüz)</text>
+<text x="155.024" y="5.540" font-family="Helvetica, Arial, sans-serif" font-size="1.5" font-weight="normal" fill="#4D4D4D">DİKKAT: Bu panelin grafiği açınımda 180° TERS yerleşir (katlanınca düz okunur)</text>
+<text x="169.620" y="8.140" font-family="Helvetica, Arial, sans-serif" font-size="1.5" font-weight="normal" fill="#4D4D4D">bigiden aşağı katlanır, iç yüzü tutkallı</text>
+<text x="59.167" y="59.686" font-family="Helvetica, Arial, sans-serif" font-size="2.6" font-weight="bold" fill="#262626">ÜST KAPAK</text>
+<text x="62.473" y="62.362" font-family="Helvetica, Arial, sans-serif" font-size="1.7" font-weight="normal" fill="#4D4D4D">96,5 × 18,5</text>
+<text x="52.416" y="43.784" font-family="Helvetica, Arial, sans-serif" font-size="1.9" font-weight="bold" fill="#262626">ÜST YAPIŞTIRMA DİLİ 94,5 × 12</text>
+<text x="48.622" y="46.604" font-family="Helvetica, Arial, sans-serif" font-size="1.4" font-weight="normal" fill="#4D4D4D">dış yüzü baskısız/selefonsuz – başlık katları arasına yapışır</text>
+<text x="9.934" y="62.359" font-family="Helvetica, Arial, sans-serif" font-size="1.9" font-weight="bold" fill="#262626" transform="rotate(-90 9.934 62.359)">TOZ KAPAĞI</text>
+<text x="9.934" y="223.859" font-family="Helvetica, Arial, sans-serif" font-size="1.9" font-weight="bold" fill="#262626" transform="rotate(-90 9.934 223.859)">TOZ KAPAĞI</text>
+<text x="124.934" y="62.359" font-family="Helvetica, Arial, sans-serif" font-size="1.9" font-weight="bold" fill="#262626" transform="rotate(-90 124.934 62.359)">TOZ KAPAĞI</text>
+<text x="124.934" y="223.859" font-family="Helvetica, Arial, sans-serif" font-size="1.9" font-weight="bold" fill="#262626" transform="rotate(-90 124.934 223.859)">TOZ KAPAĞI</text>
+<text x="148.568" y="214.864" font-family="Helvetica, Arial, sans-serif" font-size="2.4" font-weight="bold" fill="#262626">ALT KAPAK</text>
+<text x="151.223" y="217.912" font-family="Helvetica, Arial, sans-serif" font-size="1.7" font-weight="normal" fill="#4D4D4D">96,5 × 18,5</text>
+<text x="170.198" y="232.992" font-family="Helvetica, Arial, sans-serif" font-size="2.2" font-weight="bold" fill="#262626">GEÇME DİLİ (slit lock)</text>
+<text x="170.913" y="235.740" font-family="Helvetica, Arial, sans-serif" font-size="1.5" font-weight="normal" fill="#4D4D4D">yalnızca zemin rengi – metin yok</text>
+<text x="135.700" y="228.868" font-family="Helvetica, Arial, sans-serif" font-size="1.3" font-weight="normal" fill="#4D4D4D">slit 5</text>
+<text x="225.127" y="228.868" font-family="Helvetica, Arial, sans-serif" font-size="1.3" font-weight="normal" fill="#4D4D4D">slit 5</text>
+<text x="200.250" y="47.176" font-family="Helvetica, Arial, sans-serif" font-size="1.6" font-weight="normal" fill="#4D4D4D">Euro delik</text>
+<text x="200.250" y="49.376" font-family="Helvetica, Arial, sans-serif" font-size="1.6" font-weight="normal" fill="#4D4D4D">32×8 + Ø10</text>
+<text x="200.250" y="22.340" font-family="Helvetica, Arial, sans-serif" font-size="1.5" font-weight="normal" fill="#4D4D4D">2. kat deliği (ayna)</text>
+<path d="M0.000 -8.000 L18.500 -8.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M0.000 -8.000 L1.500 -8.450 L1.500 -7.550 Z" fill="#404040"/>
+<path d="M18.500 -8.000 L17.000 -7.550 L17.000 -8.450 Z" fill="#404040"/>
+<path d="M0.000 42.500 L0.000 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M18.500 37.000 L18.500 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<text x="7.304" y="-8.180" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626">18,5</text>
+<path d="M18.500 -8.000 L115.000 -8.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M18.500 -8.000 L20.000 -8.450 L20.000 -7.550 Z" fill="#404040"/>
+<path d="M115.000 -8.000 L113.500 -7.550 L113.500 -8.450 Z" fill="#404040"/>
+<path d="M18.500 37.000 L18.500 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M115.000 37.000 L115.000 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<text x="64.804" y="-8.180" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626">96,5</text>
+<path d="M115.000 -8.000 L133.500 -8.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M115.000 -8.000 L116.500 -8.450 L116.500 -7.550 Z" fill="#404040"/>
+<path d="M133.500 -8.000 L132.000 -7.550 L132.000 -8.450 Z" fill="#404040"/>
+<path d="M115.000 37.000 L115.000 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M133.500 -1.500 L133.500 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<text x="122.304" y="-8.180" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626">18,5</text>
+<path d="M133.500 -8.000 L230.000 -8.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M133.500 -8.000 L135.000 -8.450 L135.000 -7.550 Z" fill="#404040"/>
+<path d="M230.000 -8.000 L228.500 -7.550 L228.500 -8.450 Z" fill="#404040"/>
+<path d="M133.500 -1.500 L133.500 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M230.000 -1.500 L230.000 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<text x="179.804" y="-8.180" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626">96,5</text>
+<path d="M230.000 -8.000 L245.000 -8.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M230.000 -8.000 L231.500 -8.450 L231.500 -7.550 Z" fill="#404040"/>
+<path d="M245.000 -8.000 L243.500 -7.550 L243.500 -8.450 Z" fill="#404040"/>
+<path d="M230.000 -1.500 L230.000 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M245.000 71.519 L245.000 -9.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<text x="236.388" y="-8.180" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626">15</text>
+<path d="M0.000 -17.000 L245.000 -17.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M0.000 -17.000 L1.500 -17.450 L1.500 -16.550 Z" fill="#404040"/>
+<path d="M245.000 -17.000 L243.500 -16.550 L243.500 -17.450 Z" fill="#404040"/>
+<path d="M0.000 -9.200 L0.000 -18.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M245.000 -9.200 L245.000 -18.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<text x="107.296" y="-17.036" font-family="Helvetica, Arial, sans-serif" font-size="2.4" font-weight="normal" fill="#262626">245 (toplam açınım genişliği)</text>
+<path d="M253.000 0.000 L253.000 34.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M253.000 0.000 L253.450 1.500 L252.550 1.500 Z" fill="#404040"/>
+<path d="M253.000 34.000 L252.550 32.500 L253.450 32.500 Z" fill="#404040"/>
+<text x="256.320" y="18.112" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626" transform="rotate(-90 256.320 18.112)">34</text>
+<path d="M253.000 34.000 L253.000 69.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M253.000 34.000 L253.450 35.500 L252.550 35.500 Z" fill="#404040"/>
+<path d="M253.000 69.000 L252.550 67.500 L253.450 67.500 Z" fill="#404040"/>
+<text x="256.320" y="52.612" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626" transform="rotate(-90 256.320 52.612)">35</text>
+<path d="M253.000 69.000 L253.000 205.500" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M253.000 69.000 L253.450 70.500 L252.550 70.500 Z" fill="#404040"/>
+<path d="M253.000 205.500 L252.550 204.000 L253.450 204.000 Z" fill="#404040"/>
+<text x="256.320" y="139.752" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626" transform="rotate(-90 256.320 139.752)">136,5</text>
+<path d="M253.000 205.500 L253.000 224.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M253.000 205.500 L253.450 207.000 L252.550 207.000 Z" fill="#404040"/>
+<path d="M253.000 224.000 L252.550 222.500 L253.450 222.500 Z" fill="#404040"/>
+<text x="256.320" y="216.696" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626" transform="rotate(-90 256.320 216.696)">18,5</text>
+<path d="M253.000 224.000 L253.000 239.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M253.000 224.000 L253.450 225.500 L252.550 225.500 Z" fill="#404040"/>
+<path d="M253.000 239.000 L252.550 237.500 L253.450 237.500 Z" fill="#404040"/>
+<text x="256.320" y="232.612" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626" transform="rotate(-90 256.320 232.612)">15</text>
+<path d="M231.500 0.000 L254.200 0.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M231.500 34.000 L254.200 34.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M231.500 69.000 L254.200 69.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M231.500 205.500 L254.200 205.500" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M231.500 224.000 L254.200 224.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M231.500 239.000 L254.200 239.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M262.000 0.000 L262.000 239.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M262.000 0.000 L262.450 1.500 L261.550 1.500 Z" fill="#404040"/>
+<path d="M262.000 239.000 L261.550 237.500 L262.450 237.500 Z" fill="#404040"/>
+<text x="265.464" y="135.570" font-family="Helvetica, Arial, sans-serif" font-size="2.4" font-weight="normal" fill="#262626" transform="rotate(-90 265.464 135.570)">239 (toplam açınım yüksekliği)</text>
+<path d="M254.200 0.000 L263.200 0.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M229.000 239.000 L263.200 239.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M-8.000 44.000 L-8.000 69.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M-8.000 44.000 L-7.550 45.500 L-8.450 45.500 Z" fill="#404040"/>
+<path d="M-8.000 69.000 L-8.450 67.500 L-7.550 67.500 Z" fill="#404040"/>
+<path d="M0.500 44.000 L-9.200 44.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<text x="-8.180" y="57.612" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626" transform="rotate(-90 -8.180 57.612)">25</text>
+<path d="M-8.000 69.000 L-8.000 205.500" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M-8.000 69.000 L-7.550 70.500 L-8.450 70.500 Z" fill="#404040"/>
+<path d="M-8.000 205.500 L-8.450 204.000 L-7.550 204.000 Z" fill="#404040"/>
+<text x="-8.180" y="139.752" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626" transform="rotate(-90 -8.180 139.752)">136,5</text>
+<path d="M-8.000 205.500 L-8.000 230.500" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M-8.000 205.500 L-7.550 207.000 L-8.450 207.000 Z" fill="#404040"/>
+<path d="M-8.000 230.500 L-8.450 229.000 L-7.550 229.000 Z" fill="#404040"/>
+<path d="M0.500 230.500 L-9.200 230.500" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<text x="-8.180" y="219.112" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626" transform="rotate(-90 -8.180 219.112)">25</text>
+<path d="M-1.500 69.000 L-9.200 69.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M-1.500 205.500 L-9.200 205.500" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M106.000 50.500 L106.000 69.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M106.000 50.500 L106.450 52.000 L105.550 52.000 Z" fill="#404040"/>
+<path d="M106.000 69.000 L105.550 67.500 L106.450 67.500 Z" fill="#404040"/>
+<text x="109.212" y="61.404" font-family="Helvetica, Arial, sans-serif" font-size="1.7" font-weight="normal" fill="#262626" transform="rotate(-90 109.212 61.404)">18,5</text>
+<path d="M106.000 38.500 L106.000 50.500" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M106.000 38.500 L106.450 40.000 L105.550 40.000 Z" fill="#404040"/>
+<path d="M106.000 50.500 L105.550 49.000 L106.450 49.000 Z" fill="#404040"/>
+<text x="109.212" y="45.445" font-family="Helvetica, Arial, sans-serif" font-size="1.7" font-weight="normal" fill="#262626" transform="rotate(-90 109.212 45.445)">12</text>
+<path d="M160.750 34.000 L160.750 42.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M160.750 34.000 L161.200 35.500 L160.300 35.500 Z" fill="#404040"/>
+<path d="M160.750 42.000 L160.300 40.500 L161.200 40.500 Z" fill="#404040"/>
+<text x="160.498" y="38.500" font-family="Helvetica, Arial, sans-serif" font-size="1.8" font-weight="normal" fill="#262626" transform="rotate(-90 160.498 38.500)">8</text>
+<path d="M159.250 42.000 L180.750 42.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M134.500 246.000 L229.000 246.000" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M134.500 246.000 L136.000 245.550 L136.000 246.450 Z" fill="#404040"/>
+<path d="M229.000 246.000 L227.500 246.450 L227.500 245.550 Z" fill="#404040"/>
+<path d="M134.500 227.500 L134.500 247.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M229.000 227.500 L229.000 247.200" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<text x="174.359" y="249.320" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#262626">94,5 (geçme dili)</text>
+<path d="M131.700 197.500 L131.700 205.500" fill="none" stroke="#404040" stroke-width="0.1000"/>
+<path d="M131.700 197.500 L132.150 199.000 L131.250 199.000 Z" fill="#404040"/>
+<path d="M131.700 205.500 L131.250 204.000 L132.150 204.000 Z" fill="#404040"/>
+<text x="134.768" y="201.861" font-family="Helvetica, Arial, sans-serif" font-size="1.3" font-weight="normal" fill="#262626" transform="rotate(-90 134.768 201.861)">8</text>
+</g>
+<g id="Bicak" data-name="Bıçak" inkscape:groupmode="layer" inkscape:label="Bıçak" transform="translate(26.000 26.000)">
+<path d="M0.000 69.000 L1.000 67.000 L1.000 49.000 L3.000 44.000 L15.500 44.000 L17.500 49.000 L17.500 67.000 L18.500 69.000 L18.500 50.500 L19.500 50.500 L19.500 40.500 L21.500 38.500 L112.000 38.500 L114.000 40.500 L114.000 50.500 L115.000 50.500 L115.000 69.000 L116.000 67.000 L116.000 49.000 L118.000 44.000 L130.500 44.000 L132.500 49.000 L132.500 67.000 L133.500 69.000 L133.500 34.000 L134.000 34.000 L134.000 3.000 A3.000 3.000 0 0 1 137.000 0.000 L226.500 0.000 A3.000 3.000 0 0 1 229.500 3.000 L229.500 34.000 L230.000 34.000 L230.000 69.000 L245.000 73.019 L245.000 201.481 L230.000 205.500 L230.000 224.000 L229.000 226.000 L229.000 236.000 A3.000 3.000 0 0 1 226.000 239.000 L137.500 239.000 A3.000 3.000 0 0 1 134.500 236.000 L134.500 226.000 L133.500 224.000 L133.500 205.500 L132.500 207.500 L132.500 225.500 L130.500 230.500 L118.000 230.500 L116.000 225.500 L116.000 207.500 L115.000 205.500 L18.500 205.500 L17.500 207.500 L17.500 225.500 L15.500 230.500 L3.000 230.500 L1.000 225.500 L1.000 207.500 Z" fill="none" stroke="#EC008C" stroke-width="0.0882"/>
+<path d="M184.750 43.000 L193.750 43.000 A4.000 4.000 0 0 1 193.750 51.000 L184.750 51.000 A5.000 5.000 0 0 1 178.750 51.000 L169.750 51.000 A4.000 4.000 0 0 1 169.750 43.000 L178.750 43.000 A5.000 5.000 0 0 1 184.750 43.000 Z" fill="none" stroke="#EC008C" stroke-width="0.0882"/>
+<path d="M184.750 17.000 L193.750 17.000 A4.000 4.000 0 0 1 193.750 25.000 L184.750 25.000 A5.000 5.000 0 0 1 178.750 25.000 L169.750 25.000 A4.000 4.000 0 0 1 169.750 17.000 L178.750 17.000 A5.000 5.000 0 0 1 184.750 17.000 Z" fill="none" stroke="#EC008C" stroke-width="0.0882"/>
+<path d="M133.500 224.000 L138.500 224.000" fill="none" stroke="#EC008C" stroke-width="0.0882"/>
+<path d="M225.000 224.000 L230.000 224.000" fill="none" stroke="#EC008C" stroke-width="0.0882"/>
+<path d="M18.500 69.000 L18.500 205.500" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M115.000 69.000 L115.000 205.500" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M133.500 69.000 L133.500 205.500" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M230.000 69.000 L230.000 205.500" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M0.000 69.000 L18.500 69.000" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M18.500 69.000 L115.000 69.000" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M115.000 69.000 L133.500 69.000" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M19.500 50.500 L114.000 50.500" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M134.000 34.000 L229.500 34.000" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M0.000 205.500 L18.500 205.500" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M115.000 205.500 L133.500 205.500" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M133.500 205.500 L230.000 205.500" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+<path d="M138.500 224.000 L225.000 224.000" fill="none" stroke="#EC008C" stroke-width="0.0882" stroke-dasharray="3 1.5"/>
+</g>
+<g id="Sayfa" data-name="Sayfa" inkscape:groupmode="layer" inkscape:label="Sayfa">
+<text x="26.000" y="282.224" font-family="Helvetica, Arial, sans-serif" font-size="3.4" font-weight="bold" fill="#191919">Candemsoft Akıllı Araç QR Etiketi – Kutu Açınımı (Bıçak İzi) v1</text>
+<text x="26.000" y="286.792" font-family="Helvetica, Arial, sans-serif" font-size="2.2" font-weight="normal" fill="#404040">İç ölçü 96 (G) × 18 (D) × 136 (Y) mm  •  Euro başlık 35 mm  •  350 g/m² GC1, t=0,45 mm  •  Açınım 245 × 239 mm  •  Ölçek 1:1, mm  •  Dış (baskı) yüzü görünümü</text>
+<path d="M26.000 292.000 L34.000 292.000" fill="none" stroke="#EC008C" stroke-width="0.2646"/>
+<text x="36.000" y="292.720" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#404040">Kesim – spot "Bicak", 0,25 pt, overprint</text>
+<path d="M114.000 292.000 L122.000 292.000" fill="none" stroke="#EC008C" stroke-width="0.2646" stroke-dasharray="3 1.5"/>
+<text x="124.000" y="292.720" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#404040">Bigi – spot "Bicak", kesikli</text>
+<path d="M202.000 292.000 L210.000 292.000" fill="none" stroke="#4DFFFF" stroke-width="0.2646"/>
+<text x="212.000" y="292.720" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#404040">Taşma sınırı (3 mm)</text>
+<path d="M26.000 297.200 L34.000 297.200" fill="none" stroke="#4DFF00" stroke-width="0.2646" stroke-dasharray="1 1"/>
+<text x="36.000" y="297.920" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#404040">Güvenli alan (4 mm) / delik çevresi 3 mm</text>
+<path d="M114.000 295.600 L122.000 295.600 L122.000 298.400 L114.000 298.400 Z" fill="#FFFFB8" stroke="#CCA352" stroke-width="0.1000"/>
+<text x="124.000" y="297.920" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#404040">Tutkal alanı – baskısız/selefonsuz/laksız</text>
+<path d="M202.000 295.600 L210.000 295.600 L210.000 298.400 L202.000 298.400 Z" fill="#D1FFFF" stroke="#1980FF" stroke-width="0.1500"/>
+<text x="212.000" y="297.920" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#404040">Lot kutucuğu – laksız + SELEFONSUZ (inkjet)</text>
+<path d="M26.000 300.800 L34.000 300.800 L34.000 303.600 L26.000 303.600 Z" fill="#FFC79E" stroke="#FF4D00" stroke-width="0.1500"/>
+<text x="36.000" y="303.120" font-family="Helvetica, Arial, sans-serif" font-size="2.0" font-weight="normal" fill="#404040">Mühür alanı Ø20 – metin/ikon/lokal lak yok</text>
+<text x="26.000" y="309.684" font-family="Helvetica, Arial, sans-serif" font-size="1.9" font-weight="normal" fill="#404040">Katmanlar: Bıçak, Bilgi, Guvenli_Alan, Muhur_Alani, Lot_Alani, Tutkal_Alani, Tasma. Bıçak dışındaki katmanlar yardımcıdır, baskıya çıkmaz.</text>
+</g>
+</svg>

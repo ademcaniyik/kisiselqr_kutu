@@ -1,0 +1,357 @@
+<title>Candemsoft QR Kutu Açınımı</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F3F4F6; --surface:#FFFFFF; --ink:#16202C; --muted:#5A6573; --rule:#D5DAE1;
+  --knife:#C8007A; --knife-soft:#FBE3F0; --ok:#1E7F55; --ok-soft:#E3F3EB; --bad:#B8322A; --bad-soft:#F8E4E2;
+  --stage:#E7EAEE; --focus:#2E6BD8;
+  --sans:"Archivo", "Helvetica Neue", Arial, sans-serif; --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1419; --surface:#171E26; --ink:#E4E8EE; --muted:#96A1AF; --rule:#2B3542;
+    --knife:#FF5DAE; --knife-soft:#3A1A2C; --ok:#4CC08A; --ok-soft:#15302A; --bad:#FF7A70; --bad-soft:#3A1C1A;
+    --stage:#1C242E; --focus:#7FA8FF; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1419; --surface:#171E26; --ink:#E4E8EE; --muted:#96A1AF; --rule:#2B3542;
+  --knife:#FF5DAE; --knife-soft:#3A1A2C; --ok:#4CC08A; --ok-soft:#15302A; --bad:#FF7A70; --bad-soft:#3A1C1A;
+  --stage:#1C242E; --focus:#7FA8FF; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; margin:0}
+.wrap > *{min-width:0}
+.wrap{max-width:1180px; margin:0 auto; padding-inline:clamp(16px,3vw,32px); padding-block:28px 64px; display:grid; gap:36px}
+h1,h2,h3{text-wrap:balance; margin:0; font-weight:700; letter-spacing:-.01em}
+h1{font-size:clamp(24px,3.2vw,34px); line-height:1.1}
+h2{font-size:20px}
+h3{font-size:16px; margin-top:22px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--knife)}
+.num,td,.mono{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono)}
+
+/* title block (teknik resim antet) */
+.head{display:grid; gap:14px}
+.antet{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); border:1px solid var(--ink); background:var(--surface)}
+.antet div{padding:8px 12px; border-right:1px solid var(--rule); border-bottom:1px solid var(--rule); min-width:0}
+.antet dt{font:500 10.5px/1.2 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
+.antet dd{margin:3px 0 0; font:500 15px/1.3 var(--mono)}
+.antet .key dd{color:var(--knife); font-weight:500}
+
+/* viewer */
+.viewer{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:0; border:1px solid var(--rule); background:var(--surface)}
+@media (max-width:860px){ .viewer{grid-template-columns:minmax(0,1fr)} }
+.stage{position:relative; min-width:0; overflow:hidden; background:var(--stage); min-height:320px; aspect-ratio:4/3; max-height:72vh; width:100%; touch-action:none; cursor:grab}
+.stage:active{cursor:grabbing}
+.stage canvas{display:block; position:absolute; inset:0; width:100%; height:100%}
+.hint{position:absolute; left:12px; bottom:10px; font:400 11.5px/1.3 var(--mono); color:var(--muted); pointer-events:none}
+.readout{position:absolute; right:12px; top:10px; font:500 12px/1.3 var(--mono); color:var(--ink); background:color-mix(in srgb,var(--surface) 85%,transparent); padding:4px 8px; border:1px solid var(--rule)}
+.panel{padding:18px; display:grid; gap:18px; align-content:start; border-left:1px solid var(--rule)}
+@media (max-width:860px){ .panel{border-left:0; border-top:1px solid var(--rule)} }
+.panel label.lbl{font:500 11px/1 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px}
+.row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+input[type=range]{width:100%; accent-color:var(--knife)}
+button{font:500 13px/1 var(--sans); color:var(--ink); background:var(--surface); border:1px solid var(--rule); padding:8px 11px; cursor:pointer}
+button:hover{border-color:var(--ink)}
+button[aria-pressed="true"]{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+button.primary{background:var(--knife); color:#fff; border-color:var(--knife)}
+:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+.tog{display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.35}
+.tog input{margin-top:3px; accent-color:var(--knife)}
+.legend{display:grid; gap:6px; font-size:13px; color:var(--muted)}
+.legend span{display:inline-block; width:26px; height:0; border-top:2px solid var(--ink); vertical-align:middle; margin-right:8px}
+.legend .cr{border-top-style:dashed}
+.legend .gl{height:10px; border:1px solid #B79A3F; background:#FFF5C2}
+.legend .se{height:10px; border:1px dashed #E0661A; background:#FAC896; border-radius:10px 10px 0 0}
+.legend .lo{height:10px; border:1px solid #2D6FD1; background:#D4ECF8}
+
+/* checks */
+.checks{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:0; border-top:1px solid var(--rule)}
+.chk{display:grid; grid-template-columns:22px 1fr; gap:10px; padding:10px 4px; border-bottom:1px solid var(--rule)}
+.chk b{font-weight:600; font-size:14px; display:block}
+.chk small{font:400 12.5px/1.35 var(--mono); color:var(--muted)}
+.pill{width:20px; height:20px; display:grid; place-items:center; font:700 12px/1 var(--mono); border-radius:50%}
+.pill.ok{background:var(--ok-soft); color:var(--ok)} .pill.bad{background:var(--bad-soft); color:var(--bad)}
+.summary{display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; margin:8px 0 14px; color:var(--muted)}
+.summary strong{color:var(--ok); font:600 15px var(--mono)}
+
+/* dieline */
+.sheet{background:#fff; border:1px solid var(--rule); overflow-x:auto}
+.sheet img{display:block; width:100%; min-width:720px; max-width:none; height:auto}
+figcaption{font-size:13px; color:var(--muted); margin-top:8px}
+
+/* report */
+.report{background:var(--surface); border:1px solid var(--rule); padding:clamp(18px,3vw,34px)}
+.report h1{display:none}
+.report h2{margin-top:30px; padding-top:18px; border-top:1px solid var(--rule); font-size:18px}
+.report h2:first-of-type{margin-top:0; border-top:0; padding-top:0}
+.report p,.report li{max-width:78ch}
+.report ul{padding-left:20px; display:grid; gap:6px}
+.report code{font-family:var(--mono); font-size:.9em; background:var(--paper); padding:1px 5px}
+.tbl{overflow-x:auto; margin-top:10px}
+.report table{border-collapse:collapse; width:100%; font-size:14px}
+.report th,.report td{text-align:left; padding:7px 10px; border-bottom:1px solid var(--rule); vertical-align:top}
+.report th{font:500 11px/1.2 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.report td:nth-child(2){font-family:var(--mono); font-size:13px}
+.files{display:grid; gap:4px; font-size:14px}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <div class="eyebrow">Aşama 1 · Teknik açınım · __VERSION__</div>
+    <h1>Candemsoft Akıllı Araç QR Etiketi – kutu açınımı ve katlama kontrolü</h1>
+    <dl class="antet">
+      <div><dt>Kutu tipi</dt><dd>Euro başlık + alt slit lock</dd></div>
+      <div><dt>İç ölçü G×D×Y</dt><dd>__INNER__ mm</dd></div>
+      <div class="key"><dt>Açınım (kesim)</dt><dd>__FLAT__ mm</dd></div>
+      <div><dt>Taşma dahil</dt><dd>__BLEED__ mm</dd></div>
+      <div><dt>Karton</dt><dd>350 g GC1 · t __T__</dd></div>
+      <div><dt>Ölçek / birim</dt><dd>1:1 · mm</dd></div>
+    </dl>
+  </header>
+
+  <section aria-labelledby="h3d">
+    <h2 id="h3d" style="margin-bottom:12px">Katlanmış kutu – 3D önizleme</h2>
+    <div class="viewer">
+      <div class="stage" id="stage">
+        <div class="readout" id="readout">Katlama %100</div>
+        <div class="hint">Sürükle: döndür · Tekerlek / iki parmak: yakınlaş</div>
+      </div>
+      <div class="panel">
+        <div>
+          <label class="lbl" for="fold">Katlama</label>
+          <input id="fold" type="range" min="0" max="100" value="100" step="1">
+          <div class="row" style="margin-top:10px">
+            <button id="play" class="primary" type="button">Aç → katla animasyonu</button>
+          </div>
+        </div>
+        <div>
+          <span class="lbl" style="font:500 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">Görünüm</span>
+          <div class="row" id="views">
+            <button type="button" data-v="iso" aria-pressed="true">İzometrik</button>
+            <button type="button" data-v="front" aria-pressed="false">Ön</button>
+            <button type="button" data-v="back" aria-pressed="false">Arka</button>
+            <button type="button" data-v="side" aria-pressed="false">Sağ yan</button>
+            <button type="button" data-v="bottom" aria-pressed="false">Alt</button>
+            <button type="button" data-v="top" aria-pressed="false">Üst</button>
+          </div>
+        </div>
+        <div style="display:grid;gap:8px">
+          <label class="tog"><input type="checkbox" id="xray"> Şeffaf karton (iç kapaklar, tutkal payı ve dili görmek için)</label>
+          <label class="tog"><input type="checkbox" id="content"> İçerik hacmi: __CARRIER__ kart + __STACK__ mm paket</label>
+        </div>
+        <div class="legend">
+          <div><span></span>Kesim hattı</div>
+          <div><span class="cr"></span>Bigi (katlama) hattı</div>
+          <div><span class="gl"></span>Tutkal alanı (baskısız)</div>
+          <div><span class="se"></span>Mühür alanı Ø20</div>
+          <div><span class="lo"></span>Lot kutucuğu 10×15</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="hchk">
+    <h2 id="hchk">Otomatik kontroller</h2>
+    <div class="summary"><strong id="okcount"></strong><span>Kontroller, 3D modeldeki katlama dönüşümlerinden hesaplandı. İç ölçü = bigi-bigi ölçü − karton kalınlığı.</span></div>
+    <div class="checks" id="checks"></div>
+  </section>
+
+  <section aria-labelledby="hflat">
+    <h2 id="hflat" style="margin-bottom:12px">Açınım (dış / baskı yüzü)</h2>
+    <figure style="margin:0">
+      <div class="sheet"><img src="__SVG_SRC__" alt="Kutu açınımı: Sol yan, Ön, Sağ yan, Arka ve tutkal payı yan yana; Arka'nın üstünde iki katlı Euro başlık, altında alt kapak ve geçme dili."></div>
+      <figcaption>Magenta düz çizgi: kesim · magenta kesikli çizgi: bigi · camgöbeği: 3 mm taşma · yeşil kesikli: 4 mm güvenli alan. Baskı için 1:1 PDF ve SVG dosyalarını kullanın; bu görsel yalnızca önizlemedir.</figcaption>
+    </figure>
+  </section>
+
+  <section class="report" aria-label="Ölçü raporu">
+    __REPORT__
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const GEO = __GEO__;
+(function(){
+  const $ = s => document.querySelector(s);
+  // ---------- kontroller
+  const ck = $('#checks'); let okc = 0;
+  GEO.checks.forEach(c => {
+    if (c.ok) okc++;
+    const d = document.createElement('div'); d.className = 'chk';
+    d.innerHTML = `<span class="pill ${c.ok?'ok':'bad'}" aria-label="${c.ok?'geçti':'kaldı'}">${c.ok?'✓':'!'}</span><div><b></b><small></small></div>`;
+    d.querySelector('b').textContent = c.n; d.querySelector('small').textContent = c.d;
+    ck.appendChild(d);
+  });
+  $('#okcount').textContent = `${okc} / ${GEO.checks.length} geçti`;
+
+  if (!window.THREE) { $('#readout').textContent = '3D kütüphanesi yüklenemedi'; return; }
+  const stage = $('#stage');
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+  // ---------- doku (dış yüz)
+  const PX = 8, W = GEO.W, H = GEO.H;
+  const cv = document.createElement('canvas'); cv.width = Math.round(W*PX); cv.height = Math.round(H*PX);
+  const cx = cv.getContext('2d');
+  cx.fillStyle = '#FFFFFF'; cx.fillRect(0,0,cv.width,cv.height);
+  cx.setTransform(PX,0,0,PX,0,0); cx.lineCap = 'butt'; cx.lineJoin = 'round';
+  const tr = a => a*Math.PI/180;
+  GEO.texture.forEach(it => {
+    if (it.t === 'p') {
+      cx.beginPath();
+      it.c.forEach(c => {
+        if (c[0]==='M') cx.moveTo(c[1],c[2]);
+        else if (c[0]==='L') cx.lineTo(c[1],c[2]);
+        else if (c[0]==='A') cx.arc(c[1],c[2],c[3],tr(c[4]),tr(c[5]),c[5]<c[4]);
+        else if (c[0]==='Z') cx.closePath();
+      });
+      if (it.f){ cx.fillStyle = it.f; cx.fill(); }
+      if (it.s){ cx.strokeStyle = it.s; cx.lineWidth = it.w; cx.setLineDash(it.d || []); cx.stroke(); }
+    } else {
+      cx.save(); cx.translate(it.x, it.y); cx.rotate(tr(it.r));
+      cx.font = `${it.b?700:400} ${it.z}px Helvetica, Arial, sans-serif`; cx.fillStyle = it.f; cx.setLineDash([]);
+      cx.fillText(it.s, 0, 0); cx.restore();
+    }
+  });
+
+  // ---------- sahne
+  const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
+  stage.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 4/3, 5, 5000);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f99, 0.85));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.55); dl.position.set(200, 300, 400); scene.add(dl);
+  const dl2 = new THREE.DirectionalLight(0xffffff, 0.25); dl2.position.set(-300, -100, -300); scene.add(dl2);
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  if ('encoding' in tex) tex.encoding = THREE.sRGBEncoding;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  const matFront = new THREE.MeshStandardMaterial({map:tex, side:THREE.FrontSide, roughness:.85, metalness:0, transparent:true, opacity:1});
+  const matBack = new THREE.MeshStandardMaterial({color:0xE9E4D8, side:THREE.BackSide, roughness:.95, metalness:0, transparent:true, opacity:1});
+  const matEdge = new THREE.LineBasicMaterial({color:0x2a3340, transparent:true, opacity:.55});
+
+  const root = new THREE.Group(); scene.add(root);
+  const nodes = {};
+  GEO.panels.forEach(p => {
+    const shape = new THREE.Shape(p.pts.map(q => new THREE.Vector2(q[0], -q[1])));
+    p.holes.forEach(h => shape.holes.push(new THREE.Path(h.map(q => new THREE.Vector2(q[0], -q[1])))));
+    const g = new THREE.ShapeGeometry(shape, 16);
+    const pos = g.attributes.position, uv = g.attributes.uv;
+    for (let i=0;i<pos.count;i++) uv.setXY(i, pos.getX(i)/W, 1 + pos.getY(i)/H);
+    uv.needsUpdate = true;
+    g.translate(-p.h0[0], p.h0[1], p.off);
+    const pivot = new THREE.Group();
+    pivot.add(new THREE.Mesh(g, matFront));
+    pivot.add(new THREE.Mesh(g, matBack));
+    pivot.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), matEdge));
+    const ax = new THREE.Vector3(p.h1[0]-p.h0[0], -(p.h1[1]-p.h0[1]), 0).normalize();
+    nodes[p.name] = {p, pivot, ax};
+  });
+  GEO.panels.forEach(p => {
+    const n = nodes[p.name];
+    if (!p.parent) { root.add(n.pivot); n.pivot.position.set(p.h0[0], -p.h0[1], 0); return; }
+    const par = nodes[p.parent].p;
+    n.pivot.position.set(p.h0[0]-par.h0[0], -(p.h0[1]-par.h0[1]), 0);
+    nodes[p.parent].pivot.add(n.pivot);
+  });
+
+  // içerik hacmi
+  const fr = GEO.frontRect, dp = GEO.dp, T = GEO.T;
+  const ghost = new THREE.Group();
+  const cw = GEO.carrier[0], chh = GEO.carrier[1], st = GEO.stack;
+  const gbox = new THREE.Mesh(new THREE.BoxGeometry(cw, chh, st),
+    new THREE.MeshStandardMaterial({color:0x2E6BD8, transparent:true, opacity:.28, depthWrite:false}));
+  gbox.add(new THREE.LineSegments(new THREE.EdgesGeometry(gbox.geometry), new THREE.LineBasicMaterial({color:0x2E6BD8})));
+  gbox.position.set((fr[0]+fr[2])/2, -(fr[1]+fr[3])/2, -dp + T + st/2 + 0.3);
+  ghost.add(gbox); ghost.visible = false; scene.add(ghost);
+
+  // katlama
+  let fold = 1;
+  function applyFold(t){
+    fold = t;
+    GEO.panels.forEach(p => {
+      if (!p.parent) return;
+      const [a,b] = p.phase; const f = Math.min(1, Math.max(0, (t-a)/(b-a)));
+      const e = f<.5 ? 2*f*f : 1-Math.pow(-2*f+2,2)/2;
+      nodes[p.name].pivot.quaternion.setFromAxisAngle(nodes[p.name].ax, THREE.MathUtils.degToRad(p.angle*e));
+    });
+    $('#readout').textContent = `Katlama %${Math.round(t*100)}`;
+  }
+
+  // kamera (basit yörünge)
+  const boxC = new THREE.Vector3((fr[0]+fr[2])/2, -((fr[1]-35)+fr[3])/2, -dp/2);
+  const flatC = new THREE.Vector3(W/2, -H/2, 0);
+  const cam = {theta:-.62, phi:1.2, r:430, tt:null};
+  const VIEWS = {iso:[-.62,1.2], front:[0,Math.PI/2], back:[Math.PI,Math.PI/2], side:[Math.PI/2,Math.PI/2], bottom:[-.35,2.55], top:[-.35,.45]};
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function target(){ const k = Math.min(1, Math.max(0,(fold-0.0)/0.35)); return flatC.clone().lerp(boxC, k); }
+  function place(){
+    const tg = target();
+    camera.position.set(tg.x + cam.r*Math.sin(cam.phi)*Math.sin(cam.theta), tg.y + cam.r*Math.cos(cam.phi), tg.z + cam.r*Math.sin(cam.phi)*Math.cos(cam.theta));
+    camera.lookAt(tg);
+  }
+  function resize(){
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix();
+  }
+  let drag = null;
+  const el = renderer.domElement;
+  el.addEventListener('pointerdown', e => { drag = {x:e.clientX, y:e.clientY}; el.setPointerCapture(e.pointerId); cam.tt = null; });
+  el.addEventListener('pointermove', e => {
+    if (!drag) return;
+    cam.theta -= (e.clientX-drag.x)*0.008; cam.phi = Math.min(Math.PI-.05, Math.max(.05, cam.phi - (e.clientY-drag.y)*0.008));
+    drag = {x:e.clientX, y:e.clientY}; setPressed(null);
+  });
+  el.addEventListener('pointerup', () => drag = null);
+  el.addEventListener('wheel', e => { e.preventDefault(); cam.r = Math.min(1400, Math.max(160, cam.r*(1+Math.sign(e.deltaY)*0.08))); }, {passive:false});
+  let pinch = null;
+  el.addEventListener('touchstart', e => { if (e.touches.length===2){ const [a,b]=e.touches; pinch = Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); drag=null; } }, {passive:true});
+  el.addEventListener('touchmove', e => { if (pinch && e.touches.length===2){ const [a,b]=e.touches; const d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); cam.r=Math.min(1400,Math.max(160,cam.r*pinch/d)); pinch=d; } }, {passive:true});
+  el.addEventListener('touchend', () => pinch = null);
+
+  function setPressed(v){ document.querySelectorAll('#views button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v===v))); }
+  document.querySelectorAll('#views button').forEach(b => b.addEventListener('click', () => {
+    const [th, ph] = VIEWS[b.dataset.v]; setPressed(b.dataset.v);
+    let dth = th - cam.theta; dth = Math.atan2(Math.sin(dth), Math.cos(dth));
+    cam.tt = reduce ? null : {th0:cam.theta, th:cam.theta+dth, ph0:cam.phi, ph, t0:performance.now()};
+    if (reduce){ cam.theta = th; cam.phi = ph; }
+  }));
+
+  const slider = $('#fold');
+  slider.addEventListener('input', () => { anim = null; applyFold(slider.value/100); });
+  let anim = null;
+  $('#play').addEventListener('click', () => {
+    if (reduce){ applyFold(1); slider.value = 100; return; }
+    anim = {t0: performance.now(), dur: 5200};
+  });
+  $('#xray').addEventListener('change', e => {
+    const o = e.target.checked ? .38 : 1;
+    matFront.opacity = o; matBack.opacity = o; matFront.depthWrite = o===1; matBack.depthWrite = o===1;
+  });
+  $('#content').addEventListener('change', e => { ghost.visible = e.target.checked; });
+
+  function loop(now){
+    if (anim){
+      const k = (now-anim.t0)/anim.dur;
+      const t = k < .12 ? 1 - k/.12 : Math.min(1, (k-.18)/.82);
+      applyFold(Math.max(0,t)); slider.value = Math.round(fold*100);
+      if (k >= 1) anim = null;
+    }
+    if (cam.tt){
+      const k = Math.min(1,(now-cam.tt.t0)/600), e = 1-Math.pow(1-k,3);
+      cam.theta = cam.tt.th0 + (cam.tt.th-cam.tt.th0)*e; cam.phi = cam.tt.ph0 + (cam.tt.ph-cam.tt.ph0)*e;
+      if (k>=1) cam.tt = null;
+    }
+    place(); renderer.render(scene, camera); requestAnimationFrame(loop);
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+  applyFold(1); requestAnimationFrame(loop);
+})();
+</script>
