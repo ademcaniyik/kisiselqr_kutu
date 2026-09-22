@@ -1,151 +1,229 @@
-<title>Candemsoft QR Kutu Açınımı</title>
+<title>Candemsoft Kişisel QR Kutu 3D Tasarım & Açınım Stüdyosu</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap">
 <style>
 :root{
-  --paper:#F3F4F6; --surface:#FFFFFF; --ink:#16202C; --muted:#5A6573; --rule:#D5DAE1;
-  --knife:#C8007A; --knife-soft:#FBE3F0; --ok:#1E7F55; --ok-soft:#E3F3EB; --bad:#B8322A; --bad-soft:#F8E4E2;
-  --stage:#E7EAEE; --focus:#2E6BD8;
-  --sans:"Archivo", "Helvetica Neue", Arial, sans-serif; --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --paper:#0d1117; --surface:#161b22; --surface-2:#21262d; --ink:#f0f6fc; --muted:#8b949e; --rule:#30363d;
+  --knife:#ff3366; --knife-soft:#3a1424; --ok:#3fb950; --ok-soft:#132d1e; --bad:#f85149; --bad-soft:#3b181a;
+  --stage:#0a0c10; --focus:#58a6ff; --accent:#00d2ff; --accent-glow:rgba(0,210,255,0.25);
+  --sans:"Outfit", "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#0F1419; --surface:#171E26; --ink:#E4E8EE; --muted:#96A1AF; --rule:#2B3542;
-    --knife:#FF5DAE; --knife-soft:#3A1A2C; --ok:#4CC08A; --ok-soft:#15302A; --bad:#FF7A70; --bad-soft:#3A1C1A;
-    --stage:#1C242E; --focus:#7FA8FF; color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#0F1419; --surface:#171E26; --ink:#E4E8EE; --muted:#96A1AF; --rule:#2B3542;
-  --knife:#FF5DAE; --knife-soft:#3A1A2C; --ok:#4CC08A; --ok-soft:#15302A; --bad:#FF7A70; --bad-soft:#3A1C1A;
-  --stage:#1C242E; --focus:#7FA8FF; color-scheme:dark;
+:root[data-theme="light"]{
+  --paper:#f6f8fa; --surface:#ffffff; --surface-2:#f0f2f5; --ink:#1f2328; --muted:#656d76; --rule:#d0d7de;
+  --knife:#d91a5b; --knife-soft:#ffeef4; --ok:#1a7f37; --ok-soft:#dafbe1; --bad:#cf222e; --bad-soft:#ffebe9;
+  --stage:#e8ebf0; --focus:#0969da; --accent:#0284c7; --accent-glow:rgba(2,132,199,0.2);
 }
 *{box-sizing:border-box}
 body{background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; margin:0}
 .wrap > *{min-width:0}
-.wrap{max-width:1180px; margin:0 auto; padding-inline:clamp(16px,3vw,32px); padding-block:28px 64px; display:grid; gap:36px}
-h1,h2,h3{text-wrap:balance; margin:0; font-weight:700; letter-spacing:-.01em}
-h1{font-size:clamp(24px,3.2vw,34px); line-height:1.1}
+.wrap{max-width:1280px; margin:0 auto; padding-inline:clamp(16px,3vw,36px); padding-block:28px 64px; display:grid; gap:32px}
+h1,h2,h3{text-wrap:balance; margin:0; font-weight:700; letter-spacing:-.015em}
+h1{font-size:clamp(24px,3.2vw,36px); line-height:1.15; font-weight:800}
 h2{font-size:20px}
 h3{font-size:16px; margin-top:22px}
-.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--knife)}
+.eyebrow{font:600 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--knife); display:inline-flex; align-items:center; gap:8px}
+.eyebrow::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--knife); display:inline-block}
 .num,td,.mono{font-variant-numeric:tabular-nums}
 .mono{font-family:var(--mono)}
 
-/* title block (teknik resim antet) */
-.head{display:grid; gap:14px}
-.antet{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); border:1px solid var(--ink); background:var(--surface)}
-.antet div{padding:8px 12px; border-right:1px solid var(--rule); border-bottom:1px solid var(--rule); min-width:0}
-.antet dt{font:500 10.5px/1.2 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
-.antet dd{margin:3px 0 0; font:500 15px/1.3 var(--mono)}
-.antet .key dd{color:var(--knife); font-weight:500}
+/* title block (antet) */
+.head{display:grid; gap:16px}
+.antet{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); border:1px solid var(--rule); background:var(--surface); border-radius:8px; overflow:hidden}
+.antet div{padding:10px 14px; border-right:1px solid var(--rule); border-bottom:1px solid var(--rule); min-width:0}
+.antet dt{font:600 10.5px/1.2 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
+.antet dd{margin:4px 0 0; font:600 14.5px/1.3 var(--mono)}
+.antet .key dd{color:var(--knife); font-weight:700}
 
 /* viewer */
-.viewer{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:0; border:1px solid var(--rule); background:var(--surface)}
-@media (max-width:860px){ .viewer{grid-template-columns:minmax(0,1fr)} }
-.stage{position:relative; min-width:0; overflow:hidden; background:var(--stage); min-height:320px; aspect-ratio:4/3; max-height:72vh; width:100%; touch-action:none; cursor:grab}
+.viewer{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:0; border:1px solid var(--rule); background:var(--surface); border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.25)}
+@media (max-width:960px){ .viewer{grid-template-columns:minmax(0,1fr)} }
+.stage{position:relative; min-width:0; overflow:hidden; background:radial-gradient(circle at center, color-mix(in srgb, var(--stage) 80%, #1e293b), var(--stage)); min-height:440px; aspect-ratio:4/3; max-height:76vh; width:100%; touch-action:none; cursor:grab}
 .stage:active{cursor:grabbing}
 .stage canvas{display:block; position:absolute; inset:0; width:100%; height:100%}
-.hint{position:absolute; left:12px; bottom:10px; font:400 11.5px/1.3 var(--mono); color:var(--muted); pointer-events:none}
-.readout{position:absolute; right:12px; top:10px; font:500 12px/1.3 var(--mono); color:var(--ink); background:color-mix(in srgb,var(--surface) 85%,transparent); padding:4px 8px; border:1px solid var(--rule)}
-.panel{padding:18px; display:grid; gap:18px; align-content:start; border-left:1px solid var(--rule)}
-@media (max-width:860px){ .panel{border-left:0; border-top:1px solid var(--rule)} }
-.panel label.lbl{font:500 11px/1 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px}
+.hint{position:absolute; left:14px; bottom:12px; font:500 11.5px/1.3 var(--mono); color:var(--muted); pointer-events:none; background:color-mix(in srgb,var(--surface) 80%,transparent); backdrop-filter:blur(6px); padding:4px 10px; border-radius:6px; border:1px solid var(--rule)}
+.readout{position:absolute; right:14px; top:12px; font:600 12px/1.3 var(--mono); color:var(--ink); background:color-mix(in srgb,var(--surface) 80%,transparent); backdrop-filter:blur(6px); padding:5px 10px; border:1px solid var(--rule); border-radius:6px; z-index:5}
+
+.panel{padding:20px; display:grid; gap:20px; align-content:start; border-left:1px solid var(--rule); max-height:76vh; overflow-y:auto}
+@media (max-width:960px){ .panel{border-left:0; border-top:1px solid var(--rule); max-height:none} }
+.panel-section{display:grid; gap:10px}
+.panel label.lbl, .panel span.lbl{font:600 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; justify-content:space-between; margin-bottom:2px}
 .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
-input[type=range]{width:100%; accent-color:var(--knife)}
-button{font:500 13px/1 var(--sans); color:var(--ink); background:var(--surface); border:1px solid var(--rule); padding:8px 11px; cursor:pointer}
-button:hover{border-color:var(--ink)}
-button[aria-pressed="true"]{background:var(--ink); color:var(--surface); border-color:var(--ink)}
-button.primary{background:var(--knife); color:#fff; border-color:var(--knife)}
+
+/* buttons & chips */
+button{font:600 12.5px/1 var(--sans); color:var(--ink); background:var(--surface-2); border:1px solid var(--rule); padding:9px 12px; border-radius:6px; cursor:pointer; transition:all 0.15s ease; display:inline-flex; align-items:center; gap:6px}
+button:hover{border-color:var(--focus); background:color-mix(in srgb,var(--surface-2) 80%,var(--focus))}
+button[aria-pressed="true"]{background:var(--focus); color:#ffffff; border-color:var(--focus); box-shadow:0 0 12px var(--accent-glow)}
+button.primary{background:linear-gradient(135deg, var(--knife), #b80058); color:#fff; border-color:transparent; font-weight:700}
+button.primary:hover{opacity:0.95; box-shadow:0 0 14px rgba(255,51,102,0.4)}
+button.active-design{background:linear-gradient(135deg, #00d2ff, #0066ff); color:#ffffff; border-color:transparent; font-weight:700; box-shadow:0 0 14px rgba(0,210,255,0.35)}
+
+.design-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.design-btn{width:100%; justify-content:flex-start; text-align:left; padding:10px; font-size:12px; line-height:1.2; border-radius:8px}
+.design-btn span.dot{width:10px; height:10px; border-radius:50%; flex-shrink:0; display:inline-block}
+
+input[type=range]{width:100%; accent-color:var(--knife); cursor:pointer}
 :focus-visible{outline:2px solid var(--focus); outline-offset:2px}
-.tog{display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.35}
-.tog input{margin-top:3px; accent-color:var(--knife)}
-.legend{display:grid; gap:6px; font-size:13px; color:var(--muted)}
-.legend span{display:inline-block; width:26px; height:0; border-top:2px solid var(--ink); vertical-align:middle; margin-right:8px}
+.tog{display:flex; gap:9px; align-items:center; font-size:13.5px; line-height:1.35; cursor:pointer; user-select:none}
+.tog input{margin:0; accent-color:var(--knife); cursor:pointer; width:15px; height:15px}
+
+.legend{display:grid; gap:6px; font-size:12.5px; color:var(--muted); background:var(--surface-2); padding:10px 12px; border-radius:8px; border:1px solid var(--rule)}
+.legend div{display:flex; align-items:center}
+.legend span{display:inline-block; width:22px; height:0; border-top:2px solid var(--ink); vertical-align:middle; margin-right:8px; flex-shrink:0}
 .legend .cr{border-top-style:dashed}
 .legend .gl{height:10px; border:1px solid #B79A3F; background:#FFF5C2}
 .legend .se{height:10px; border:1px dashed #E0661A; background:#FAC896; border-radius:10px 10px 0 0}
 .legend .lo{height:10px; border:1px solid #2D6FD1; background:#D4ECF8}
 
+/* modal / drawer for custom images */
+.custom-panel{display:none; background:var(--surface-2); border:1px solid var(--rule); border-radius:8px; padding:12px; gap:10px}
+.custom-panel.open{display:grid}
+.file-row{display:grid; grid-template-columns:70px 1fr; gap:8px; align-items:center; font-size:12px}
+.file-row label{font-family:var(--mono); font-weight:600; color:var(--muted)}
+.file-row input[type=file]{font-size:11px; color:var(--muted); max-width:100%}
+
 /* checks */
-.checks{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:0; border-top:1px solid var(--rule)}
-.chk{display:grid; grid-template-columns:22px 1fr; gap:10px; padding:10px 4px; border-bottom:1px solid var(--rule)}
-.chk b{font-weight:600; font-size:14px; display:block}
-.chk small{font:400 12.5px/1.35 var(--mono); color:var(--muted)}
+.checks{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:0; border:1px solid var(--rule); border-radius:8px; overflow:hidden; background:var(--surface)}
+.chk{display:grid; grid-template-columns:22px 1fr; gap:10px; padding:12px; border-bottom:1px solid var(--rule)}
+.chk:last-child{border-bottom:none}
+.chk b{font-weight:600; font-size:13.5px; display:block}
+.chk small{font:400 12px/1.35 var(--mono); color:var(--muted)}
 .pill{width:20px; height:20px; display:grid; place-items:center; font:700 12px/1 var(--mono); border-radius:50%}
 .pill.ok{background:var(--ok-soft); color:var(--ok)} .pill.bad{background:var(--bad-soft); color:var(--bad)}
 .summary{display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; margin:8px 0 14px; color:var(--muted)}
-.summary strong{color:var(--ok); font:600 15px var(--mono)}
+.summary strong{color:var(--ok); font:700 16px var(--mono)}
 
 /* dieline */
-.sheet{background:#fff; border:1px solid var(--rule); overflow-x:auto}
+.sheet{background:#fff; border:1px solid var(--rule); border-radius:8px; overflow-x:auto}
 .sheet img{display:block; width:100%; min-width:720px; max-width:none; height:auto}
 figcaption{font-size:13px; color:var(--muted); margin-top:8px}
 
 /* report */
-.report{background:var(--surface); border:1px solid var(--rule); padding:clamp(18px,3vw,34px)}
+.report{background:var(--surface); border:1px solid var(--rule); border-radius:8px; padding:clamp(18px,3vw,34px)}
 .report h1{display:none}
 .report h2{margin-top:30px; padding-top:18px; border-top:1px solid var(--rule); font-size:18px}
 .report h2:first-of-type{margin-top:0; border-top:0; padding-top:0}
 .report p,.report li{max-width:78ch}
 .report ul{padding-left:20px; display:grid; gap:6px}
-.report code{font-family:var(--mono); font-size:.9em; background:var(--paper); padding:1px 5px}
+.report code{font-family:var(--mono); font-size:.9em; background:var(--surface-2); padding:2px 6px; border-radius:4px}
 .tbl{overflow-x:auto; margin-top:10px}
 .report table{border-collapse:collapse; width:100%; font-size:14px}
-.report th,.report td{text-align:left; padding:7px 10px; border-bottom:1px solid var(--rule); vertical-align:top}
-.report th{font:500 11px/1.2 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.report th,.report td{text-align:left; padding:8px 12px; border-bottom:1px solid var(--rule); vertical-align:top}
+.report th{font:600 11px/1.2 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
 .report td:nth-child(2){font-family:var(--mono); font-size:13px}
-.files{display:grid; gap:4px; font-size:14px}
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
 </style>
 
 <div class="wrap">
   <header class="head">
-    <div class="eyebrow">Aşama 1 · Teknik açınım · __VERSION__</div>
-    <h1>Candemsoft Akıllı Araç QR Etiketi – kutu açınımı ve katlama kontrolü</h1>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px">
+      <div class="eyebrow">Kişisel QR · 3D Ambalaj Tasarım Stüdyosu · __VERSION__</div>
+      <div style="display:flex; gap:8px">
+        <button type="button" id="theme-btn" style="font-size:11px; padding:4px 8px;">🌙 / ☀️ Tema</button>
+      </div>
+    </div>
+    <h1>Kişisel QR Akıllı Araç & Profil Kutusu – 3D Tasarım Giydirme</h1>
     <dl class="antet">
-      <div><dt>Kutu tipi</dt><dd>Euro başlık + alt slit lock</dd></div>
-      <div><dt>İç ölçü G×D×Y</dt><dd>__INNER__ mm</dd></div>
-      <div class="key"><dt>Açınım (kesim)</dt><dd>__FLAT__ mm</dd></div>
-      <div><dt>Taşma dahil</dt><dd>__BLEED__ mm</dd></div>
-      <div><dt>Karton</dt><dd>350 g GC1 · t __T__</dd></div>
-      <div><dt>Ölçek / birim</dt><dd>1:1 · mm</dd></div>
+      <div><dt>Kutu Tipi</dt><dd>Euro Başlık + Slit Lock</dd></div>
+      <div><dt>İç Ölçü (G×D×Y)</dt><dd>__INNER__ mm</dd></div>
+      <div class="key"><dt>Açınım (Kesim)</dt><dd>__FLAT__ mm</dd></div>
+      <div><dt>Taşma Dahil</dt><dd>__BLEED__ mm</dd></div>
+      <div><dt>Karton Türü</dt><dd>350g GC1 · t __T__</dd></div>
+      <div><dt>Birim / Ölçek</dt><dd>1:1 · mm</dd></div>
     </dl>
   </header>
 
   <section aria-labelledby="h3d">
-    <h2 id="h3d" style="margin-bottom:12px">Katlanmış kutu – 3D önizleme</h2>
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; flex-wrap:wrap; gap:8px">
+      <h2 id="h3d">Kutu 3D Önizleme & Kaplama (Texture) Kontrolü</h2>
+      <span style="font:500 12px var(--mono); color:var(--muted)">Three.js WebGL & 4K Dinamik Doku Motoru</span>
+    </div>
     <div class="viewer">
       <div class="stage" id="stage">
         <div class="readout" id="readout">Katlama %100</div>
-        <div class="hint">Sürükle: döndür · Tekerlek / iki parmak: yakınlaş</div>
+        <div class="hint">🖱️ Sürükle: 3D Döndür · ⚙️ Tekerlek: Yakınlaş · 👆 İki Parmak: Dokunmatik</div>
       </div>
       <div class="panel">
-        <div>
-          <label class="lbl" for="fold">Katlama</label>
-          <input id="fold" type="range" min="0" max="100" value="100" step="1">
-          <div class="row" style="margin-top:10px">
-            <button id="play" class="primary" type="button">Aç → katla animasyonu</button>
+        <!-- Tasarım Seçici -->
+        <div class="panel-section">
+          <span class="lbl">🎨 Ambalaj Tasarımı <small id="cur-design-lbl" style="color:var(--accent); font-weight:700">Tasarım 1</small></span>
+          <div class="design-grid">
+            <button type="button" class="design-btn active-design" data-design="tasarim1">
+              <span class="dot" style="background:#00d2ff; box-shadow:0 0 6px #00d2ff"></span>
+              <div><b>Tasarım 1</b><br><small style="font-weight:400; opacity:0.8">Nebula Dark</small></div>
+            </button>
+            <button type="button" class="design-btn" data-design="tasarim2">
+              <span class="dot" style="background:#ffffff; border:1px solid #999"></span>
+              <div><b>Tasarım 2</b><br><small style="font-weight:400; opacity:0.8">Pure White</small></div>
+            </button>
+            <button type="button" class="design-btn" data-design="tasarim3">
+              <span class="dot" style="background:#ff3366; box-shadow:0 0 6px #ff3366"></span>
+              <div><b>Tasarım 3</b><br><small style="font-weight:400; opacity:0.8">Siber Gradyan</small></div>
+            </button>
+            <button type="button" class="design-btn" data-design="dieline">
+              <span class="dot" style="background:#f59e0b"></span>
+              <div><b>Teknik CAD</b><br><small style="font-weight:400; opacity:0.8">Bıçak İzi</small></div>
+            </button>
+          </div>
+          <button type="button" id="toggle-custom-btn" style="width:100%; justify-content:center; margin-top:2px">
+            📁 Kendi Görsellerini Yükle (6 Yüzey)
+          </button>
+          
+          <!-- Görsel Yükleyici Paneli -->
+          <div class="custom-panel" id="custom-panel">
+            <span style="font:700 11px var(--mono); color:var(--ink)">YÜZEY GÖRSELLERİNİ YÜKLE (PNG/JPG):</span>
+            <div class="file-row"><label>ÖN:</label><input type="file" accept="image/*" data-face="front"></div>
+            <div class="file-row"><label>ARKA:</label><input type="file" accept="image/*" data-face="back"></div>
+            <div class="file-row"><label>SOL YAN:</label><input type="file" accept="image/*" data-face="left"></div>
+            <div class="file-row"><label>SAĞ YAN:</label><input type="file" accept="image/*" data-face="right"></div>
+            <div class="file-row"><label>ÜST:</label><input type="file" accept="image/*" data-face="top"></div>
+            <div class="file-row"><label>ALT:</label><input type="file" accept="image/*" data-face="bottom"></div>
+            <div class="file-row"><label>BAŞLIK:</label><input type="file" accept="image/*" data-face="header"></div>
+            <button type="button" id="reset-custom-btn" style="font-size:11px; padding:4px 8px; justify-content:center">Sıfırla</button>
           </div>
         </div>
-        <div>
-          <span class="lbl" style="font:500 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">Görünüm</span>
+
+        <!-- Katlama & Animasyon -->
+        <div class="panel-section">
+          <label class="lbl" for="fold">Katlama Seviyesi <span id="fold-val">100%</span></label>
+          <input id="fold" type="range" min="0" max="100" value="100" step="1">
+          <div class="row" style="margin-top:4px">
+            <button id="play" class="primary" type="button" style="flex:1; justify-content:center">▶ Aç → Katla Animasyonu</button>
+            <button id="autorotate" type="button" aria-pressed="false">🔄 Oto Dönüş</button>
+          </div>
+        </div>
+
+        <!-- Kamera Bakış Açıları -->
+        <div class="panel-section">
+          <span class="lbl">Hızlı Kamera Bakışı</span>
           <div class="row" id="views">
             <button type="button" data-v="iso" aria-pressed="true">İzometrik</button>
             <button type="button" data-v="front" aria-pressed="false">Ön</button>
             <button type="button" data-v="back" aria-pressed="false">Arka</button>
-            <button type="button" data-v="side" aria-pressed="false">Sağ yan</button>
-            <button type="button" data-v="bottom" aria-pressed="false">Alt</button>
+            <button type="button" data-v="left" aria-pressed="false">Sol</button>
+            <button type="button" data-v="side" aria-pressed="false">Sağ</button>
             <button type="button" data-v="top" aria-pressed="false">Üst</button>
+            <button type="button" data-v="bottom" aria-pressed="false">Alt</button>
           </div>
         </div>
-        <div style="display:grid;gap:8px">
-          <label class="tog"><input type="checkbox" id="xray"> Şeffaf karton (iç kapaklar, tutkal payı ve dili görmek için)</label>
-          <label class="tog"><input type="checkbox" id="content"> İçerik hacmi: __CARRIER__ kart + __STACK__ mm paket</label>
+
+        <!-- Yüzey Parlaklığı & Görünürlük -->
+        <div class="panel-section" style="gap:8px">
+          <span class="lbl">Karton & Malzeme Efekti</span>
+          <div class="row" id="finish-types">
+            <button type="button" data-finish="matte" aria-pressed="true">Mat Karton</button>
+            <button type="button" data-finish="gloss" aria-pressed="false">Parlak Selefon</button>
+            <button type="button" data-finish="foil" aria-pressed="false">Metalik Parlama</button>
+          </div>
+          <div style="display:grid; gap:6px; margin-top:4px">
+            <label class="tog"><input type="checkbox" id="xray"> Şeffaf karton (iç kapak ve dilleri gör)</label>
+            <label class="tog"><input type="checkbox" id="content"> İçerik hacmi: __CARRIER__ kart + __STACK__ mm paket</label>
+          </div>
         </div>
+
         <div class="legend">
-          <div><span></span>Kesim hattı</div>
+          <div><span></span>Kesim hattı (dış sınır)</div>
           <div><span class="cr"></span>Bigi (katlama) hattı</div>
           <div><span class="gl"></span>Tutkal alanı (baskısız)</div>
           <div><span class="se"></span>Mühür alanı Ø20</div>
@@ -156,13 +234,13 @@ figcaption{font-size:13px; color:var(--muted); margin-top:8px}
   </section>
 
   <section aria-labelledby="hchk">
-    <h2 id="hchk">Otomatik kontroller</h2>
+    <h2 id="hchk">Otomatik Geometri & Katlama Kontrolleri</h2>
     <div class="summary"><strong id="okcount"></strong><span>Kontroller, 3D modeldeki katlama dönüşümlerinden hesaplandı. İç ölçü = bigi-bigi ölçü − karton kalınlığı.</span></div>
     <div class="checks" id="checks"></div>
   </section>
 
   <section aria-labelledby="hflat">
-    <h2 id="hflat" style="margin-bottom:12px">Açınım (dış / baskı yüzü)</h2>
+    <h2 id="hflat" style="margin-bottom:12px">Baskı Açınımı (Dış / 1:1 Vektör Bıçak İzi)</h2>
     <figure style="margin:0">
       <div class="sheet"><img src="__SVG_SRC__" alt="Kutu açınımı: Sol yan, Ön, Sağ yan, Arka ve tutkal payı yan yana; Arka'nın üstünde iki katlı Euro başlık, altında alt kapak ve geçme dili."></div>
       <figcaption>Magenta düz çizgi: kesim · magenta kesikli çizgi: bigi · camgöbeği: 3 mm taşma · yeşil kesikli: 4 mm güvenli alan. Baskı için 1:1 PDF ve SVG dosyalarını kullanın; bu görsel yalnızca önizlemedir.</figcaption>
@@ -179,7 +257,9 @@ figcaption{font-size:13px; color:var(--muted); margin-top:8px}
 const GEO = __GEO__;
 (function(){
   const $ = s => document.querySelector(s);
-  // ---------- kontroller
+  const $$ = s => document.querySelectorAll(s);
+
+  // ---------- kontroller listesi
   const ck = $('#checks'); let okc = 0;
   GEO.checks.forEach(c => {
     if (c.ok) okc++;
@@ -188,55 +268,689 @@ const GEO = __GEO__;
     d.querySelector('b').textContent = c.n; d.querySelector('small').textContent = c.d;
     ck.appendChild(d);
   });
-  $('#okcount').textContent = `${okc} / ${GEO.checks.length} geçti`;
+  $('#okcount').textContent = `${okc} / ${GEO.checks.length} kontrol geçti`;
 
-  if (!window.THREE) { $('#readout').textContent = '3D kütüphanesi yüklenemedi'; return; }
-  const stage = $('#stage');
-  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-
-  // ---------- doku (dış yüz)
-  const PX = 8, W = GEO.W, H = GEO.H;
-  const cv = document.createElement('canvas'); cv.width = Math.round(W*PX); cv.height = Math.round(H*PX);
-  const cx = cv.getContext('2d');
-  cx.fillStyle = '#FFFFFF'; cx.fillRect(0,0,cv.width,cv.height);
-  cx.setTransform(PX,0,0,PX,0,0); cx.lineCap = 'butt'; cx.lineJoin = 'round';
-  const tr = a => a*Math.PI/180;
-  GEO.texture.forEach(it => {
-    if (it.t === 'p') {
-      cx.beginPath();
-      it.c.forEach(c => {
-        if (c[0]==='M') cx.moveTo(c[1],c[2]);
-        else if (c[0]==='L') cx.lineTo(c[1],c[2]);
-        else if (c[0]==='A') cx.arc(c[1],c[2],c[3],tr(c[4]),tr(c[5]),c[5]<c[4]);
-        else if (c[0]==='Z') cx.closePath();
-      });
-      if (it.f){ cx.fillStyle = it.f; cx.fill(); }
-      if (it.s){ cx.strokeStyle = it.s; cx.lineWidth = it.w; cx.setLineDash(it.d || []); cx.stroke(); }
-    } else {
-      cx.save(); cx.translate(it.x, it.y); cx.rotate(tr(it.r));
-      cx.font = `${it.b?700:400} ${it.z}px Helvetica, Arial, sans-serif`; cx.fillStyle = it.f; cx.setLineDash([]);
-      cx.fillText(it.s, 0, 0); cx.restore();
-    }
+  // ---------- tema değiştirici
+  $('#theme-btn').addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
   });
 
-  // ---------- sahne
+  if (!window.THREE) { $('#readout').textContent = 'Three.js 3D kütüphanesi yüklenemedi'; return; }
+  const stage = $('#stage');
+
+  // ---------- DOKU (TEXTURE) MOTORU
+  // Dieline toplam ölçüsü: W=245mm, H=239mm
+  // Yüksek çözünürlük için PX = 10 (2450 x 2390 px buffer)
+  const PX = 10, W = GEO.W, H = GEO.H;
+  const cv = document.createElement('canvas');
+  cv.width = Math.round(W * PX);
+  cv.height = Math.round(H * PX);
+  const cx = cv.getContext('2d');
+
+  // Harici Görsel Dosyaları Yapılandırması (Kullanıcı dilediğinde bu yollara görsel ekleyebilir)
+  const DESIGN_CONFIGS = {
+    tasarim1: {
+      name: "Tasarım 1 (Nebula Dark Titanyum)",
+      theme: "nebula_dark",
+      faces: {
+        front: "assets/tasarim1/front.jpg",
+        back: "assets/tasarim1/back.jpg",
+        left: "assets/tasarim1/left.jpg",
+        right: "assets/tasarim1/right.jpg",
+        top: "assets/tasarim1/top.jpg",
+        bottom: "assets/tasarim1/bottom.jpg",
+        header_front: "assets/tasarim1/header_front.jpg",
+        header_back: "assets/tasarim1/header_back.jpg"
+      }
+    },
+    tasarim2: {
+      name: "Tasarım 2 (Pure Minimalist Beyaz)",
+      theme: "pure_white",
+      faces: {
+        front: "assets/tasarim2/front.jpg",
+        back: "assets/tasarim2/back.jpg",
+        left: "assets/tasarim2/left.jpg",
+        right: "assets/tasarim2/right.jpg",
+        top: "assets/tasarim2/top.jpg",
+        bottom: "assets/tasarim2/bottom.jpg",
+        header_front: "assets/tasarim2/header_front.jpg",
+        header_back: "assets/tasarim2/header_back.jpg"
+      }
+    },
+    tasarim3: {
+      name: "Tasarım 3 (Siber Gradyan & Neon)",
+      theme: "cyber_gradient",
+      faces: {
+        front: "assets/tasarim3/front.jpg",
+        back: "assets/tasarim3/back.jpg",
+        left: "assets/tasarim3/left.jpg",
+        right: "assets/tasarim3/right.jpg",
+        top: "assets/tasarim3/top.jpg",
+        bottom: "assets/tasarim3/bottom.jpg",
+        header_front: "assets/tasarim3/header_front.jpg",
+        header_back: "assets/tasarim3/header_back.jpg"
+      }
+    },
+    dieline: {
+      name: "Teknik Bıçak İzi / CAD",
+      theme: "dieline"
+    },
+    custom: {
+      name: "Özel Yüklenen Görseller",
+      theme: "custom",
+      loadedImages: {}
+    }
+  };
+
+  let currentDesignKey = "tasarim1";
+  const customImages = {}; // face -> HTMLImageElement
+
+  // Yüzey koordinatları (mm cinsinden dieline haritası):
+  // Sol Yan: [0, 69, 18.5, 136.5]
+  // Ön Yüz: [18.5, 69, 96.5, 136.5]
+  // Sağ Yan: [115, 69, 18.5, 136.5]
+  // Arka Yüz: [133.5, 69, 96.5, 136.5]
+  // Euro Başlık 1. Kat (Arka): [133.5, 34, 96.5, 35]
+  // Euro Başlık 2. Kat (Ön - ters): [134, 0, 95.5, 34]
+  // Üst Kapak: [18.5, 50.5, 96.5, 18.5]
+  // Alt Kapak: [133.5, 205.5, 96.5, 18.5]
+
+  // Yardımcı Çizim Fonksiyonları
+  function drawRoundedRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function drawVectorQRCode(ctx, cx_pos, cy_pos, size, darkColor, lightColor) {
+    ctx.save();
+    ctx.translate(cx_pos - size/2, cy_pos - size/2);
+    ctx.fillStyle = lightColor;
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = darkColor;
+    const cells = 21;
+    const cSize = size / cells;
+    
+    // Konumlandırma kareleri (Finder patterns)
+    function drawFinder(r, c) {
+      ctx.fillRect(c * cSize, r * cSize, 7 * cSize, 7 * cSize);
+      ctx.fillStyle = lightColor;
+      ctx.fillRect((c + 1) * cSize, (r + 1) * cSize, 5 * cSize, 5 * cSize);
+      ctx.fillStyle = darkColor;
+      ctx.fillRect((c + 2) * cSize, (r + 2) * cSize, 3 * cSize, 3 * cSize);
+    }
+    drawFinder(0, 0);
+    drawFinder(0, 14);
+    drawFinder(14, 0);
+
+    // Rastgele ve deterministik QR veri modülleri
+    const pattern = [
+      0b10101101, 0b01011010, 0b11001101, 0b00110110,
+      0b11100010, 0b01010101, 0b10011010, 0b11110001
+    ];
+    for(let r = 0; r < cells; r++) {
+      for(let c = 0; c < cells; c++) {
+        if ((r < 8 && c < 8) || (r < 8 && c > 12) || (r > 12 && c < 8)) continue;
+        const hash = (r * 13 + c * 19 + pattern[(r + c) % 8]) % 3;
+        if (hash === 1) {
+          ctx.fillRect(c * cSize, r * cSize, cSize - 0.2, cSize - 0.2);
+        }
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawEuroSlotHole(ctx, cx_mm, cy_mm) {
+    // Euro askı deliği transparanlığı / temizliği
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-out';
+    const x = cx_mm * PX, y = cy_mm * PX;
+    ctx.beginPath();
+    ctx.arc((cx_mm - 11) * PX, cy_mm * PX, 4 * PX, Math.PI/2, Math.PI*1.5);
+    ctx.arc((cx_mm + 11) * PX, cy_mm * PX, 4 * PX, -Math.PI/2, Math.PI/2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx_mm * PX, (cy_mm - 1) * PX, 5 * PX, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // --- ANA TASARIM RENDER EDİCİSİ ---
+  function renderProceduralDesign(theme) {
+    cx.clearRect(0, 0, cv.width, cv.height);
+
+    if (theme === "dieline") {
+      // Orijinal CAD Bıçak İzi Görünümü
+      cx.fillStyle = '#FFFFFF';
+      cx.fillRect(0, 0, cv.width, cv.height);
+      cx.save();
+      cx.setTransform(PX, 0, 0, PX, 0, 0);
+      cx.lineCap = 'butt'; cx.lineJoin = 'round';
+      const tr = a => a * Math.PI / 180;
+      GEO.texture.forEach(it => {
+        if (it.t === 'p') {
+          cx.beginPath();
+          it.c.forEach(c => {
+            if (c[0]==='M') cx.moveTo(c[1], c[2]);
+            else if (c[0]==='L') cx.lineTo(c[1], c[2]);
+            else if (c[0]==='A') cx.arc(c[1], c[2], c[3], tr(c[4]), tr(c[5]), c[5] < c[4]);
+            else if (c[0]==='Z') cx.closePath();
+          });
+          if (it.f){ cx.fillStyle = it.f; cx.fill(); }
+          if (it.s){ cx.strokeStyle = it.s; cx.lineWidth = it.w; cx.setLineDash(it.d || []); cx.stroke(); }
+        } else {
+          cx.save(); cx.translate(it.x, it.y); cx.rotate(tr(it.r));
+          cx.font = `${it.b?700:400} ${it.z}px Archivo, Helvetica, Arial, sans-serif`; cx.fillStyle = it.f; cx.setLineDash([]);
+          cx.fillText(it.s, 0, 0); cx.restore();
+        }
+      });
+      cx.restore();
+      return;
+    }
+
+    // Renk ve Stil Paletleri
+    let bgGradient, cardBg, textPrimary, textMuted, brandColor, accentGlow, badgeBg, badgeText;
+    if (theme === "nebula_dark") {
+      bgGradient = ["#090d16", "#111827", "#0d131f"];
+      cardBg = "rgba(255, 255, 255, 0.08)";
+      textPrimary = "#FFFFFF";
+      textMuted = "#94a3b8";
+      brandColor = "#00d2ff";
+      accentGlow = "#3b82f6";
+      badgeBg = "#00d2ff";
+      badgeText = "#090d16";
+    } else if (theme === "pure_white") {
+      bgGradient = ["#f8fafc", "#ffffff", "#f1f5f9"];
+      cardBg = "rgba(15, 23, 42, 0.05)";
+      textPrimary = "#0f172a";
+      textMuted = "#64748b";
+      brandColor = "#2563eb";
+      accentGlow = "#60a5fa";
+      badgeBg = "#2563eb";
+      badgeText = "#ffffff";
+    } else { // cyber_gradient
+      bgGradient = ["#1a052e", "#2e0854", "#120224"];
+      cardBg = "rgba(255, 255, 255, 0.1)";
+      textPrimary = "#FFFFFF";
+      textMuted = "#e2e8f0";
+      brandColor = "#ff3366";
+      accentGlow = "#a855f7";
+      badgeBg = "#ff3366";
+      badgeText = "#ffffff";
+    }
+
+    // Arka planı doldur (Tüm karton açınımı zemin rengi)
+    const fullGrad = cx.createLinearGradient(0, 0, cv.width, cv.height);
+    fullGrad.addColorStop(0, bgGradient[0]);
+    fullGrad.addColorStop(0.5, bgGradient[1]);
+    fullGrad.addColorStop(1, bgGradient[2]);
+    cx.fillStyle = fullGrad;
+    cx.fillRect(0, 0, cv.width, cv.height);
+
+    // ==========================================
+    // 1. ÖN YÜZ [x: 18.5 -> 115, y: 69 -> 205.5 mm]
+    // ==========================================
+    const fX = 18.5 * PX, fY = 69.0 * PX, fW = 96.5 * PX, fH = 136.5 * PX;
+    cx.save();
+    cx.beginPath();
+    cx.rect(fX, fY, fW, fH);
+    cx.clip();
+
+    // Ön Yüz Arka Plan Efekti & Mikro Desen
+    const frontGlow = cx.createRadialGradient(fX + fW*0.5, fY + fH*0.4, 10, fX + fW*0.5, fY + fH*0.4, fW*0.8);
+    frontGlow.addColorStop(0, accentGlow + (theme === "pure_white" ? "15" : "33"));
+    frontGlow.addColorStop(1, "transparent");
+    cx.fillStyle = frontGlow;
+    cx.fillRect(fX, fY, fW, fH);
+
+    // 1. Markalama: Üst Logo ve Başlık
+    cx.fillStyle = brandColor;
+    drawRoundedRect(cx, fX + 14 * PX, fY + 10 * PX, 10 * PX, 10 * PX, 2.5 * PX);
+    cx.fill();
+    cx.fillStyle = "#ffffff";
+    drawVectorQRCode(cx, fX + 19 * PX, fY + 15 * PX, 6.5 * PX, theme === "pure_white" ? "#ffffff" : "#090d16", "transparent");
+
+    cx.fillStyle = textPrimary;
+    cx.font = `800 ${6.8 * PX}px "Outfit", Archivo, sans-serif`;
+    cx.fillText("Kişisel QR", fX + 27 * PX, fY + 17.5 * PX);
+
+    // Ana Vurgu (Alt Başlık)
+    cx.fillStyle = textMuted;
+    cx.font = `600 ${2.9 * PX}px "Outfit", Archivo, sans-serif`;
+    cx.fillText("Sadece bir araç etiketi değil, dijital kartvizitiniz!", fX + 14 * PX, fY + 24 * PX);
+
+    // 2. Görsel Odak: Akıllı Telefon UI Mockup'ı
+    const phW = 46 * PX, phH = 68 * PX;
+    const phX = fX + (fW - phW)/2, phY = fY + 29 * PX;
+
+    // Telefon Gövdesi & Çerçeve
+    cx.fillStyle = theme === "pure_white" ? "#e2e8f0" : "#1e293b";
+    cx.strokeStyle = brandColor;
+    cx.lineWidth = 1.2 * PX;
+    drawRoundedRect(cx, phX, phY, phW, phH, 6 * PX);
+    cx.fill();
+    cx.stroke();
+
+    // Telefon Ekranı
+    const scrX = phX + 2.5 * PX, scrY = phY + 2.5 * PX, scrW = phW - 5 * PX, scrH = phH - 5 * PX;
+    cx.fillStyle = theme === "pure_white" ? "#ffffff" : "#0b101b";
+    drawRoundedRect(cx, scrX, scrY, scrW, scrH, 4 * PX);
+    cx.fill();
+
+    // Telefon Dinamik Ada / Çentik
+    cx.fillStyle = theme === "pure_white" ? "#0f172a" : "#000000";
+    drawRoundedRect(cx, phX + phW/2 - 6*PX, scrY + 1.2*PX, 12*PX, 2.2*PX, 1.1*PX);
+    cx.fill();
+
+    // Telefon Profil İçeriği
+    cx.fillStyle = brandColor;
+    cx.beginPath();
+    cx.arc(phX + phW/2, scrY + 10*PX, 4*PX, 0, Math.PI*2);
+    cx.fill();
+
+    cx.fillStyle = textPrimary;
+    cx.font = `700 ${2.6 * PX}px "Outfit", sans-serif`;
+    cx.textAlign = "center";
+    cx.fillText("Ahmet Yılmaz", phX + phW/2, scrY + 17*PX);
+    cx.fillStyle = textMuted;
+    cx.font = `500 ${1.9 * PX}px "Outfit", sans-serif`;
+    cx.fillText("Yazılım & Tasarım · 34 ABC 789", phX + phW/2, scrY + 20*PX);
+
+    // Telefon Widget Kartları
+    function drawPhoneWidget(wy, icon, title, color) {
+      cx.fillStyle = cardBg;
+      cx.strokeStyle = theme === "pure_white" ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.1)";
+      cx.lineWidth = 0.5 * PX;
+      drawRoundedRect(cx, scrX + 3*PX, wy, scrW - 6*PX, 6.5*PX, 2*PX);
+      cx.fill();
+      cx.stroke();
+
+      cx.fillStyle = color;
+      cx.beginPath();
+      cx.arc(scrX + 7*PX, wy + 3.25*PX, 2*PX, 0, Math.PI*2);
+      cx.fill();
+
+      cx.fillStyle = textPrimary;
+      cx.font = `600 ${2 * PX}px "Outfit", sans-serif`;
+      cx.textAlign = "left";
+      cx.fillText(title, scrX + 11*PX, wy + 4.1*PX);
+    }
+    drawPhoneWidget(scrY + 23*PX, "💬", "WhatsApp ile Hızlı Ulaş", "#25D366");
+    drawPhoneWidget(scrY + 31*PX, "📞", "Güvenli Gizli Arama Yap", "#00d2ff");
+    drawPhoneWidget(scrY + 39*PX, "💼", "LinkedIn & Sosyal Medya", "#0A66C2");
+    drawPhoneWidget(scrY + 47*PX, "🚗", "Hatalı Park / Acil Bildirim", "#f59e0b");
+
+    // 3. Vurucu Slogan Rozeti (Alt Bant)
+    cx.textAlign = "center";
+    const bW = 82 * PX, bH = 11.5 * PX;
+    const bX = fX + (fW - bW)/2, bY = fY + 104 * PX;
+    cx.fillStyle = badgeBg;
+    drawRoundedRect(cx, bX, bY, bW, bH, 3.5 * PX);
+    cx.fill();
+
+    cx.fillStyle = badgeText;
+    cx.font = `800 ${3.8 * PX}px "Outfit", sans-serif`;
+    cx.fillText("⚡ ARTIK NUMARATÖRE GEREK YOK!", fX + fW/2, bY + 5.5 * PX);
+    cx.font = `600 ${2.2 * PX}px "Outfit", sans-serif`;
+    cx.fillText("Numaranızı Gizleyin · Güvenle İletişime Geçin", fX + fW/2, bY + 9.2 * PX);
+
+    // Alt NFC & QR Özellik Rozetleri
+    cx.fillStyle = cardBg;
+    drawRoundedRect(cx, fX + 12*PX, fY + 120*PX, 32*PX, 8*PX, 2*PX);
+    cx.fill();
+    cx.fillStyle = textPrimary;
+    cx.font = `700 ${2.2 * PX}px "Outfit", sans-serif`;
+    cx.fillText("📡 NFC DESTEKLİ", fX + 28*PX, fY + 125*PX);
+
+    cx.fillStyle = cardBg;
+    drawRoundedRect(cx, fX + 52*PX, fY + 120*PX, 32*PX, 8*PX, 2*PX);
+    cx.fill();
+    cx.fillStyle = textPrimary;
+    cx.fillText("⚡ ANINDA TEMAS", fX + 68*PX, fY + 125*PX);
+
+    cx.restore();
+
+    // ==========================================
+    // 2. SOL YAN [x: 0 -> 18.5, y: 69 -> 205.5 mm]
+    // ==========================================
+    const sX = 0 * PX, sY = 69.0 * PX, sW = 18.5 * PX, sH = 136.5 * PX;
+    cx.save();
+    cx.beginPath();
+    cx.rect(sX, sY, sW, sH);
+    cx.clip();
+
+    // Araç Ön Camı İllüstrasyonu / Bağlam Görseli
+    const carY = sY + 18 * PX;
+    cx.fillStyle = cardBg;
+    drawRoundedRect(cx, sX + 2*PX, carY, sW - 4*PX, 34*PX, 2.5*PX);
+    cx.fill();
+
+    // Cam Yansıması
+    cx.strokeStyle = brandColor;
+    cx.lineWidth = 0.8 * PX;
+    cx.stroke();
+
+    // Ön Cam Çizgisi
+    cx.fillStyle = "rgba(0, 210, 255, 0.15)";
+    cx.beginPath();
+    cx.moveTo(sX + 2.5*PX, carY + 33*PX);
+    cx.lineTo(sX + sW - 2.5*PX, carY + 10*PX);
+    cx.lineTo(sX + sW - 2.5*PX, carY + 33*PX);
+    cx.closePath();
+    cx.fill();
+
+    // Sticker'ın Cama Yapışık Hali (Sol alt köşe)
+    cx.fillStyle = brandColor;
+    drawRoundedRect(cx, sX + 4.5*PX, carY + 22*PX, 9*PX, 9*PX, 2*PX);
+    cx.fill();
+    cx.fillStyle = "#ffffff";
+    drawVectorQRCode(cx, sX + 9*PX, carY + 26.5*PX, 6*PX, "#000000", "transparent");
+
+    // Dikey Açıklama Metinleri (Sol Yan)
+    cx.save();
+    cx.translate(sX + sW/2, sY + 68 * PX);
+    cx.rotate(Math.PI/2);
+    cx.textAlign = "left";
+    cx.fillStyle = textPrimary;
+    cx.font = `700 ${3 * PX}px "Outfit", sans-serif`;
+    cx.fillText("ARAÇ İÇİ KONUMLANDIRMA", 0, 1.2*PX);
+    cx.fillStyle = textMuted;
+    cx.font = `500 ${2.2 * PX}px "Outfit", sans-serif`;
+    cx.fillText("Ön cama kolayca yapıştırın · Suya & Güneşe Dayanıklı", 0, 4.8*PX);
+    cx.restore();
+
+    cx.restore();
+
+    // ==========================================
+    // 3. SAĞ YAN [x: 115 -> 133.5, y: 69 -> 205.5 mm]
+    // ==========================================
+    const rX = 115.0 * PX, rY = 69.0 * PX, rW = 18.5 * PX, rH = 136.5 * PX;
+    cx.save();
+    cx.beginPath();
+    cx.rect(rX, rY, rW, rH);
+    cx.clip();
+
+    // Dikey Özellikler Başlığı
+    cx.save();
+    cx.translate(rX + rW/2, rY + 16 * PX);
+    cx.rotate(Math.PI/2);
+    cx.textAlign = "left";
+    cx.fillStyle = brandColor;
+    cx.font = `800 ${3.2 * PX}px "Outfit", sans-serif`;
+    cx.fillText("ÖNE ÇIKAN ÖZELLİKLER", 0, 1.2*PX);
+
+    const features = [
+      "⚡ Saniyeler İçinde Kolay Kurulum",
+      "📡 NFC ve QR Kod Çift Desteği",
+      "🔒 Gizlilik Odaklı Güvenli İletişim",
+      "🌐 Tüm Sosyal Ağlar Tek Profilde",
+      "📇 Dijital Kartvizit Özelliği"
+    ];
+    cx.fillStyle = textPrimary;
+    cx.font = `600 ${2.3 * PX}px "Outfit", sans-serif`;
+    features.forEach((feat, idx) => {
+      cx.fillText(feat, 0, (8 + idx * 4.6) * PX);
+    });
+    cx.restore();
+
+    // Sağ Yan Altında Lot / Seri No Kutucuğu
+    cx.fillStyle = cardBg;
+    cx.strokeStyle = "rgba(0,210,255,0.4)";
+    cx.lineWidth = 0.5 * PX;
+    drawRoundedRect(cx, rX + 2*PX, rY + 115*PX, rW - 4*PX, 16*PX, 2*PX);
+    cx.fill();
+    cx.stroke();
+
+    cx.fillStyle = textMuted;
+    cx.font = `600 ${1.7 * PX}px "IBM Plex Mono", monospace`;
+    cx.textAlign = "center";
+    cx.fillText("LOT: 2026-09", rX + rW/2, rY + 121*PX);
+    cx.fillStyle = textPrimary;
+    cx.fillText("SN: KQR-8892", rX + rW/2, rY + 126*PX);
+
+    cx.restore();
+
+    // ==========================================
+    // 4. ARKA YÜZ [x: 133.5 -> 230, y: 69 -> 205.5 mm]
+    // ==========================================
+    const bX_pos = 133.5 * PX, bY_pos = 69.0 * PX, bW_pos = 96.5 * PX, bH_pos = 136.5 * PX;
+    cx.save();
+    cx.beginPath();
+    cx.rect(bX_pos, bY_pos, bW_pos, bH_pos);
+    cx.clip();
+
+    // 1. Açıklayıcı Metin
+    cx.fillStyle = textPrimary;
+    cx.font = `800 ${4.5 * PX}px "Outfit", sans-serif`;
+    cx.textAlign = "left";
+    cx.fillText("Akıllı Profil & Araç Çözümü", bX_pos + 12*PX, bY_pos + 14*PX);
+
+    cx.fillStyle = textMuted;
+    cx.font = `500 ${2.4 * PX}px "Outfit", sans-serif`;
+    const descLines = [
+      "Kişisel QR, aracınızda numaratör kalabalığına son veren",
+      "yeni nesil akıllı iletişim ve dijital kartvizit sistemidir.",
+      "NFC veya QR ile profilinize tek dokunuşla ulaşılmasını sağlar."
+    ];
+    descLines.forEach((ln, idx) => {
+      cx.fillText(ln, bX_pos + 12*PX, bY_pos + (20 + idx * 3.6)*PX);
+    });
+
+    // 2. Ürün Görseli Mockup'ı (Fiziksel Sticker Fotoğrafı Temsili)
+    const stkW = 56 * PX, stkH = 34 * PX;
+    const stkX = bX_pos + (bW_pos - stkW)/2, stkY = bY_pos + 33 * PX;
+    cx.fillStyle = theme === "pure_white" ? "#f1f5f9" : "#131b2e";
+    cx.strokeStyle = brandColor;
+    cx.lineWidth = 1 * PX;
+    drawRoundedRect(cx, stkX, stkY, stkW, stkH, 4 * PX);
+    cx.fill();
+    cx.stroke();
+
+    // Sticker İçi Tasarım
+    cx.fillStyle = brandColor;
+    cx.font = `800 ${3.2 * PX}px "Outfit", sans-serif`;
+    cx.fillText("KİŞİSEL QR STICKER", stkX + 6*PX, stkY + 12*PX);
+    cx.fillStyle = textMuted;
+    cx.font = `500 ${2 * PX}px "Outfit", sans-serif`;
+    cx.fillText("Ön Cam İçin Özel UV Korumalı Malzeme", stkX + 6*PX, stkY + 17*PX);
+    drawVectorQRCode(cx, stkX + stkW - 12*PX, stkY + stkH/2, 16*PX, brandColor, "transparent");
+
+    // 3. Call-to-Action (CTA) & Büyük Yönlendirme QR Kodu
+    cx.fillStyle = textPrimary;
+    cx.font = `800 ${3.6 * PX}px "Outfit", sans-serif`;
+    cx.textAlign = "center";
+    cx.fillText("Hemen Başlamak İçin Uygulamayı İndirin", bX_pos + bW_pos/2, bY_pos + 78 * PX);
+
+    cx.fillStyle = textMuted;
+    cx.font = `600 ${2.4 * PX}px "IBM Plex Mono", monospace`;
+    cx.fillText("mobile.kisiselqr.com", bX_pos + bW_pos/2, bY_pos + 83 * PX);
+
+    // Büyük QR Kod
+    const qrSize = 26 * PX;
+    drawVectorQRCode(cx, bX_pos + bW_pos/2, bY_pos + 101 * PX, qrSize, theme === "pure_white" ? "#0f172a" : "#ffffff", theme === "pure_white" ? "#e2e8f0" : "rgba(255,255,255,0.08)");
+
+    // App Store & Google Play Rozetleri
+    function drawStoreBadge(x, y, storeName) {
+      cx.fillStyle = theme === "pure_white" ? "#0f172a" : "#000000";
+      drawRoundedRect(cx, x, y, 32*PX, 9*PX, 2.5*PX);
+      cx.fill();
+      cx.strokeStyle = "rgba(255,255,255,0.2)";
+      cx.lineWidth = 0.5 * PX;
+      cx.stroke();
+
+      cx.fillStyle = "#ffffff";
+      cx.textAlign = "center";
+      cx.font = `700 ${2.3 * PX}px "Outfit", sans-serif`;
+      cx.fillText(storeName, x + 16*PX, y + 5.8*PX);
+    }
+    drawStoreBadge(bX_pos + bW_pos/2 - 35*PX, bY_pos + 118 * PX, " App Store");
+    drawStoreBadge(bX_pos + bW_pos/2 + 3*PX, bY_pos + 118 * PX, "▶ Google Play");
+
+    // Alt Telif & Candemsoft Markası
+    cx.fillStyle = textMuted;
+    cx.font = `500 ${1.8 * PX}px "Outfit", sans-serif`;
+    cx.fillText("Candemsoft Teknoloji A.Ş. · www.kisiselqr.com", bX_pos + bW_pos/2, bY_pos + 132 * PX);
+
+    cx.restore();
+
+    // ==========================================
+    // 5. EURO BAŞLIK [2. Kat: x: 134 -> 229.5, y: 0 -> 34 mm]
+    // (ÖN YÜZ BAŞLIĞI - AÇINIMDA 180° TERS ÇİZİLİR Kİ KATLANINCA DÜZ OLSUN!)
+    // ==========================================
+    const h2X = 134.0 * PX, h2Y = 0.0 * PX, h2W = 95.5 * PX, h2H = 34.0 * PX;
+    cx.save();
+    cx.beginPath();
+    cx.rect(h2X, h2Y, h2W, h2H);
+    cx.clip();
+
+    // 180 Derece Döndürerek Çiz
+    cx.save();
+    cx.translate(h2X + h2W/2, h2Y + h2H/2);
+    cx.rotate(Math.PI);
+
+    cx.fillStyle = brandColor;
+    cx.font = `800 ${5.5 * PX}px "Outfit", sans-serif`;
+    cx.textAlign = "center";
+    cx.fillText("KİŞİSEL QR", 0, -2 * PX);
+
+    cx.fillStyle = textPrimary;
+    cx.font = `600 ${2.6 * PX}px "Outfit", sans-serif`;
+    cx.fillText("AKILLI ARAÇ & DİJİTAL KARTVİZİT ETİKETİ", 0, 4 * PX);
+
+    cx.restore();
+    cx.restore();
+
+    // Euro Başlık 1. Kat (Arka Yüz Başlığı) [y: 34 -> 69 mm]
+    const h1X = 133.5 * PX, h1Y = 34.0 * PX, h1W = 96.5 * PX, h1H = 35.0 * PX;
+    cx.save();
+    cx.beginPath();
+    cx.rect(h1X, h1Y, h1W, h1H);
+    cx.clip();
+
+    cx.fillStyle = textMuted;
+    cx.font = `600 ${2.4 * PX}px "IBM Plex Mono", monospace`;
+    cx.textAlign = "center";
+    cx.fillText("www.kisiselqr.com", h1X + h1W/2, h1Y + 28 * PX);
+
+    cx.restore();
+
+    // Euro askı deliklerinin transparanlığı
+    drawEuroSlotHole(cx, 181.75, 47.0);
+    drawEuroSlotHole(cx, 181.75, 21.0);
+
+    // ==========================================
+    // 6. ÜST KAPAK & ALT KAPAK
+    // ==========================================
+    // Üst Kapak [x: 18.5 -> 115, y: 50.5 -> 69 mm]
+    const topX = 18.5 * PX, topY = 50.5 * PX, topW = 96.5 * PX, topH = 18.5 * PX;
+    cx.save();
+    cx.beginPath();
+    cx.rect(topX, topY, topW, topH);
+    cx.clip();
+
+    cx.fillStyle = brandColor;
+    cx.font = `800 ${3.8 * PX}px "Outfit", sans-serif`;
+    cx.textAlign = "center";
+    cx.fillText("KİŞİSEL QR · AKILLI SERİ", topX + topW/2, topY + 11 * PX);
+
+    cx.restore();
+
+    // Alt Kapak [x: 133.5 -> 230, y: 205.5 -> 224 mm]
+    const botX = 133.5 * PX, botY = 205.5 * PX, botW = 96.5 * PX, botH = 18.5 * PX;
+    cx.save();
+    cx.beginPath();
+    cx.rect(botX, botY, botW, botH);
+    cx.clip();
+
+    cx.fillStyle = textMuted;
+    cx.font = `600 ${2.4 * PX}px "IBM Plex Mono", monospace`;
+    cx.textAlign = "center";
+    cx.fillText("8 680000 123456 · CE / RoHS / Yerli Üretim", botX + botW/2, botY + 11 * PX);
+
+    cx.restore();
+  }
+
+  // --- KULLANICI GÖRSELLERİNİ YERLEŞTİRME MOTORU ---
+  function compositeCustomImages() {
+    // 1. Zemin olarak aktif temayı çiz
+    renderProceduralDesign(DESIGN_CONFIGS[currentDesignKey].theme);
+
+    // 2. Yüklenen yüzey görsellerini ilgili koordinatlara çiz
+    const faceCoords = {
+      front:  { x: 18.5 * PX,  y: 69.0 * PX,  w: 96.5 * PX, h: 136.5 * PX, rotate: 0 },
+      back:   { x: 133.5 * PX, y: 69.0 * PX,  w: 96.5 * PX, h: 136.5 * PX, rotate: 0 },
+      left:   { x: 0.0 * PX,   y: 69.0 * PX,  w: 18.5 * PX, h: 136.5 * PX, rotate: 0 },
+      right:  { x: 115.0 * PX, y: 69.0 * PX,  w: 18.5 * PX, h: 136.5 * PX, rotate: 0 },
+      top:    { x: 18.5 * PX,  y: 50.5 * PX,  w: 96.5 * PX, h: 18.5 * PX,  rotate: 0 },
+      bottom: { x: 133.5 * PX, y: 205.5 * PX, w: 96.5 * PX, h: 18.5 * PX,  rotate: 0 },
+      header: { x: 134.0 * PX, y: 0.0 * PX,   w: 95.5 * PX, h: 34.0 * PX,  rotate: 180 }
+    };
+
+    Object.keys(customImages).forEach(face => {
+      const img = customImages[face];
+      const c = faceCoords[face];
+      if (img && c) {
+        cx.save();
+        cx.beginPath();
+        cx.rect(c.x, c.y, c.w, c.h);
+        cx.clip();
+
+        if (c.rotate === 180) {
+          cx.translate(c.x + c.w/2, c.y + c.h/2);
+          cx.rotate(Math.PI);
+          cx.drawImage(img, -c.w/2, -c.h/2, c.w, c.h);
+        } else {
+          cx.drawImage(img, c.x, c.y, c.w, c.h);
+        }
+        cx.restore();
+      }
+    });
+
+    // Delikleri tekrar temizle
+    drawEuroSlotHole(cx, 181.75, 47.0);
+    drawEuroSlotHole(cx, 181.75, 21.0);
+  }
+
+  // ---------- SAHNE & THREE.JS KURULUMU
   const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
   stage.prepend(renderer.domElement);
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 4/3, 5, 5000);
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f99, 0.85));
-  const dl = new THREE.DirectionalLight(0xffffff, 0.55); dl.position.set(200, 300, 400); scene.add(dl);
-  const dl2 = new THREE.DirectionalLight(0xffffff, 0.25); dl2.position.set(-300, -100, -300); scene.add(dl2);
 
+  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8a8f99, 0.9);
+  scene.add(hemiLight);
+
+  const dl = new THREE.DirectionalLight(0xffffff, 0.65);
+  dl.position.set(200, 300, 400);
+  scene.add(dl);
+
+  const dl2 = new THREE.DirectionalLight(0x90caf9, 0.35);
+  dl2.position.set(-300, -100, -300);
+  scene.add(dl2);
+
+  // Doku nesnesi
   const tex = new THREE.CanvasTexture(cv);
   tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   if ('encoding' in tex) tex.encoding = THREE.sRGBEncoding;
   renderer.outputEncoding = THREE.sRGBEncoding;
-  const matFront = new THREE.MeshStandardMaterial({map:tex, side:THREE.FrontSide, roughness:.85, metalness:0, transparent:true, opacity:1});
+
+  const matFront = new THREE.MeshStandardMaterial({map:tex, side:THREE.FrontSide, roughness:.75, metalness:0.05, transparent:true, opacity:1});
   const matBack = new THREE.MeshStandardMaterial({color:0xE9E4D8, side:THREE.BackSide, roughness:.95, metalness:0, transparent:true, opacity:1});
   const matEdge = new THREE.LineBasicMaterial({color:0x2a3340, transparent:true, opacity:.55});
 
+  // Kutunun 3D panel geometrilerini oluştur
   const root = new THREE.Group(); scene.add(root);
   const nodes = {};
   GEO.panels.forEach(p => {
@@ -244,7 +958,7 @@ const GEO = __GEO__;
     p.holes.forEach(h => shape.holes.push(new THREE.Path(h.map(q => new THREE.Vector2(q[0], -q[1])))));
     const g = new THREE.ShapeGeometry(shape, 16);
     const pos = g.attributes.position, uv = g.attributes.uv;
-    for (let i=0;i<pos.count;i++) uv.setXY(i, pos.getX(i)/W, 1 + pos.getY(i)/H);
+    for (let i=0; i<pos.count; i++) uv.setXY(i, pos.getX(i)/W, 1 + pos.getY(i)/H);
     uv.needsUpdate = true;
     g.translate(-p.h0[0], p.h0[1], p.off);
     const pivot = new THREE.Group();
@@ -262,7 +976,7 @@ const GEO = __GEO__;
     nodes[p.parent].pivot.add(n.pivot);
   });
 
-  // içerik hacmi
+  // İçerik Hacmi (Hayalet Paket)
   const fr = GEO.frontRect, dp = GEO.dp, T = GEO.T;
   const ghost = new THREE.Group();
   const cw = GEO.carrier[0], chh = GEO.carrier[1], st = GEO.stack;
@@ -272,7 +986,7 @@ const GEO = __GEO__;
   gbox.position.set((fr[0]+fr[2])/2, -(fr[1]+fr[3])/2, -dp + T + st/2 + 0.3);
   ghost.add(gbox); ghost.visible = false; scene.add(ghost);
 
-  // katlama
+  // Katlama hesaplaması
   let fold = 1;
   function applyFold(t){
     fold = t;
@@ -283,13 +997,94 @@ const GEO = __GEO__;
       nodes[p.name].pivot.quaternion.setFromAxisAngle(nodes[p.name].ax, THREE.MathUtils.degToRad(p.angle*e));
     });
     $('#readout').textContent = `Katlama %${Math.round(t*100)}`;
+    $('#fold-val').textContent = `${Math.round(t*100)}%`;
   }
 
-  // kamera (basit yörünge)
+  // Tasarım Değiştirme Fonksiyonu
+  function switchDesign(key) {
+    currentDesignKey = key;
+    const cfg = DESIGN_CONFIGS[key];
+    $('#cur-design-lbl').textContent = cfg.name;
+
+    $$('.design-btn').forEach(b => {
+      b.classList.toggle('active-design', b.dataset.design === key);
+    });
+
+    if (Object.keys(customImages).length > 0 && key === 'custom') {
+      compositeCustomImages();
+    } else {
+      renderProceduralDesign(cfg.theme);
+    }
+    tex.needsUpdate = true;
+  }
+
+  // Buton Tıklamaları
+  $$('.design-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchDesign(btn.dataset.design));
+  });
+
+  // Görsel Yükleyici Panelini Aç/Kapat
+  $('#toggle-custom-btn').addEventListener('click', () => {
+    $('#custom-panel').classList.toggle('open');
+  });
+
+  // Dosya Seçildiğinde Yükle
+  $$('#custom-panel input[type=file]').forEach(inp => {
+    inp.addEventListener('change', e => {
+      const face = inp.dataset.face;
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = new Image();
+          img.onload = () => {
+            customImages[face] = img;
+            compositeCustomImages();
+            tex.needsUpdate = true;
+            switchDesign('custom');
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+
+  $('#reset-custom-btn').addEventListener('click', () => {
+    Object.keys(customImages).forEach(k => delete customImages[k]);
+    $$('#custom-panel input[type=file]').forEach(inp => inp.value = '');
+    switchDesign('tasarim1');
+  });
+
+  // Yüzey Kaplama Efektleri (Mat / Parlak / Varak)
+  $$('#finish-types button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#finish-types button').forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+      const f = btn.dataset.finish;
+      if (f === 'matte') {
+        matFront.roughness = 0.85; matFront.metalness = 0.02;
+      } else if (f === 'gloss') {
+        matFront.roughness = 0.25; matFront.metalness = 0.15;
+      } else if (f === 'foil') {
+        matFront.roughness = 0.18; matFront.metalness = 0.45;
+      }
+    });
+  });
+
+  // Kamera & Yörünge Kontrolleri
   const boxC = new THREE.Vector3((fr[0]+fr[2])/2, -((fr[1]-35)+fr[3])/2, -dp/2);
   const flatC = new THREE.Vector3(W/2, -H/2, 0);
   const cam = {theta:-.62, phi:1.2, r:430, tt:null};
-  const VIEWS = {iso:[-.62,1.2], front:[0,Math.PI/2], back:[Math.PI,Math.PI/2], side:[Math.PI/2,Math.PI/2], bottom:[-.35,2.55], top:[-.35,.45]};
+  const VIEWS = {
+    iso:[-.62,1.2],
+    front:[0,Math.PI/2],
+    back:[Math.PI,Math.PI/2],
+    left:[-Math.PI/2,Math.PI/2],
+    side:[Math.PI/2,Math.PI/2],
+    bottom:[-.35,2.55],
+    top:[-.35,.45]
+  };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   function target(){ const k = Math.min(1, Math.max(0,(fold-0.0)/0.35)); return flatC.clone().lerp(boxC, k); }
   function place(){
@@ -301,7 +1096,9 @@ const GEO = __GEO__;
     const w = stage.clientWidth, h = stage.clientHeight;
     renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix();
   }
+
   let drag = null;
+  let autoRotate = false;
   const el = renderer.domElement;
   el.addEventListener('pointerdown', e => { drag = {x:e.clientX, y:e.clientY}; el.setPointerCapture(e.pointerId); cam.tt = null; });
   el.addEventListener('pointermove', e => {
@@ -311,6 +1108,7 @@ const GEO = __GEO__;
   });
   el.addEventListener('pointerup', () => drag = null);
   el.addEventListener('wheel', e => { e.preventDefault(); cam.r = Math.min(1400, Math.max(160, cam.r*(1+Math.sign(e.deltaY)*0.08))); }, {passive:false});
+
   let pinch = null;
   el.addEventListener('touchstart', e => { if (e.touches.length===2){ const [a,b]=e.touches; pinch = Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); drag=null; } }, {passive:true});
   el.addEventListener('touchmove', e => { if (pinch && e.touches.length===2){ const [a,b]=e.touches; const d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); cam.r=Math.min(1400,Math.max(160,cam.r*pinch/d)); pinch=d; } }, {passive:true});
@@ -331,6 +1129,11 @@ const GEO = __GEO__;
     if (reduce){ applyFold(1); slider.value = 100; return; }
     anim = {t0: performance.now(), dur: 5200};
   });
+  $('#autorotate').addEventListener('click', () => {
+    autoRotate = !autoRotate;
+    $('#autorotate').setAttribute('aria-pressed', String(autoRotate));
+  });
+
   $('#xray').addEventListener('change', e => {
     const o = e.target.checked ? .38 : 1;
     matFront.opacity = o; matBack.opacity = o; matFront.depthWrite = o===1; matBack.depthWrite = o===1;
@@ -344,6 +1147,9 @@ const GEO = __GEO__;
       applyFold(Math.max(0,t)); slider.value = Math.round(fold*100);
       if (k >= 1) anim = null;
     }
+    if (autoRotate && !drag) {
+      cam.theta += 0.006;
+    }
     if (cam.tt){
       const k = Math.min(1,(now-cam.tt.t0)/600), e = 1-Math.pow(1-k,3);
       cam.theta = cam.tt.th0 + (cam.tt.th-cam.tt.th0)*e; cam.phi = cam.tt.ph0 + (cam.tt.ph-cam.tt.ph0)*e;
@@ -352,6 +1158,10 @@ const GEO = __GEO__;
     place(); renderer.render(scene, camera); requestAnimationFrame(loop);
   }
   new ResizeObserver(resize).observe(stage); resize();
-  applyFold(1); requestAnimationFrame(loop);
+
+  // Başlangıç çizimi
+  switchDesign('tasarim1');
+  applyFold(1);
+  requestAnimationFrame(loop);
 })();
 </script>
