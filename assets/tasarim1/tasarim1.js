@@ -137,32 +137,85 @@
     },
   };
 
-  // Karar verici olmayan, dekoratif QR benzeri desen (sticker illüstrasyonu için; okutulmaz)
-  function decoQR(ctx, x, y, s, fg, n) {
-    n = n || 17; const m = s / n; ctx.fillStyle = fg;
-    let seed = 7;
-    const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
-    const finder = (r0, c0) => {
-      ctx.fillRect(x + c0 * m, y + r0 * m, 7 * m, 7 * m);
-      ctx.save(); ctx.fillStyle = ctx.__bg || C.W; ctx.fillRect(x + (c0 + 1) * m, y + (r0 + 1) * m, 5 * m, 5 * m); ctx.restore();
-      ctx.fillRect(x + (c0 + 2) * m, y + (r0 + 2) * m, 3 * m, 3 * m);
-    };
-    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
-      const inF = (r < 8 && c < 8) || (r < 8 && c >= n - 8) || (r >= n - 8 && c < 8);
-      if (!inF && rnd() > 0.52) ctx.fillRect(x + c * m, y + r * m, m + 0.01, m + 0.01);
+  // Gerçek QR matrisi çizer (qr_kodlar.js): KQR_QR_APP = mobile.kisiselqr.com, KQR_QR_DEMO = demo profil
+  // Her satırdaki bitişik modüller tek dikdörtgen, tümü tek yol olarak doldurulur:
+  // ayrı ayrı fillRect kenar yumuşatma dikişi (ince beyaz çizgiler) bırakır.
+  function drawQR(ctx, Q, x, y, size, color) {
+    if (!Q) return;
+    const n = Q.rows.length, m = size / n;
+    ctx.beginPath();
+    Q.rows.forEach((row, r) => {
+      let k = 0;
+      while (k < n) {
+        if (row[k] !== '1') { k++; continue; }
+        let e = k; while (e < n && row[e] === '1') e++;
+        ctx.rect(x + k * m, y + r * m, (e - k) * m, m);
+        k = e;
+      }
+    });
+    ctx.fillStyle = color || C.K100; ctx.fill('nonzero');
+    return m;
+  }
+  function appQR(ctx, x, y, size) { return drawQR(ctx, window.KQR_QR_APP, x, y, size); }
+
+  // ------------------------------------------------------------ sticker (ürünün kendisi)
+  // Candemsoft'un ilettiği sticker görselinin birebir vektör kopyası (5:8, 50 × 80 mm).
+  // Ölçüler referans görselden piksel olarak çıkarıldı: 764 × 1244 birimlik yerel ızgara.
+  // İçindeki QR gerçek ve demo profile gider (KQR_QR_DEMO).
+  const STK = { W: 764, H: 1244, R: 112, OUT: 7, TOP: 43, SIDE: 34, CARD_B: 792, CARD_R: 90, CARD_S: 5,
+                YEL: 593, DIV0: 1142, DIV1: 1149, QX: 64, QY: 102, QS: 638,
+                L1: 895, L2: 987, L3: 1077, LW: 718, URL_B: 1209, URL_W: 447 };
+  const STK_FONT = 'Montserrat, "Arial Black", Arial, sans-serif';
+  function sticker(ctx, x, y, w, opts) {
+    opts = opts || {};
+    const h = w * 1.6;
+    ctx.save();
+    ctx.translate(x, y); ctx.scale(w / STK.W, h / STK.H);
+    const outer = () => rr(ctx, 0, 0, STK.W, STK.H, STK.R);
+    if (opts.edge) {            // koyu zeminde kesim kenarı seçilsin: ince açık kontur (sticker tasarımı değişmez)
+      ctx.save(); ctx.lineWidth = opts.edge; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; outer(); ctx.stroke(); ctx.restore();
     }
-    finder(0, 0); finder(0, n - 7); finder(n - 7, 0);
+    if (opts.shadow) {
+      ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.65)'; ctx.shadowBlur = opts.shadow; ctx.shadowOffsetY = opts.shadow * 0.35;
+      outer(); ctx.fillStyle = C.W; ctx.fill(); ctx.restore();
+    }
+    ctx.save(); outer(); ctx.clip();
+    ctx.fillStyle = C.W; ctx.fillRect(0, 0, STK.W, STK.H);
+    ctx.fillStyle = C.K100; ctx.fillRect(0, 0, STK.W, STK.YEL);                       // üst siyah çerçeve
+    ctx.fillStyle = C.Y; ctx.fillRect(0, STK.YEL, STK.W, STK.DIV0 - STK.YEL);          // sarı alan
+    ctx.fillStyle = C.K100; ctx.fillRect(0, STK.DIV0, STK.W, STK.DIV1 - STK.DIV0);     // ayırıcı çizgi
+    ctx.lineWidth = 2 * STK.OUT; ctx.strokeStyle = C.K100; outer(); ctx.stroke();       // dış kontur
+    ctx.restore();
+    // beyaz QR kartı (siyah ince kontur)
+    rr(ctx, STK.SIDE, STK.TOP, STK.W - 2 * STK.SIDE, STK.CARD_B - STK.TOP, STK.CARD_R);
+    ctx.fillStyle = C.W; ctx.fill(); ctx.lineWidth = STK.CARD_S; ctx.strokeStyle = C.K100; ctx.stroke();
+    drawQR(ctx, opts.qr === undefined ? window.KQR_QR_DEMO : opts.qr, STK.QX, STK.QY, STK.QS, C.K100);
+    // yazılar
+    ctx.fillStyle = C.K100; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    ctx.font = `800 100px ${STK_FONT}`;
+    const fs = 100 * STK.LW / ctx.measureText('KAREKODU OKUTUN').width;
+    ctx.font = `800 ${fs}px ${STK_FONT}`;
+    ctx.fillText('ARAÇ SAHİBİNE', STK.W / 2, STK.L1);
+    ctx.fillText('ULAŞMAK İÇİN', STK.W / 2, STK.L2);
+    ctx.fillText('KAREKODU OKUTUN', STK.W / 2, STK.L3);
+    ctx.font = `800 100px ${STK_FONT}`;
+    const us = 100 * STK.URL_W / ctx.measureText('www.kisiselqr.com').width;
+    ctx.font = `800 ${us}px ${STK_FONT}`;
+    ctx.fillText('www.kisiselqr.com', STK.W / 2, STK.URL_B);
+    ctx.restore();
+    return h;
   }
 
-  // Gerçek uygulama QR'ı (mobile.kisiselqr.com), beyaz zemin + 4 modül sessiz alan
-  function appQR(ctx, x, y, size) {
-    const Q = window.KQR_QR_APP; if (!Q) return;
-    const n = Q.rows.length, m = size / n;
-    ctx.fillStyle = C.K100;
-    Q.rows.forEach((row, r) => [...row].forEach((c, k) => {
-      if (c === '1') ctx.fillRect(x + k * m, y + r * m, m + 0.01, m + 0.01);
-    }));
-    return m;
+  // Telefon ekranı: demo profilin gerçek mobil ekran görüntüsü (kisiselqr.com/qr/071qydlb)
+  const BASE = (document.currentScript && document.currentScript.src || '').replace(/[^/]*$/, '');
+  let SCREEN = null;
+  function loadScreen() {
+    return new Promise(res => {
+      const im = new Image();
+      im.onload = () => { SCREEN = im; res(); };
+      im.onerror = () => res();
+      im.src = BASE + 'demo_profil_ekran.jpg';
+    });
   }
 
   // ------------------------------------------------------------ zeminler
@@ -203,42 +256,11 @@
     txt(ctx, 'QR', L + w1, 29.5, { size: ts, w: 900, color: C.Y });
     txt(ctx, 'Akıllı Araç Etiketi + Dijital Kartvizit', L, 35.2, { size: 9 * PT, w: 600, color: C.KB });
 
-    // Görsel alan: araç ön camının sol alt köşesi (çizgisel)
+    // Görsel alan: araç ön camının sol alt köşesi + cama yapışık sticker
     const vTop = 39, vBot = h * 2 / 3;
     ctx.save();
     ctx.beginPath(); ctx.rect(-BLEED, vTop, w + 2 * BLEED, vBot - vTop); ctx.clip();
-    // cam
-    const gx0 = 7, gyB = vBot - 12;               // A-sütunu üst noktası, cam alt kenarı
-    ctx.beginPath();
-    ctx.moveTo(gx0, vTop - 1); ctx.lineTo(w + BLEED, vTop - 1); ctx.lineTo(w + BLEED, gyB - 3.5);
-    ctx.quadraticCurveTo(w * 0.55, gyB - 1.2, 24, gyB);
-    ctx.quadraticCurveTo(19.5, gyB + 0.2, 18.4, gyB - 3.2);
-    ctx.closePath();
-    const grd = ctx.createLinearGradient(0, vTop, w, vBot);
-    grd.addColorStop(0, '#171717'); grd.addColorStop(1, '#0E0E0E');
-    ctx.fillStyle = grd; ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 0.3; ctx.stroke();
-    // A-sütunu iç çizgisi ve torpido
-    ctx.strokeStyle = C.A; ctx.lineWidth = 0.9;
-    ctx.beginPath(); ctx.moveTo(gx0 - 3.2, vTop - 1); ctx.lineTo(15.2, gyB - 1.5); ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 0.25;
-    ctx.beginPath(); ctx.moveTo(-BLEED, gyB + 4.2); ctx.quadraticCurveTo(w * 0.5, gyB + 2.6, w + BLEED, gyB + 1.2); ctx.stroke();
-    // cam yansımaları
-    ctx.strokeStyle = C.A; ctx.lineWidth = 0.6;
-    [[40, vTop + 2, 58, vTop + 16], [46, vTop + 2, 68, vTop + 20]].forEach(s => {
-      ctx.beginPath(); ctx.moveTo(s[0], s[1]); ctx.lineTo(s[2], s[3]); ctx.stroke();
-    });
-    // cama yapışık sticker (5:8), sol alt köşe – sarı vurgu (lokal UV lak)
-    const sw = 9, sh = 14.4, sx = 22.5, sy = gyB - sh - 3.2;
-    ctx.save();
-    ctx.translate(sx + sw / 2, sy + sh / 2); ctx.rotate(-0.035);
-    ctx.strokeStyle = 'rgba(253,211,9,0.30)'; ctx.lineWidth = 1.6; rr(ctx, -sw / 2 - 0.4, -sh / 2 - 0.4, sw + 0.8, sh + 0.8, 1.2); ctx.stroke();
-    ctx.fillStyle = C.Y; rr(ctx, -sw / 2, -sh / 2, sw, sh, 0.9); ctx.fill();
-    ctx.fillStyle = C.K; rr(ctx, -sw / 2 + 0.9, -sh / 2 + 0.9, sw - 1.8, sw - 1.8, 0.4); ctx.fill();
-    ctx.__bg = C.K; decoQR(ctx, -sw / 2 + 1.6, -sh / 2 + 1.6, sw - 3.2, C.Y, 13); ctx.__bg = null;
-    txt(ctx, 'Kişisel QR', 0, sh / 2 - 2.6, { size: 1.35, w: 800, color: C.K100, align: 'center' });
-    txt(ctx, 'Okut, bana ulaş', 0, sh / 2 - 1.1, { size: 0.95, w: 600, color: C.K100, align: 'center' });
-    ctx.restore();
+    (window.KQR_CAM_OVERRIDE || windshield)(ctx, { w, vTop, vBot, px, BLEED, SAFE, C, PT, rr, txt, sticker });
     ctx.restore();
 
     // Telefon mockup (~28 × 56 mm), sağa yakın; ekran lokal UV lak
@@ -265,6 +287,182 @@
     // En alt 10 mm: mühür bandı – yalnızca zemin rengi
   }
 
+  // Ön cam illüstrasyonu: aracın önden sade çizgisel görünümü (tavan, ön cam, iç dikiz aynası,
+  // yan aynalar, kaput, farlar, ızgara); sticker camın sol alt köşesinde, sarı odak köşeleriyle.
+  // (3 adaylı tasarım turundan seçildi.) o: { w, vTop, vBot, px, BLEED, SAFE, C, PT, rr, txt, sticker }
+  function windshield(ctx, o) {
+    const C = o.C;
+    const cx = 42;                       // araç eksen x
+    const M = x => 2 * cx - x;           // sağa aynala
+
+    function line(a, b, c, d) { ctx.beginPath(); ctx.moveTo(a, b); ctx.lineTo(c, d); ctx.stroke(); }
+    function both(fn) { fn(x => x); fn(M); }
+
+    ctx.save();
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+
+    // ---------------------------------------------------------------- gövde
+    // kabin (tavan + A sütunları)
+    ctx.beginPath();
+    ctx.moveTo(cx - 22.6, 44.2);
+    ctx.quadraticCurveTo(cx, 41.2, cx + 22.6, 44.2);
+    ctx.lineTo(cx + 30.6, 66.6);
+    ctx.lineTo(cx - 30.6, 66.6);
+    ctx.closePath();
+    ctx.fillStyle = C.K; ctx.fill();
+
+    // alt gövde (omuz → tampon)
+    ctx.beginPath();
+    ctx.moveTo(cx - 30.6, 66.4);
+    ctx.quadraticCurveTo(cx - 34.2, 67.2, cx - 34.8, 70.2);
+    ctx.lineTo(cx - 35.3, 80.5);
+    ctx.quadraticCurveTo(cx - 35.3, 86.4, cx - 31, 86.8);
+    ctx.lineTo(cx + 31, 86.8);
+    ctx.quadraticCurveTo(cx + 35.3, 86.4, cx + 35.3, 80.5);
+    ctx.lineTo(cx + 34.8, 70.2);
+    ctx.quadraticCurveTo(cx + 34.2, 67.2, cx + 30.6, 66.4);
+    ctx.closePath();
+    ctx.fillStyle = C.K; ctx.fill();
+    const gb = ctx.createLinearGradient(0, 66, 0, 88);
+    gb.addColorStop(0, 'rgba(42,42,42,0.55)'); gb.addColorStop(1, 'rgba(42,42,42,0)');
+    ctx.fillStyle = gb; ctx.fill();
+
+    // gövde konturu
+    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.4;
+    ctx.beginPath();
+    ctx.moveTo(cx - 30.6, 66.6);
+    ctx.quadraticCurveTo(cx - 34.2, 67.2, cx - 34.8, 70.2);
+    ctx.lineTo(cx - 35.3, 80.5);
+    ctx.quadraticCurveTo(cx - 35.3, 86.4, cx - 31, 86.8);
+    ctx.lineTo(cx + 31, 86.8);
+    ctx.quadraticCurveTo(cx + 35.3, 86.4, cx + 35.3, 80.5);
+    ctx.lineTo(cx + 34.8, 70.2);
+    ctx.quadraticCurveTo(cx + 34.2, 67.2, cx + 30.6, 66.6);
+    ctx.stroke();
+    // kabin konturu (tavan + A sütunu dışı)
+    ctx.beginPath();
+    ctx.moveTo(cx - 30.6, 66.6);
+    ctx.lineTo(cx - 22.6, 44.2);
+    ctx.quadraticCurveTo(cx, 41.2, cx + 22.6, 44.2);
+    ctx.lineTo(cx + 30.6, 66.6);
+    ctx.stroke();
+
+    // ---------------------------------------------------------------- ön cam
+    const gT = 45.4, gB = 66.2, hT = 21.0, hB = 27.8;   // üst/alt y, yarı genişlik
+    const glass = () => {
+      ctx.beginPath();
+      ctx.moveTo(cx - hT, gT + 0.4);
+      ctx.quadraticCurveTo(cx, gT - 1.6, cx + hT, gT + 0.4);
+      ctx.lineTo(cx + hB, gB - 0.6);
+      ctx.quadraticCurveTo(cx, gB + 1.2, cx - hB, gB - 0.6);
+      ctx.closePath();
+    };
+    glass(); ctx.fillStyle = C.K; ctx.fill();
+    const gg = ctx.createLinearGradient(cx - 30, gT, cx + 10, gB + 6);
+    gg.addColorStop(0, C.A); gg.addColorStop(0.6, 'rgba(42,42,42,0.45)'); gg.addColorStop(1, 'rgba(42,42,42,0.2)');
+    ctx.fillStyle = gg; ctx.fill();
+    // yansıma bantları
+    ctx.save(); glass(); ctx.clip();
+    ctx.fillStyle = 'rgba(244,244,242,0.07)';
+    ctx.beginPath(); ctx.moveTo(cx + 2, gT - 2); ctx.lineTo(cx + 9, gT - 2); ctx.lineTo(cx - 3, gB + 2); ctx.lineTo(cx - 10, gB + 2); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(cx + 11, gT - 2); ctx.lineTo(cx + 13, gT - 2); ctx.lineTo(cx + 1, gB + 2); ctx.lineTo(cx - 1, gB + 2); ctx.closePath(); ctx.fill();
+    ctx.restore();
+    // cam konturu
+    glass(); ctx.strokeStyle = C.W; ctx.lineWidth = 0.55; ctx.stroke();
+
+    // iç dikiz aynası
+    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.3;
+    line(cx, gT - 0.9, cx, gT + 1.2);
+    ctx.fillStyle = C.A; o.rr(ctx, cx - 4.2, gT + 1.2, 8.4, 2.6, 1.2); ctx.fill(); ctx.stroke();
+
+    // silecekler (cam alt kenarında park)
+    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.35;
+    line(cx + 1.5, gB + 0.2, cx - 9.5, gB - 0.9);
+    line(cx + 21, gB - 0.4, cx + 6.5, gB - 1.0);
+
+    // ---------------------------------------------------------------- yan aynalar
+    both(f => {
+      // ayak
+      ctx.beginPath();
+      ctx.moveTo(f(cx - 30.4), 64.2); ctx.lineTo(f(cx - 32.6), 64.6); ctx.lineTo(f(cx - 32.6), 66.2); ctx.lineTo(f(cx - 30.9), 66.5);
+      ctx.fillStyle = C.K; ctx.fill(); ctx.strokeStyle = C.KB; ctx.lineWidth = 0.35; ctx.stroke();
+      // gövde
+      ctx.beginPath();
+      ctx.moveTo(f(cx - 32.4), 62.4);
+      ctx.quadraticCurveTo(f(cx - 37.9), 62.0, f(cx - 37.8), 64.4);
+      ctx.quadraticCurveTo(f(cx - 37.6), 66.9, f(cx - 33.4), 67.0);
+      ctx.quadraticCurveTo(f(cx - 32.2), 67.0, f(cx - 32.2), 65.6);
+      ctx.lineTo(f(cx - 32.2), 63.4);
+      ctx.quadraticCurveTo(f(cx - 32.2), 62.4, f(cx - 32.4), 62.4);
+      ctx.closePath();
+      ctx.fillStyle = C.K; ctx.fill();
+      ctx.strokeStyle = C.KB; ctx.lineWidth = 0.4; ctx.stroke();
+    });
+
+    // ---------------------------------------------------------------- kaput
+    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.3;
+    // kaput ön kenarı
+    ctx.beginPath(); ctx.moveTo(cx - 33.8, 71.2); ctx.quadraticCurveTo(cx, 73.2, cx + 33.8, 71.2); ctx.stroke();
+    // kaput kıvrımları
+    ctx.strokeStyle = C.A; ctx.lineWidth = 0.4;
+    both(f => { ctx.beginPath(); ctx.moveTo(f(cx - 13), 67.6); ctx.quadraticCurveTo(f(cx - 11), 70, f(cx - 10), 72.4); ctx.stroke(); });
+
+    // ---------------------------------------------------------------- farlar
+    both(f => {
+      ctx.beginPath();
+      ctx.moveTo(f(cx - 33.9), 72.6);
+      ctx.quadraticCurveTo(f(cx - 25), 73.4, f(cx - 17.5), 74.4);
+      ctx.quadraticCurveTo(f(cx - 16.4), 74.6, f(cx - 17.2), 75.6);
+      ctx.lineTo(f(cx - 19.5), 77.4);
+      ctx.quadraticCurveTo(f(cx - 27), 77.2, f(cx - 33.2), 76.4);
+      ctx.closePath();
+      ctx.fillStyle = C.A; ctx.fill();
+      ctx.strokeStyle = C.W; ctx.lineWidth = 0.35; ctx.stroke();
+      // gündüz farı çizgisi
+      ctx.strokeStyle = C.KB; ctx.lineWidth = 0.3;
+      ctx.beginPath(); ctx.moveTo(f(cx - 32.4), 73.6); ctx.quadraticCurveTo(f(cx - 25), 74.3, f(cx - 19), 75.2); ctx.stroke();
+      // mercek
+      ctx.strokeStyle = C.KB; ctx.lineWidth = 0.25;
+      ctx.beginPath(); ctx.arc(f(cx - 28.5), 75.4, 0.9, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(f(cx - 25), 75.7, 0.9, 0, Math.PI * 2); ctx.stroke();
+    });
+
+    // ---------------------------------------------------------------- ızgara
+    const grille = () => {
+      ctx.beginPath();
+      ctx.moveTo(cx - 14.8, 74.2); ctx.quadraticCurveTo(cx, 74.9, cx + 14.8, 74.2);
+      ctx.lineTo(cx + 12.2, 79.6); ctx.quadraticCurveTo(cx, 80.3, cx - 12.2, 79.6);
+      ctx.closePath();
+    };
+    grille(); ctx.fillStyle = C.K; ctx.fill();
+    ctx.save(); grille(); ctx.clip();
+    ctx.strokeStyle = C.A; ctx.lineWidth = 0.35;
+    for (let y = 75.6; y < 80; y += 1.3) line(cx - 16, y, cx + 16, y);
+    ctx.restore();
+    grille(); ctx.strokeStyle = C.KB; ctx.lineWidth = 0.35; ctx.stroke();
+
+    // tampon alt hava girişi
+    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.3;
+    ctx.beginPath();
+    ctx.moveTo(cx - 20, 82.6); ctx.lineTo(cx + 20, 82.6); ctx.lineTo(cx + 17.5, 85.4); ctx.lineTo(cx - 17.5, 85.4); ctx.closePath(); ctx.stroke();
+
+    // ---------------------------------------------------------------- sticker (camın sol alt köşesi)
+    const sw = 9.5, sh = sw * 1.6;
+    const sx = cx - hB + 7.4, sy = gB - 1.9 - sh;
+    // kesim kenarı: 0.2 mm beyaz pay (baskıda seçilsin)
+    ctx.fillStyle = C.W; o.rr(ctx, sx - 0.2, sy - 0.2, sw + 0.4, sh + 0.4, sw * 112 / 764 + 0.2); ctx.fill();
+    o.sticker(ctx, sx, sy, sw, { edge: 16 });
+
+    // sarı odak köşe işaretleri
+    const g = 0.9, L = 2.0, x0 = sx - g, y0 = sy - g, x1 = sx + sw + g, y1 = sy + sh + g;
+    ctx.strokeStyle = C.Y; ctx.lineWidth = 0.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    [[x0, y0, 1, 1], [x1, y0, -1, 1], [x0, y1, 1, -1], [x1, y1, -1, -1]].forEach(([x, y, dx, dy]) => {
+      ctx.beginPath(); ctx.moveTo(x + dx * L, y); ctx.lineTo(x, y); ctx.lineTo(x, y + dy * L); ctx.stroke();
+    });
+
+    ctx.restore();
+  }
+
   function phone(ctx, x, y, w, h, px) {
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 2.5 * (px || 10); ctx.shadowOffsetY = 0.8 * (px || 10);
@@ -274,6 +472,14 @@
     const s = 1.3, X = x + s, Yy = y + s, SW = w - 2 * s, SH = h - 2 * s;
     ctx.fillStyle = '#101010'; rr(ctx, X, Yy, SW, SH, 3.1); ctx.fill();
     ctx.save(); rr(ctx, X, Yy, SW, SH, 3.1); ctx.clip();
+    if (SCREEN) {
+      // genişliğe oturt, üstten hizala (alttaki fazlalık kırpılır)
+      const ih = SW * SCREEN.naturalHeight / SCREEN.naturalWidth;
+      ctx.drawImage(SCREEN, X, Yy, SW, ih);
+      ctx.fillStyle = C.K; rr(ctx, x + w / 2 - 4, Yy + 1.1, 8, 1.7, 0.85); ctx.fill();          // çentik
+      ctx.restore();
+      return;
+    }
     ctx.fillStyle = C.K; rr(ctx, x + w / 2 - 4, Yy + 1.1, 8, 1.7, 0.85); ctx.fill();            // çentik
     // profil
     const cxp = x + w / 2;
@@ -309,17 +515,10 @@
     const ds = 7.5 * PT;
     wrap(ctx, desc, cw, ds, 400).forEach((ln, i) => txt(ctx, ln, L, 14.8 + i * 3.45, { size: ds, w: 400, color: C.W }));
 
-    // Orta-sol: sticker görseli (5:8, gölgeli) – YER TUTUCU, gerçek fotoğraf/baskı görseli gelince değişecek
-    const sw = 23, sh = 36.8, sx = L, sy = 33;
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 2.2 * (px || 10); ctx.shadowOffsetX = 0.6 * (px || 10); ctx.shadowOffsetY = 0.9 * (px || 10);
-    ctx.fillStyle = C.Y; rr(ctx, sx, sy, sw, sh, 1.8); ctx.fill();
-    ctx.restore();
-    ctx.fillStyle = C.K; rr(ctx, sx + 2, sy + 2, sw - 4, sw - 4, 0.8); ctx.fill();
-    ctx.__bg = C.K; decoQR(ctx, sx + 3.4, sy + 3.4, sw - 6.8, C.Y, 17); ctx.__bg = null;
-    txt(ctx, 'Kişisel QR', sx + sw / 2, sy + sw + 3.6, { size: 3.0, w: 800, color: C.K100, align: 'center' });
-    txt(ctx, 'Okut, bana ulaş', sx + sw / 2, sy + sw + 6.6, { size: 2.1, w: 600, color: C.K100, align: 'center' });
-    txt(ctx, 'numaran gizli kalır', sx + sw / 2, sy + sw + 9.2, { size: 1.7, w: 500, color: C.K100, align: 'center' });
+    // Orta-sol: sticker (ürünün birebir kopyası, 5:8, gölgeli); içindeki QR demo profile gider
+    const sw = 21.5, sx = L + 0.75, sy = 32.6;
+    const sh = sticker(ctx, sx, sy, sw, { shadow: 2.2 * (px || 10), edge: 14 });
+    txt(ctx, 'Okut: demo profil', sx + sw / 2, sy + sh + 3.3, { size: 7 * PT, w: 600, color: C.Y, align: 'center' });
 
     // Orta-sağ: 5 özellik, sarı tik
     const feats = ['Numaran gizli kalır, sana yine ulaşılır.', 'Mesaj ve bildirim anında telefonunda.',
@@ -466,11 +665,15 @@
   }
 
   function ready() {
-    if (!document.fonts || !document.fonts.load) return Promise.resolve();
-    const sample = 'KİŞİSEL QR ğüşıöç ₺';
-    return Promise.all([400, 500, 600, 700, 800, 900].map(w => document.fonts.load(`${w} 12px Inter`, sample)))
-      .catch(() => {});
+    if (!document.fonts || !document.fonts.load) return loadScreen();
+    const sample = 'KİŞİSEL QR ARAÇ SAHİBİNE ULAŞMAK İÇİN ğüşıöç ₺';
+    const fonts = [400, 500, 600, 700, 800, 900].map(w => document.fonts.load(`${w} 12px Inter`, sample));
+    fonts.push(document.fonts.load('800 12px Montserrat', sample));
+    return Promise.all(fonts.concat([loadScreen()])).catch(() => {});
   }
 
-  window.KQRTasarim1 = { render, drawDieline, ready, colors: C };
+  // Ortak araçlar: Tasarım 2–4 modülleri de aynı ürün gerçeklerini (sticker, QR, logo, ekran görüntüsü) kullanır.
+  const lib = { geom, trace, panelPath, rectPts, rr, font, tw, txt, wrap, inPanel, logo, logoIcon, logoWidth,
+                ICONS, drawQR, appQR, sticker, phone, drawDieline, PT, SAFE, BLEED, FONT, STK_FONT, colors: C };
+  window.KQRTasarim1 = { render, drawDieline, ready, sticker, colors: C, lib };
 })();

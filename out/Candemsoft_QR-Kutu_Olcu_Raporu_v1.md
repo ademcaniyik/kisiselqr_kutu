@@ -49,6 +49,8 @@ Dizilim (dış/baskı yüzünden, soldan sağa): **Sol – Ön – Sağ – Arka
 | Geçme dili kutu içine, Ön panelin arkasına giriyor | ✅ | dil ucu Ön iç yüzünden 0,45 mm içeride |
 | Toz kapakları birbirine çakışmıyor (üst ve alt) | ✅ | aradaki boşluk 46 mm |
 | Toz kapağı genişliği derinliğe sığıyor | ✅ | 16,5 ≤ 18 mm |
+| Üst yapıştırma dili başlık katlarının arasında | ✅ | 1. kat z=-18.50, dil z=-18.05, 2. kat z=-17.60 mm |
+| Hiçbir kapak/dil kutu dış yüzeyinden taşmıyor | ✅ | en büyük taşma 0.000 mm (Arka) |
 | Tutkal payı Sol yan iç yüzünde kalıyor | ✅ | 15 mm / Sol iç 18 mm |
 | Euro delik güvenli alanda (bigiden ≥ 4 mm) | ✅ | delik üstü bigiden 8 mm |
 | Euro delik yatayda güvenli alanda | ✅ | yan boşluk 32,25 mm |

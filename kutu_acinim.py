@@ -742,7 +742,9 @@ def panels_def():
     add('SolUstToz', dust_pts(xS0, xS1, yT, -1), 'Sol', (xS0, yT), (xS1, yT), phase=(.35, .47), off=-T)
     add('SagUstToz', dust_pts(xR0, xR1, yT, -1), 'Sag', (xR0, yT), (xR1, yT), phase=(.35, .47), off=-T)
     add('UstKapak', R(xF0, yT - dp, xF1, yT), 'On', (xF0, yT), (xF1, yT), phase=(.45, .58))
-    add('UstDil', topglue_pts(), 'UstKapak', (xF0 + gi, yT - dp), (xF1 - gi, yT - dp), direction='out', phase=(.5, .62), off=-T)
+    # Dil dışa (yukarı) katlanır: yerel +Z öne bakar. Başlığın 1. katının ÖNÜNDE (iki kat arasında)
+    # durması için ofset +T olmalı; -T onu kutunun arkasına iter ve arkadan görünür.
+    add('UstDil', topglue_pts(), 'UstKapak', (xF0 + gi, yT - dp), (xF1 - gi, yT - dp), direction='out', phase=(.5, .62), off=+T)
     add('Baslik2', header2_path().points(6), 'Arka', (xB0 + hi, yF), (xB1 - hi, yF), ang=180, phase=(.6, .74),
         off=2 * T, holes=[euro_hole(xBc, cy2)])
     add('SolAltToz', dust_pts(xS0, xS1, yBt, 1), 'Sol', (xS0, yBt), (xS1, yBt), phase=(.74, .84), off=-T)
@@ -840,6 +842,20 @@ def checks(flat, P):
     ok('Geçme dili kutu içine, Ön panelin arkasına giriyor', inside, f'dil ucu Ön iç yüzünden {fmt(abs(tip[2] - zs[0]), 2)} mm içeride')
     ok('Toz kapakları birbirine çakışmıyor (üst ve alt)', 2 * DUST_L < G, f'aradaki boşluk {fmt(G - 2 * DUST_L)} mm')
     ok('Toz kapağı genişliği derinliğe sığıyor', dp - 2 * DUST_INSET <= D, f'{fmt(dp - 2 * DUST_INSET)} ≤ {fmt(D)} mm')
+    # üst yapıştırma dili iki başlık katının ARASINDA (kutunun dışına taşmıyor)
+    zl1 = wpt(Wm, 'Arka', (xBc, yF + 2))[2]; zl2 = wpt(Wm, 'Baslik2', (xBc, yF - 2))[2]
+    zd = wpt(Wm, 'UstDil', (xFc, yT - dp - TOPGLUE_H / 2))[2]
+    ok('Üst yapıştırma dili başlık katlarının arasında', min(zl1, zl2) < zd < max(zl1, zl2),
+       f'1. kat z={zl1:+.2f}, dil z={zd:+.2f}, 2. kat z={zl2:+.2f} mm')
+    # hiçbir kapak/dil kutunun dış yüzeylerinin dışına çıkmıyor (x: Sol–Sağ, z: Ön–Arka)
+    xmin, xmax = min(xs), max(xs); zmin, zmax = min(zs), max(zs)
+    worst = 0.0; worst_n = '-'
+    for pn in P:
+        for q in pn['pts']:
+            v = wpt(Wm, pn['name'], q)
+            d = max(xmin - v[0], v[0] - xmax, zmin - v[2], v[2] - zmax, 0)
+            if d > worst: worst, worst_n = d, pn['name']
+    ok('Hiçbir kapak/dil kutu dış yüzeyinden taşmıyor', worst < 1e-6, f'en büyük taşma {worst:.3f} mm ({worst_n})')
     gz = wpt(Wm, 'Tutkal', (xG1, (yT + yBt) / 2))
     ok('Tutkal payı Sol yan iç yüzünde kalıyor', GL <= D and abs(gz[0] - xs[0]) < T + 1e-6, f'{fmt(GL)} mm / Sol iç {fmt(D)} mm')
     # güvenli alan
