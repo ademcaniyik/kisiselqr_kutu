@@ -650,7 +650,8 @@
     const tr = a => a * Math.PI / 180;
     GEO.texture.forEach(it => {
       if (it.t !== 'p' || !it.s) return;
-      const cut = it.s === '#1A1A1A', crease = it.s === '#737373';
+      // kutu_acinim.py kesimi #191919 (K %90, yuvarlama) ve bigiyi #737373 olarak yazar
+      const cut = it.s === '#191919' || it.s === '#1A1A1A', crease = it.s === '#737373';
       if (!cut && !crease) return;
       ctx.beginPath();
       it.c.forEach(c => {
