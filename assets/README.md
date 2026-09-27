@@ -48,3 +48,12 @@ oranın aşağıdaki ölçülere uyması gerekir (300 DPI ≈ 11,8 px/mm):
 | Başlık (Euro, 2. kat) | 95,5 × 34,0 | 1128 × 402 |
 
 Başlık görseli düz (okunur yönde) hazırlanır; açınımda 180° çevrilerek yerleştirilir ve Euro delikleri yeniden açılır.
+
+## Baskı PDF'leri (`assets/matbaa_pdf.js`)
+
+Sitede 2D açınım bölümünde, seçili tasarım (Tasarım 1–4) için:
+
+- **Matbaa PDF'i:** 1:1 açınım + 3 mm taşma. TrimBox = açınım sınırı (245 × 239 mm), BleedBox = +3 mm. Grafik CMYK görsel olarak 300 ya da 400 dpi'dır. Marka renkleri birebir CMYK'ye eşlenir (siyah zemin 60/40/40/100, sarı 0/15/100/0, antrasit K85, küçük metin K100); diğer renkler yaklaşık dönüşümle çevrilir. Tutkal alanları mürekkepsizdir. Bıçak izi ayrı PDF katmanındadır (spot "Bicak", 0,25 pt, overprint; düz = kesim, kesikli = bigi). 2. sayfada yalnız bıçak izi vardır.
+- **A3 renkli maket PDF'i:** %100 ölçek, siyah kesim/bigi çizgileri, 50 mm kontrol çizgileri, katlama sırası.
+
+Sınır: yazılar görselin içindedir (vektör değil). Numune ve dijital baskı içindir; ofset seri üretim için vektörel PDF/X-4 (Fogra39, outline font) Aşama 3'te hazırlanacaktır.
