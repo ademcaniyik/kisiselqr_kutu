@@ -115,6 +115,17 @@
     if (!ctx) throw new Error('Tuval oluşturulamadı (' + cw + '×' + ch + ' px). Daha düşük çözünürlük seçin.');
     ctx.setTransform(s, 0, 0, s, BLEED * s, BLEED * s);
     mod.render(ctx, GEO, { px: s, baski: true });   // baski: Euro delik içine de taşma
+    // Euro delikler: tasarımlar delik çevresine 3 mm taşma basar; ortası boş kalabilir. Baskıda delik
+    // bıçakla atıldığı için içini, kenarından 1,5 mm içerideki zemin rengiyle tamamen doldur (tutarlı görünüm).
+    GEO.panels.forEach(p => (p.holes || []).forEach(h => {
+      const xs = h.map(q => q[0]), ys = h.map(q => q[1]);
+      const cx = (Math.min(...xs) + Math.max(...xs)) / 2, top = Math.min(...ys);
+      const px = ctx.getImageData(Math.round((cx + BLEED) * s), Math.round((top + 1.5 + BLEED) * s), 1, 1).data;
+      if (px[3] < 250) return;
+      ctx.save(); ctx.fillStyle = `rgb(${px[0]},${px[1]},${px[2]})`; ctx.beginPath();
+      ctx.moveTo(h[0][0], h[0][1]); for (let i = 1; i < h.length; i++) ctx.lineTo(h[i][0], h[i][1]); ctx.closePath();
+      ctx.fill(); ctx.restore();
+    }));
     ilerleme && ilerleme(0.15, 'Renkler CMYK\'ye çevriliyor');
     await bekle();
     const out = new Uint8Array(cw * ch * 4), cache = new Map();
