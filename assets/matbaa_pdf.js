@@ -114,7 +114,7 @@
     const ctx = cv.getContext('2d', { willReadFrequently: true });
     if (!ctx) throw new Error('Tuval oluşturulamadı (' + cw + '×' + ch + ' px). Daha düşük çözünürlük seçin.');
     ctx.setTransform(s, 0, 0, s, BLEED * s, BLEED * s);
-    mod.render(ctx, GEO, { px: s });
+    mod.render(ctx, GEO, { px: s, baski: true });   // baski: Euro delik içine de taşma
     ilerleme && ilerleme(0.15, 'Renkler CMYK\'ye çevriliyor');
     await bekle();
     const out = new Uint8Array(cw * ch * 4), cache = new Map();

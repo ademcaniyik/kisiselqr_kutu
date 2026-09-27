@@ -77,9 +77,11 @@
       { pts: rectPts(P.Arka.x0, yT + BACK_LEGAL, P.Arka.x1, yBt), c: C.W },                            // arka: yasal bant
     ];
     // 1) taşma: her yüzeyin konturu 2 × 3 mm kalınlıkta; komşu panel dolgusu içerideki kısmı örter
-    ctx.lineJoin = 'miter'; ctx.miterLimit = 3; ctx.lineWidth = 2 * BLEED; ctx.setLineDash([]);
+    ctx.lineJoin = 'round'; ctx.lineWidth = 2 * BLEED;   // yuvarlak birleşim: taşma her köşede tam 3 mm, sivri uç yok
+    ctx.setLineDash([]);
     Object.keys(GROUND).forEach(n => { ctx.strokeStyle = GROUND[n]; panelPath(ctx, P[n].p); ctx.stroke(); });
-    zones.forEach(z => { ctx.strokeStyle = z.c; ctx.beginPath(); trace(ctx, z.pts); ctx.stroke(); });
+    zones.forEach(z => { if (z.c === C.W) return;   // beyaz = kâğıt: taşma gerekmez, komşu taşmanın üstüne beyaz basmasın
+      ctx.strokeStyle = z.c; ctx.beginPath(); trace(ctx, z.pts); ctx.stroke(); });
     // 2) dolgular
     Object.keys(GROUND).forEach(n => { ctx.fillStyle = GROUND[n]; panelPath(ctx, P[n].p); ctx.fill('evenodd'); });
     zones.forEach(z => { ctx.fillStyle = z.c; ctx.beginPath(); trace(ctx, z.pts); ctx.fill(); });
@@ -629,9 +631,12 @@
     const b2 = P.Baslik2;           // 2. kat 180° katlanır → açınımda ters
     inPanel(ctx, b2.x0, b2.y0, b2.x1 - b2.x0, b2.y1 - b2.y0, 180,
       (w, h) => header(ctx, w, h, (b2.y1 - g.hole2.cy) + g.hole2.h / 2));
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.fillStyle = '#000';
-    [P.Arka.p.holes[0], P.Baslik2.p.holes[0]].forEach(hh => { ctx.beginPath(); trace(ctx, hh); ctx.fill(); });
+    // Baskı dosyasında (opts.baski) delik içi de boyalı kalır: bıçak keser, kayma olursa beyaz kenar görünmez.
+    if (!(opts && opts.baski)) {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = '#000';
+      [P.Arka.p.holes[0], P.Baslik2.p.holes[0]].forEach(hh => { ctx.beginPath(); trace(ctx, hh); ctx.fill(); });
+    }
     ctx.restore();
   }
 

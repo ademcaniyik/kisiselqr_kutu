@@ -196,7 +196,7 @@ def outline():
     for q in list(reversed(dust_pts(xR0, xR1, yBt, 1)))[1:]:
         o.l(*q)
     o.l(xF0, yBt)
-    for q in list(reversed(dust_pts(xS0, xS1, yBt, 1)))[1:-1]:
+    for q in list(reversed(dust_pts(xS0, xS1, yBt, 1)))[1:]:
         o.l(*q)
     return o.z()
 
@@ -869,6 +869,12 @@ def checks(flat, P):
     # içerik
     ok('Taşıyıcı kart iç ölçüye sığıyor', CARRIER[0] <= G - 2 and CARRIER[1] <= Y - 2, f'{fmt(CARRIER[0])}×{fmt(CARRIER[1])} / {fmt(G)}×{fmt(Y)}')
     ok('Paket kalınlığı derinliğe sığıyor (varsayım)', STACK <= D, f'{fmt(STACK)} / {fmt(D)} mm – boşluk {fmt(D - STACK)} mm')
+    # kesim konturu, panellerin birleşimiyle birebir aynı olmalı (atlanan köşe noktası kenarı eğer)
+    from shapely.ops import unary_union
+    from shapely.geometry import Polygon
+    birlesim = unary_union([Polygon(p['pts']) for p in P])
+    fark = birlesim.symmetric_difference(Polygon(K_OUT_PTS)).area
+    ok('Kesim konturu panellerin birleşimiyle birebir aynı', fark < 0.01, f'fark alanı {fark:.3f} mm²')
     ok('Açınım geçerli tek parça (kendini kesmiyor)', flat.is_valid and flat.geom_type == 'Polygon', f'alan {fmt(flat.area / 100, 1)} cm²')
     ok('A3 maket sayfasına sığıyor', W <= 297 - 20 and HH <= 420 - 110, f'{fmt(W)}×{fmt(HH)} mm')
     return R
@@ -988,6 +994,8 @@ def main():
     out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out')
     os.makedirs(out, exist_ok=True)
     dl, flat, bleed, OUTL, H1, H2p = build()
+    global K_OUT_PTS
+    K_OUT_PTS = OUTL.points(6)   # panellerle aynı yay örneklemesi
     FLAT_AREA = flat.area
     base = 'Candemsoft_QR-Kutu'
     title = f'Candemsoft QR Kutu Açınımı {VERSION}'
@@ -1031,5 +1039,6 @@ def main():
     return 0 if all(g for _, g, _ in R) else 1
 
 FLAT_AREA = 0.0
+K_OUT_PTS = []
 if __name__ == '__main__':
     sys.exit(main())

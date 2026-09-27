@@ -9,9 +9,9 @@ Kaynak: Candemsoft_Ambalaj_Sartnamesi.pdf v1.0 · Tarih: 22.09.2026 · Üreteç:
 | Kutu tipi | Euro askı delikli çift kat başlık + alt reverse-tuck slit lock, yan yapıştırmalı |
 | İç ölçü (G × D × Y) | 96 × 18 × 136 mm |
 | **Açınım (kesim) toplam ölçüsü** | **245 × 239 mm** (G × Y) |
-| Taşma dahil | 251,01 × 245 mm |
+| Taşma dahil | 251 × 245 mm |
 | Karton | 350 g/m² GC1, t = 0,45 mm → bigi payı +0,5 mm |
-| Kesilmiş karton alanı | ≈ 471,7 cm² |
+| Kesilmiş karton alanı | ≈ 472,4 cm² |
 
 ## 2. Panel ve kapak ölçüleri (bigi-bigi, mm)
 
@@ -59,7 +59,8 @@ Dizilim (dış/baskı yüzünden, soldan sağa): **Sol – Ön – Sağ – Arka
 | Mühür yarısı alt kapağa sığıyor | ✅ | 10 mm / kapak 18,5 mm |
 | Taşıyıcı kart iç ölçüye sığıyor | ✅ | 92×132 / 96×136 |
 | Paket kalınlığı derinliğe sığıyor (varsayım) | ✅ | 8 / 18 mm – boşluk 10 mm |
-| Açınım geçerli tek parça (kendini kesmiyor) | ✅ | alan 471,7 cm² |
+| Kesim konturu panellerin birleşimiyle birebir aynı | ✅ | fark alanı 0.000 mm² |
+| Açınım geçerli tek parça (kendini kesmiyor) | ✅ | alan 472,4 cm² |
 | A3 maket sayfasına sığıyor | ✅ | 245×239 mm |
 
 ## 4. Varsayımlar
