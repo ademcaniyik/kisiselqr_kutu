@@ -90,11 +90,11 @@
     });
     return { kes, bigi };
   }
-  function bicakOps(GEO, renk, genislik) {
+  function bicakOps(GEO, renk, genislik, bigiKesikli = true) {
     const { kes, bigi } = bicakYollari(GEO);
     let o = `${renk}\n${f(genislik)} w 0 J 1 j\n[] 0 d\n`;
     kes.forEach(c => { o += yolOps(c) + 'S\n'; });
-    o += '[3 1.5] 0 d\n';
+    if (bigiKesikli) o += '[3 1.5] 0 d\n';
     bigi.forEach(c => { o += yolOps(c) + 'S\n'; });
     return o;
   }
@@ -246,10 +246,12 @@
       const cm = `${f(PT)} 0 0 ${f(-PT)} ${f(ox * PT)} ${f(H - oy * PT)} cm`;
       const yUst = v => H - v * PT;
       let c = `q ${f(G.wmm * PT)} 0 0 ${f(G.hmm * PT)} ${f(gx * PT)} ${f(H - (gy + G.hmm) * PT)} cm /Im1 Do Q\n`;
-      c += `q ${cm}\n${bicakOps(GEO, '0 0 0 1 K', 0.3 / PT)}Q\n0 0 0 1 k\n`;
+      // Maket: çizgiler her zeminde (siyah, sarı, beyaz) görünsün → beyaz hale üstüne pembe çizgi
+      c += `q ${cm}\n${bicakOps(GEO, '0 0 0 0 K', 1.5 / PT, false)}Q\n`;
+      c += `q ${cm}\n${bicakOps(GEO, '0 1 0 0 K', 0.6 / PT)}Q\n0 0 0 1 k\n`;
       c += yazi(15 * PT, yUst(15), 13, `RENKLİ MAKET – Kişisel QR kutu · ${ad}`, true);
       c += yazi(15 * PT, yUst(21.5), 8, 'Yazdırırken "Gerçek boyut / %100" seçin, "Sayfaya sığdır" KAPALI olsun. Aşağıdaki 50 mm çizgileri cetvelle kontrol edin.', false);
-      c += yazi(15 * PT, yUst(26.5), 8, `Açınım ${mm(GEO.W)} × ${mm(GEO.H)} mm · düz çizgi: kes · kesikli çizgi: bigi (katla) · beyaz kalan tutkal alanlarına yapıştırıcı sürün · ${tarih()}`, false);
+      c += yazi(15 * PT, yUst(26.5), 8, `Açınım ${mm(GEO.W)} × ${mm(GEO.H)} mm · pembe düz çizgi: kes · pembe kesikli çizgi: katla (bigi) · beyaz kalan tutkal alanlarına yapıştırıcı sürün · ${tarih()}`, false);
       const ry = gy + G.hmm + 16;
       c += `0 0 0 1 K ${f(0.35 * PT)} w [] 0 d\n${f(15 * PT)} ${f(yUst(ry))} m ${f(65 * PT)} ${f(yUst(ry))} l S\n`;
       for (let i = 0; i <= 5; i++) { const x = 15 + i * 10, t = (i === 0 || i === 5) ? 2.5 : 1.5; c += `${f(x * PT)} ${f(yUst(ry - t))} m ${f(x * PT)} ${f(yUst(ry + t))} l S\n`; }
@@ -259,7 +261,7 @@
       for (let i = 0; i <= 5; i++) { const yy = ry - 4 + i * 10, t = (i === 0 || i === 5) ? 2.5 : 1.5; c += `${f((vx - t) * PT)} ${f(yUst(yy))} m ${f((vx + t) * PT)} ${f(yUst(yy))} l S\n`; }
       c += `q 0 1 -1 0 ${f((vx - 5) * PT)} ${f(yUst(ry + 31))} cm BT /F1 8 Tf 0 0 Td ${pdfStr('50 mm (dikey kontrol)')} Tj ET Q\n`;
       [['KATLAMA SIRASI', true],
-       ['1. Kesik çizgileri cetvel + boş tükenmez kalemle hafifçe çizip katlayın.', false],
+       ['1. Pembe düz çizgilerden kesin (renkli pay dışarıda kalır). Pembe kesikli çizgileri cetvel + boş tükenmez kalemle çizip katlayın.', false],
        ['2. Tutkal payını Sol yan panelin iç yüzüne yapıştırın.', false],
        ['3. Üst toz kapaklarını içe katlayın, üst kapağı kapatın; dili başlığın 1. katına yapıştırın.', false],
        ['4. Başlığın 2. katını bigiden aşağı katlayıp yapıştırın; iki Euro delik çakışmalı.', false],
