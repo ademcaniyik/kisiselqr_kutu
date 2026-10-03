@@ -8,6 +8,7 @@ Tasarım görsel dosyası değil, kod olarak çizilir: `tasarim1.js`, açınım�
 |---|---|
 | `tasarim1.js` | Tüm panellerin çizimi, logo (vektörel yeniden çizim), ikonlar, sticker kopyası, telefon ve araç camı illüstrasyonu |
 | `qr_kodlar.js` | Gerçek QR matrisleri (ECC M): `KQR_QR_APP` → `https://mobile.kisiselqr.com`, `KQR_QR_DEMO` → `https://kisiselqr.com/qr/071qydlb` (demo profil). `araclar/qr_uret.py` üretir, elle düzenlemeyin |
+| `rozet_appstore_tr.svg`, `rozet_googleplay_tr.png` | Apple ve Google'ın resmi Türkçe mağaza rozetleri ("App Store'dan İndirin", "İndirin Google Play"); Apple marketing toolbox ve Google Play rozet sayfasından alındı, değiştirilmeden kullanılır |
 | `demo_profil_ekran.jpg` | Demo profilin gerçek mobil ekran görüntüsü (1290 × 2796 px, "Araç Sahibine Bildir" açık). `araclar/demo_ekran_goruntusu.py` yeniden çeker |
 
 ## Renkler (brif)
@@ -28,10 +29,10 @@ Kutudaki iki sticker çizimi (ön camdaki ve arka yüzdeki), Candemsoft'un ilett
 
 ## Yerleşim özeti
 
-- **Ön yüz:** Üst 2/3 siyah (logo + "by Candemsoft", KİŞİSEL QR 24 pt, alt satır, ön cam + sticker, telefon, rozet), alt 1/3 sarı (4 ikon, 7 pt etiket). En alttaki 10 mm mühür bandında yalnızca zemin rengi var.
-- **Arka yüz:** Siyah zemin. Sırasıyla "Nasıl çalışır?" ve açıklama, sticker görseli, 5 özellik, 3 adım, uygulama QR'ı ve kutu içeriği. Altta sarı yasal bant: üretici, KVKK, menşe, PAP 21, SKU ve EAN-13 alanı (bigiden ≥ 8 mm).
+- **Ön yüz:** Siyah zemin: logo + "by Candemsoft", KİŞİSEL QR (24 pt), alt satır, araç ön camı + sticker, telefon, "Artık numaratöre gerek yok" rozeti ve **slogan "Herkese numaranı vermek zorunda değilsin."** (12 pt, "numaranı" sarı). Altta **24 mm sarı bant** (eskiden 45,5 mm): 4 ikon (7,2 mm) ve yanında 7 pt etiket; gruplar eşit aralıkla, slogan hizasından (6 mm) başlayıp sağda aynı payla biter. En altta 10 mm mühür bandı (yalnız zemin).
+- **Arka yüz:** Siyah zemin. Üstte "Nasıl çalışır?" + açıklama, sağında uygulama QR'ı ("Uygulamayı indir · mobile.kisiselqr.com"). Ortada sticker (demo profil QR'ı) + 5 özellik. Altında **çizimli 3 adım** (1 Temizle – camı sil · 2 Yapıştır – sol alt köşe · 3 Aktif Et – kartı okut; cam köşesi ön yüzdeki araçla aynı bakışla, dışarıdan çizilir; alt etiketler 7 pt'nin altına inmez, gerekirse satır kayar) ve **App Store + Google Play rozetleri** (10 mm, alt alta, App Store önde). Sarı yasal bantta kutu içeriği, üretici, adres/KVKK yer tutucuları, menşe, PAP 21, SKU ve EAN-13 alanı (bigiden ≥ 8 mm).
 - **Euro başlık:** Sarı zemin, delik altında siyah logo (6 mm). Ön kat 180° katlandığı için **açınımda ters çizilir**.
-- **Sol yan:** Dikey KİŞİSEL QR, altta logo ikonu. **Sağ yan:** kisiselqr.com + "Araç + Dijital Kartvizit", altta beyaz lot kutusu (laksız, selefonsuz).
+- **Yanlar:** İki yan aynı düzende: dikey Kişisel QR logosu (9,5 mm, sarı), `kisiselqr.com` (4,4 mm, 800, beyaz) ve altında "Araç + Dijital Kartvizit" (7 pt, sarı). Sağ yanda ek olarak beyaz lot kutusu (laksız, selefonsuz). Kutu kapalıyken iki yanda da logo ve web adresi görünür.
 - **Kapaklar:** Üst kapak ve toz kapakları düz siyah. Alt kapak ve geçme dili sarı, metin yok.
 - **Tutkal payı ve üst yapıştırma dili:** Baskısız (ekranda ham karton rengi).
 - **Taşma:** Baskılı her yüzeyin zemini kesim hattından 3 mm dışarı taşar.
@@ -44,6 +45,13 @@ Kutudaki iki sticker çizimi (ön camdaki ve arka yüzdeki), Candemsoft'un ilett
 | EAN-13 numarası | Kesikli çerçeveli boş alan. Sahte barkod çizilmedi |
 | SKU, üretici adresi, KVKK metni | Köşeli parantez içinde "bekleniyor" |
 
+## Mağaza rozetleri – kullanım kuralları
+
+- Apple: baskıda yükseklik ≥ 10 mm, çevrede rozet yüksekliğinin ¼'ü boşluk, başka mağaza rozetiyle birlikteyse siyah rozet ve App Store önce; rozet değiştirilemez, "App Store" çevrilmez.
+- Google Play: baskıda ≥ 7,6 mm, App Store rozetiyle birlikteyse ondan küçük olamaz, çevrede ¼ yükseklik boşluk.
+- Kutuda ikisi de 10 mm yükseklikte, aralarında 2,5 mm boşluk var; adım kutucuklarıyla aradaki boşluk kontur dahil ≥ 2,5 mm.
+- Baskı rengi: App Store rozetinin iç siyahı SVG'de varsayılan dolgu (#000) olduğu için matbaa PDF'inde K100'e düşüyordu. Yüklenirken varsayılan dolgu `#0A0A0A` yapılır, böylece rozet zeminle aynı zengin siyahla (60/40/40/100) basılır (ekranda fark yok, yazı ve kenar rengi aynı). Google Play rozetinin siyahı yaklaşık dönüşümle 60/40/40/97 olur.
+
 ## Lokal UV lak (Aşama 3'te ayrı katman olacak)
 
 Ön yüz logosu, ön camdaki sticker ve telefon ekranı. Rozet, mühür bandı ve lot kutusu lak **almaz**.
@@ -51,6 +59,8 @@ Kutudaki iki sticker çizimi (ön camdaki ve arka yüzdeki), Candemsoft'un ilett
 ## Bilinen açık noktalar
 
 - `mobile.kisiselqr.com` hazır kabul edildi (Candemsoft onayı, 23.09.2026).
+- "Sol alt köşe" dışarıdan bakışa göre (ön yüzdeki çizimle aynı). Etiket içeriden yapıştırılıyorsa sürücü bakışıyla sağ alt köşe olur; Candemsoft'tan teyit bekleniyor.
+- Mühür bandının (ön yüz en alt 10 mm) rengi: şu an sarı. Siyah yapılırsa sarı alan 24 mm'den 14 mm'ye iner; karar bekleniyor.
 - Arka yüzde iki okunabilir QR var: sticker'daki demo profil QR'ı ("Okut: demo profil" etiketli) ve uygulama QR'ı ("Uygulamayı indir" etiketli). Kişiye özel aktivasyon QR'ı kutunun içindeki kartta.
 - Demo profilde isim "Test Kullancısı" görünüyor (muhtemelen "Kullanıcısı" olmalı). Profilde düzeltilirse `python araclar/demo_ekran_goruntusu.py` ile ekran görüntüsü yenilenir.
 - Bu bir konsept önizlemesidir. Baskıya hazır PDF/X, katmanlar (Bicak, Lak_Lokal, Metin, Grafik, Tasma, Muhur_Alani, Lot_Alani) ve outline edilmiş fontlar Aşama 3'te hazırlanacak.

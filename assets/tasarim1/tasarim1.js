@@ -190,6 +190,7 @@
     rr(ctx, STK.SIDE, STK.TOP, STK.W - 2 * STK.SIDE, STK.CARD_B - STK.TOP, STK.CARD_R);
     ctx.fillStyle = C.W; ctx.fill(); ctx.lineWidth = STK.CARD_S; ctx.strokeStyle = C.K100; ctx.stroke();
     drawQR(ctx, opts.qr === undefined ? window.KQR_QR_DEMO : opts.qr, STK.QX, STK.QY, STK.QS, C.K100);
+    if (opts.yazisiz) { ctx.restore(); return h; }   // çok küçük çizimlerde yazılar okunmaz, gri leke olur
     // yazılar
     ctx.fillStyle = C.K100; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
     ctx.font = `800 100px ${STK_FONT}`;
@@ -218,6 +219,36 @@
     });
   }
 
+  // Mağaza rozetleri: Apple ve Google'ın resmi Türkçe rozet görselleri (değiştirilmeden kullanılır).
+  // Kurallar: baskıda yükseklik ≥ 10 mm (Apple) / ≥ 7,6 mm (Google, App Store'dan küçük olamaz),
+  // çevrede rozet yüksekliğinin ¼'ü kadar boşluk, birlikteyse siyah rozet ve App Store önde.
+  const ROZET = { apple: null, google: null };
+  const GOOGLE_KIRP = [0, 29, 646, 192];          // PNG'deki şeffaf payı at: rozetin kendisi (646 × 192 px)
+  function resimYukle(src) {
+    return new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+  }
+  // App Store rozetinin iç siyahı SVG'de varsayılan dolgu (#000). Matbaa PDF'inde #000 = yalnız K100 (küçük metin),
+  // zemin ise zengin siyah (#0A0A0A → 60/40/40/100): rozet zeminden soluk basılmasın diye varsayılan dolgu
+  // #0A0A0A yapılır. Ekranda fark görünmez; beyaz yazı ve gri kenar (açık dolgulu yollar) aynen kalır.
+  function appleRozetYukle() {
+    return fetch(BASE + 'rozet_appstore_tr.svg').then(r => r.text())
+      .then(t => resimYukle(URL.createObjectURL(new Blob([t.replace('<svg ', `<svg fill="${C.K}" `)], { type: 'image/svg+xml' }))))
+      .catch(() => resimYukle(BASE + 'rozet_appstore_tr.svg'));
+  }
+  function loadRozetler() {
+    return Promise.all([appleRozetYukle(), resimYukle(BASE + 'rozet_googleplay_tr.png')])
+      .then(([a, g]) => { ROZET.apple = a; ROZET.google = g; });
+  }
+  // App Store önde, alt alta (dikey) ya da yan yana; h = rozet yüksekliği (mm). Döndürür: kapladığı {w, h}
+  function magazaRozetleri(ctx, x, y, h, yon) {
+    const aw = h * 151.29018 / 40, gw = h * GOOGLE_KIRP[2] / GOOGLE_KIRP[3], ara = h / 4;
+    if (ROZET.apple) ctx.drawImage(ROZET.apple, x, y, aw, h);
+    const gx = yon === 'yan' ? x + aw + ara : x, gy = yon === 'yan' ? y : y + h + ara;
+    if (ROZET.google) ctx.drawImage(ROZET.google, GOOGLE_KIRP[0], GOOGLE_KIRP[1], GOOGLE_KIRP[2], GOOGLE_KIRP[3], gx, gy, gw, h);
+    return yon === 'yan' ? { w: aw + ara + gw, h } : { w: Math.max(aw, gw), h: 2 * h + ara };
+  }
+  const ROZET_GEN = (h) => h * 151.29018 / 40;
+
   // ------------------------------------------------------------ zeminler
   function grounds(ctx, g) {
     const { P, yT, yBt, yp } = g;
@@ -227,7 +258,7 @@
     };
     const zones = [
       { pts: rectPts(P.Arka.x0, P.Arka.y0, P.Arka.x1, yT), c: C.Y },                 // Euro başlık 1. kat
-      { pts: rectPts(P.On.x0, yT + yp * 2 / 3, P.On.x1, yBt), c: C.Y },              // ön alt 1/3 sarı
+      { pts: rectPts(P.On.x0, yBt - FRONT_BAND, P.On.x1, yBt), c: C.Y },            // ön alt sarı bant (ikonlar + mühür)
       { pts: rectPts(P.Arka.x0, yBt - BACK_BAND, P.Arka.x1, yBt), c: C.Y },          // arka yasal bant
     ];
     // 1) taşma: her baskılı yüzeyin konturu 2 × 3 mm kalınlıkta kendi renginde çizilir;
@@ -244,6 +275,7 @@
     ['Tutkal', 'UstDil'].forEach(n => { ctx.fillStyle = C.RAW; panelPath(ctx, P[n].p); ctx.fill(); });
   }
   const BACK_BAND = 30.5;   // arka yüz alt yasal bant yüksekliği (sarı)
+  const FRONT_BAND = 24;    // ön yüz alt sarı bant: ikon satırı (14 mm) + mühür bandı (10 mm)
 
   // ------------------------------------------------------------ ÖN YÜZ
   function front(ctx, w, h, px) {
@@ -258,33 +290,47 @@
     txt(ctx, 'QR', L + w1, 29.5, { size: ts, w: 900, color: C.Y });
     txt(ctx, 'Akıllı Araç Etiketi + Dijital Kartvizit', L, 35.2, { size: 9 * PT, w: 600, color: C.KB });
 
-    // Görsel alan: araç ön camının sol alt köşesi + cama yapışık sticker
-    const vTop = 39, vBot = h * 2 / 3;
+    const bandY = h - FRONT_BAND;              // sarı bandın üst kenarı
+    const slogY = bandY - 14;                  // slogan bloğunun üstü
+    const dy = 3;                              // araç + rozet, eski yerine göre 3 mm aşağıda
+    // Görsel alan: aracın önden görünümü + cama yapışık sticker
+    const vTop = 39, vBot = slogY - 1;
     ctx.save();
     ctx.beginPath(); ctx.rect(-BLEED, vTop, w + 2 * BLEED, vBot - vTop); ctx.clip();
-    (window.KQR_CAM_OVERRIDE || windshield)(ctx, { w, vTop, vBot, px, BLEED, SAFE, C, PT, rr, txt, sticker });
+    ctx.translate(0, dy);
+    (window.KQR_CAM_OVERRIDE || windshield)(ctx, { w, vTop: vTop - dy, vBot: vBot - dy, px, BLEED, SAFE, C, PT, rr, txt, sticker });
     ctx.restore();
 
     // Telefon mockup (~28 × 56 mm), sağa yakın; ekran lokal UV lak
-    phone(ctx, w - SAFE - 2 - 28, 38.5, 28, 56, px);
+    phone(ctx, w - SAFE - 2 - 28, 39.5, 28, 56, px);
 
     // Rozet: sarı zemin, siyah yazı, eğik etiket (lak almaz)
     ctx.save();
-    ctx.translate(22.2, vBot - 6.6); ctx.rotate(-6 * Math.PI / 180);
+    ctx.translate(22.2, 84.4 + dy); ctx.rotate(-6 * Math.PI / 180);
     ctx.fillStyle = C.Y; rr(ctx, -17, -4.75, 34, 9.5, 2.2); ctx.fill();
     txt(ctx, 'Artık numaratöre', 0, -0.55, { size: 8.3 * PT, w: 800, color: C.K100, align: 'center' });
     txt(ctx, 'gerek yok', 0, 2.75, { size: 8.3 * PT, w: 800, color: C.K100, align: 'center' });
     ctx.restore();
 
-    // İkon şeridi: sarı bant üzerinde 4 siyah çizgisel ikon (10 × 10 mm) + 7 pt etiket
+    // Slogan: "Herkese numaranı vermek zorunda değilsin." (iki satır, "numaranı" sarı)
+    const sg = 12 * PT;
+    const sa = txt(ctx, 'Herkese ', L, slogY + 0.73 * sg + 0.6, { size: sg, w: 800, color: C.W });
+    txt(ctx, 'numaranı', L + sa, slogY + 0.73 * sg + 0.6, { size: sg, w: 800, color: C.Y });
+    txt(ctx, 'vermek zorunda değilsin.', L, slogY + 0.73 * sg + 0.6 + sg * 1.18, { size: sg, w: 800, color: C.W });
+
+    // İkon şeridi (sarı bant): 4 küçük çizgisel ikon (7,2 mm) + yanında 7 pt iki satırlık etiket
     const items = [['gizli', 'Numaran', 'gizli'], ['bildirim', 'Anında', 'bildirim'],
                    ['kartvizit', 'Dijital', 'kartvizit'], ['ucretsiz', 'Aylık', 'ücret yok']];
-    const colW = (w - 2 * SAFE) / 4, iy = vBot + 6;
+    // gruplar eşit aralıkla dağıtılır: ilk grup L'de (logo/slogan hizası), son grup w − L'de biter
+    const ic = 7.2, ls = 7 * PT, iy = bandY + (14 - ic) / 2;
+    const gruplar = items.map(it => ic + 1.3 + Math.max(tw(ctx, it[1], ls, 600), tw(ctx, it[2], ls, 600)));
+    const ara = (w - 2 * L - gruplar.reduce((a, b) => a + b, 0)) / (items.length - 1);
+    let gx = L;
     items.forEach((it, i) => {
-      const cxm = SAFE + colW * (i + 0.5);
-      ctx.save(); ctx.translate(cxm - 5, iy); ICONS[it[0]](ctx); ctx.restore();
-      txt(ctx, it[1], cxm, iy + 14.2, { size: 7 * PT, w: 600, color: C.K100, align: 'center' });
-      txt(ctx, it[2], cxm, iy + 17.2, { size: 7 * PT, w: 600, color: C.K100, align: 'center' });
+      if (i) gx += gruplar[i - 1] + ara;
+      ctx.save(); ctx.translate(gx, iy); ctx.scale(ic / 10, ic / 10); ICONS[it[0]](ctx); ctx.restore();
+      txt(ctx, it[1], gx + ic + 1.3, iy + ic / 2 - 0.35, { size: ls, w: 600, color: C.K100 });
+      txt(ctx, it[2], gx + ic + 1.3, iy + ic / 2 + 2.45, { size: ls, w: 600, color: C.K100 });
     });
     // En alt 10 mm: mühür bandı – yalnızca zemin rengi
   }
@@ -507,18 +553,97 @@
   }
 
   // ------------------------------------------------------------ ARKA YÜZ
+  // 3 adımlı kurulum çizimleri (15 × 12,5 mm kutucuk içinde, çizgisel)
+  function adimCizim(ctx, i, x, y, w, h) {
+    ctx.save();
+    ctx.fillStyle = '#1A1A1A'; rr(ctx, x, y, w, h, 1.4); ctx.fill();
+    ctx.strokeStyle = C.A; ctx.lineWidth = 0.25; rr(ctx, x, y, w, h, 1.4); ctx.stroke();
+    rr(ctx, x, y, w, h, 1.4); ctx.clip();
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    // Ön camın sol alt köşesi, ön yüzdeki araçla aynı bakış (dışarıdan): A-sütunu yukarı doğru içe eğik,
+    // cam alanı zeminden biraz açık. Sütun numara dairesinin sağından geçer, ona değmez.
+    const yb = y + h - 2.6;                   // cam alt kenarı
+    const kenar = () => {
+      ctx.moveTo(x + 6.2, y - 0.5); ctx.lineTo(x + 2.9, yb - 0.5);
+      ctx.quadraticCurveTo(x + 2.7, yb + 0.05, x + 3.6, yb);
+      ctx.quadraticCurveTo(x + w / 2 + 3, yb + 0.35, x + w + 1, yb + 0.3);
+    };
+    const cam = () => {
+      ctx.beginPath(); kenar(); ctx.lineTo(x + w + 1, y - 0.5); ctx.closePath();
+      const gc = ctx.createLinearGradient(x + 2, y, x + w, y + h);
+      gc.addColorStop(0, 'rgba(244,244,242,0.10)'); gc.addColorStop(1, 'rgba(244,244,242,0.03)');
+      ctx.fillStyle = gc; ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.75)'; ctx.lineWidth = 0.35;
+      ctx.beginPath(); kenar(); ctx.stroke();
+    };
+    if (i === 0) {                            // Temizle: camı mendille sil
+      cam();
+      const mx = x + 9.8, my = y + 5.0;
+      ctx.save(); ctx.translate(mx, my); ctx.rotate(-0.35);
+      ctx.fillStyle = C.KB; rr(ctx, -2.6, -1.8, 5.2, 3.6, 0.6); ctx.fill();
+      ctx.strokeStyle = '#9A9A9A'; ctx.lineWidth = 0.2;
+      ctx.beginPath(); ctx.moveTo(-1.8, -0.6); ctx.lineTo(1.8, -0.6); ctx.moveTo(-1.8, 0.6); ctx.lineTo(1.2, 0.6); ctx.stroke();
+      ctx.restore();
+      ctx.strokeStyle = C.Y; ctx.lineWidth = 0.35;
+      ctx.beginPath(); ctx.arc(mx, my, 4.2, Math.PI * 0.62, Math.PI * 0.95); ctx.stroke();
+      ctx.beginPath(); ctx.arc(mx, my, 5.2, Math.PI * 0.70, Math.PI * 0.90); ctx.stroke();
+      [[x + 13.2, y + 2.2], [x + 12.4, y + 8.3]].forEach(([sx, sy]) => {
+        ctx.beginPath(); ctx.moveTo(sx - 0.7, sy); ctx.lineTo(sx + 0.7, sy); ctx.moveTo(sx, sy - 0.7); ctx.lineTo(sx, sy + 0.7); ctx.stroke();
+      });
+    } else if (i === 1) {                     // Yapıştır: sticker camın sol alt köşesine (ön yüzdeki konumu)
+      cam();
+      const kw = 3.9, kx = x + 6.0, ky = yb - 0.9 - kw * 1.6;
+      ctx.fillStyle = C.W; rr(ctx, kx - 0.15, ky - 0.15, kw + 0.3, kw * 1.6 + 0.3, kw * 112 / 764 + 0.15); ctx.fill();
+      sticker(ctx, kx, ky, kw, { yazisiz: true });
+      ctx.save(); ctx.translate(x + 11.6, y + 8.0); ctx.rotate(-0.75);
+      ctx.fillStyle = C.KB; rr(ctx, -1.15, -3.6, 2.3, 6.4, 1.15); ctx.fill();
+      ctx.fillStyle = '#C9C9C9'; rr(ctx, -0.75, -3.25, 1.5, 1.5, 0.5); ctx.fill();
+      ctx.restore();
+      ctx.strokeStyle = C.Y; ctx.lineWidth = 0.35;
+      ctx.beginPath(); ctx.moveTo(x + 13.7, y + 1.8); ctx.lineTo(x + 11.0, y + 3.9); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x + 11.0, y + 3.9); ctx.lineTo(x + 12.2, y + 3.9); ctx.moveTo(x + 11.0, y + 3.9); ctx.lineTo(x + 11.4, y + 2.8); ctx.stroke();
+    } else {                                  // Aktif Et: aktivasyon kartını telefonla okut
+      ctx.save(); ctx.translate(x + 4.6, y + 7.4); ctx.rotate(-0.12);
+      ctx.fillStyle = C.W; rr(ctx, -3.6, -2.4, 7.2, 4.8, 0.5); ctx.fill();
+      drawQR(ctx, window.KQR_QR_DEMO, -3.0, -1.9, 3.8, C.K100);
+      ctx.fillStyle = '#7A7A7A'; ctx.fillRect(1.1, -1.4, 2.0, 0.45); ctx.fillRect(1.1, -0.5, 1.6, 0.45);
+      ctx.restore();
+      ctx.fillStyle = 'rgba(253,211,9,0.28)';
+      ctx.beginPath(); ctx.moveTo(x + 9.6, y + 6.2); ctx.lineTo(x + 2.0, y + 4.3); ctx.lineTo(x + 2.4, y + 10.6); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = C.K; rr(ctx, x + 9.3, y + 1.4, 4.6, 9.4, 0.9); ctx.fill();
+      ctx.strokeStyle = C.Y; ctx.lineWidth = 0.3; rr(ctx, x + 9.3, y + 1.4, 4.6, 9.4, 0.9); ctx.stroke();
+      ctx.fillStyle = C.Y; ctx.beginPath(); ctx.arc(x + 11.6, y + 6.1, 1.35, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = C.K; ctx.lineWidth = 0.32;
+      ctx.beginPath(); ctx.moveTo(x + 11.0, y + 6.1); ctx.lineTo(x + 11.45, y + 6.6); ctx.lineTo(x + 12.25, y + 5.6); ctx.stroke();
+    }
+    ctx.restore();
+    // adım numarası (sarı daire)
+    ctx.fillStyle = C.Y; ctx.beginPath(); ctx.arc(x + 2.1, y + 2.1, 1.65, 0, Math.PI * 2); ctx.fill();
+    txt(ctx, String(i + 1), x + 2.1, y + 2.95, { size: 2.35, w: 800, color: C.K, align: 'center' });
+  }
+
   function back(ctx, w, h, px) {
-    const L = SAFE, R = w - SAFE, cw = R - L;
-    // Üst: başlık + açıklama
+    const L = SAFE, R = w - SAFE;
+    // Uygulama QR (sağ üst): beyaz zemin, 20 mm QR + 4 modül sessiz alan; altında "Uygulamayı indir"
+    const Q = window.KQR_QR_APP, n = Q ? Q.rows.length : 29, qs = 20, qm = qs / n, qz = 4 * qm, box = qs + 2 * qz;
+    const qx = R - box, qy = SAFE;
+    ctx.fillStyle = C.W; ctx.fillRect(qx, qy, box, box);
+    appQR(ctx, qx + qz, qy + qz, qs);
+    txt(ctx, 'Uygulamayı indir', qx + box / 2, qy + box + 3.9, { size: 7.5 * PT, w: 700, color: C.W, align: 'center' });
+    txt(ctx, 'mobile.kisiselqr.com', qx + box / 2, qy + box + 7.1, { size: 7 * PT, w: 600, color: C.Y, align: 'center' });
+
+    // Üst-sol: başlık + açıklama (QR'ın solunda)
     txt(ctx, 'Nasıl çalışır?', L, 9.6, { size: 12 * PT, w: 800, color: C.Y });
     const desc = "Kişisel QR'ı aracının ön camına yapıştır. Sana ulaşmak isteyen QR'ı telefonuyla okutur, " +
                  'bildirim sana gelir; numaran görünmez. Aynı profil dijital kartvizitin olur: widget ile paylaş, ' +
                  'sosyal medyada link olarak kullan.';
     const ds = 7.5 * PT;
-    wrap(ctx, desc, cw, ds, 400).forEach((ln, i) => txt(ctx, ln, L, 14.8 + i * 3.45, { size: ds, w: 400, color: C.W }));
+    const dl = wrap(ctx, desc, qx - 3 - L, ds, 500);
+    dl.forEach((ln, i) => txt(ctx, ln, L, 14.8 + i * 3.45, { size: ds, w: 500, color: C.W }));
+    const ustAlt = Math.max(14.8 + (dl.length - 1) * 3.45 + 1, qy + box + 6.5);
 
     // Orta-sol: sticker (ürünün birebir kopyası, 5:8, gölgeli); içindeki QR demo profile gider
-    const sw = 21.5, sx = L + 0.75, sy = 32.6;
+    const sw = 21.5, sx = L + 0.75, sy = ustAlt + 2.6;
     const sh = sticker(ctx, sx, sy, sw, { shadow: 2.2 * (px || 10), edge: 14 });
     txt(ctx, 'Okut: demo profil', sx + sw / 2, sy + sh + 3.3, { size: 7 * PT, w: 600, color: C.Y, align: 'center' });
 
@@ -527,7 +652,7 @@
                    'Dijital kartvizitini uygulamada oluştur.', 'Profilini sosyal medyada paylaş.',
                    'Aracın olmasa da kullan: kartvizit olarak yeterli.'];
     const fx = sx + sw + 4, fw = R - fx - 4.2, fs = 7 * PT;
-    let fy = 36.2;
+    let fy = sy + 3.6;
     feats.forEach(f => {
       ctx.fillStyle = C.Y; ctx.beginPath(); ctx.arc(fx + 1.5, fy - 0.85, 1.5, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = C.K; ctx.lineWidth = 0.35; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
@@ -537,42 +662,35 @@
       fy += lines.length > 1 ? 8.0 : 6.6;
     });
 
-    // Adımlar: 1 Temizle · 2 Yapıştır · 3 Aktif Et
-    const steps = ['Temizle', 'Yapıştır', 'Aktif Et'], stY = 76.5, ss = 7.5 * PT;
-    const gw = steps.map(s => 5.2 + 1.6 + tw(ctx, s, ss, 600));
-    const gap = (cw - gw.reduce((a, b) => a + b, 0)) / 2;
-    let gx = L;
-    steps.forEach((s, i) => {
-      ctx.fillStyle = C.Y; ctx.beginPath(); ctx.arc(gx + 2.6, stY - 0.95, 2.6, 0, Math.PI * 2); ctx.fill();
-      txt(ctx, String(i + 1), gx + 2.6, stY + 0.1, { size: 3.1, w: 800, color: C.K, align: 'center' });
-      txt(ctx, s, gx + 6.8, stY, { size: ss, w: 600, color: C.W });
-      gx += gw[i] + gap;
+    // Alt sıra: 3 adımlı kurulum (çizimli) | App Store + Google Play rozetleri (10 mm, alt alta)
+    const bY = h - BACK_BAND, rh = 10, rw = ROZET_GEN(rh);
+    const rx = R - rw, ry0 = bY - 3 - (2 * rh + rh / 4);
+    magazaRozetleri(ctx, rx, ry0, rh, 'alt');
+    // sX1: rozetin ¼ yükseklik boşluğu, kutucuk konturu (0,25 mm) taşsa da korunur
+    const sX0 = L + 0.15, sX1 = rx - rh / 4 - 0.3, sGap = 1.6, sW = (sX1 - sX0 - 2 * sGap) / 3, sH = 12.5;
+    const sY = ry0 + 0.2;
+    const adimlar = [['Temizle', 'Camı sil'], ['Yapıştır', 'Sol alt köşe'], ['Aktif Et', 'Kartı okut']];
+    adimlar.forEach(([t, alt], i) => {
+      const x = sX0 + i * (sW + sGap);
+      adimCizim(ctx, i, x, sY, sW, sH);
+      txt(ctx, t, x + sW / 2, sY + sH + 3.3, { size: 7 * PT, w: 700, color: C.W, align: 'center' });
+      wrap(ctx, alt, sW, 7 * PT, 500).forEach((ln, k) =>
+        txt(ctx, ln, x + sW / 2, sY + sH + 6.2 + k * 2.9, { size: 7 * PT, w: 500, color: C.KB, align: 'center' }));
     });
 
-    // Uygulama QR: beyaz zemin, 20 mm QR + 4 modül sessiz alan
-    const Q = window.KQR_QR_APP, n = Q ? Q.rows.length : 29, qs = 20, qm = qs / n, qz = 4 * qm;
-    const qx = L, qy = 79.9, box = qs + 2 * qz;
-    ctx.fillStyle = C.W; ctx.fillRect(qx, qy, box, box);
-    appQR(ctx, qx + qz, qy + qz, qs);
-    const tx = qx + box + 3.2;
-    txt(ctx, 'Uygulamayı indir', tx, qy + 4.4, { size: 7.5 * PT, w: 700, color: C.W });
-    txt(ctx, 'mobile.kisiselqr.com', tx, qy + 7.9, { size: 7 * PT, w: 600, color: C.Y });
-    txt(ctx, 'Kutu içeriği', tx, qy + 14.2, { size: 7 * PT, w: 700, color: C.KB });
-    txt(ctx, '1 QR Etiket · 1 Aktivasyon Kartı', tx, qy + 17.4, { size: 7 * PT, w: 400, color: C.W });
-    txt(ctx, '1 Temizleme Mendili', tx, qy + 20.6, { size: 7 * PT, w: 400, color: C.W });
-
-    // Alt yasal bant (sarı zemin, K100): üretici, KVKK, menşe | EAN-13 (bigiden ≥ 8 mm)
-    const bY = h - BACK_BAND, ls = 6.5 * PT, lc = C.K100;
+    // Alt yasal bant (sarı zemin, K100): kutu içeriği, üretici, KVKK, menşe | EAN-13 (bigiden ≥ 8 mm)
+    const ls = 6.5 * PT, lc = C.K100;
     const eanW = 29.8, eanH = 20.7, ex = w - 8 - eanW, ey = h - 8 - eanH;
     const lw = ex - L - 3;
-    let ly = bY + 5.0;
-    [['Üretici: Candemsoft', 700], ['[Adres – Candemsoft onayı bekleniyor]', 400],
+    let ly = bY + 3.9;
+    [['Kutu içeriği', 700], ['1 QR Etiket · 1 Aktivasyon Kartı', 400], ['1 Temizleme Mendili', 400],
+     ['Üretici: Candemsoft', 700], ['[Adres – Candemsoft onayı bekleniyor]', 400],
      ['[KVKK bilgilendirme metni – onay bekleniyor]', 400], ["Türkiye'de üretilmiştir.", 600]].forEach(([s, wt]) => {
-      wrap(ctx, s, lw, ls, wt).forEach(ln => { txt(ctx, ln, L, ly, { size: ls, w: wt, color: lc }); ly += 2.85; });
+      wrap(ctx, s, lw, ls, wt).forEach(ln => { txt(ctx, ln, L, ly, { size: ls, w: wt, color: lc }); ly += 2.7; });
     });
     // geri dönüşüm + PAP 21 + SKU
-    const ry = h - SAFE - 2.2;
-    ctx.save(); ctx.translate(L + 2.1, ry - 0.9);
+    const pry = h - SAFE - 1.7;
+    ctx.save(); ctx.translate(L + 2.1, pry - 0.9);
     ctx.strokeStyle = lc; ctx.fillStyle = lc; ctx.lineWidth = 0.32;
     for (let k = 0; k < 3; k++) {
       ctx.save(); ctx.rotate(k * 2 * Math.PI / 3);
@@ -582,8 +700,8 @@
       ctx.restore();
     }
     ctx.restore();
-    txt(ctx, 'PAP 21', L + 5.0, ry, { size: ls, w: 700, color: lc });
-    txt(ctx, 'SKU: [bekleniyor]', L + 14.2, ry, { size: ls, w: 400, color: lc });
+    txt(ctx, 'PAP 21', L + 5.0, pry, { size: ls, w: 700, color: lc });
+    txt(ctx, 'SKU: [bekleniyor]', L + 14.2, pry, { size: ls, w: 400, color: lc });
     // EAN-13 yer tutucu – numara Candemsoft'tan gelecek (sahte barkod çizilmez)
     ctx.fillStyle = C.W; ctx.fillRect(ex, ey, eanW, eanH);
     ctx.strokeStyle = lc; ctx.lineWidth = 0.2; ctx.setLineDash([0.8, 0.6]); ctx.strokeRect(ex, ey, eanW, eanH); ctx.setLineDash([]);
@@ -596,21 +714,19 @@
   function vertical(ctx, w, h, cy, fn) {      // alttan yukarı okunan eksen: x ↑, y →
     ctx.save(); ctx.translate(w / 2, cy); ctx.rotate(-Math.PI / 2); fn(); ctx.restore();
   }
-  function sideLeft(ctx, w, h) {
-    const s = 7.2, t1 = 'KİŞİSEL ', t2 = 'QR';
-    vertical(ctx, w, h, h * 0.42, () => {
-      const a = tw(ctx, t1, s, 900), b = tw(ctx, t2, s, 900), x0 = -(a + b) / 2, by = 0.36 * s;
-      txt(ctx, t1, x0, by, { size: s, w: 900, color: C.W });
-      txt(ctx, t2, x0 + a, by, { size: s, w: 900, color: C.Y });
+  // Dikey (alttan yukarı okunan) logo: ikon + "Kişisel QR" kelime işareti, merkez (0, 0)
+  function dikeyLogo(ctx, lh, renk) { const lw = logoWidth(ctx, lh); logo(ctx, -lw / 2, -lh / 2, lh, renk); return lw; }
+  // İki yan aynı düzende: logo (9,5 mm, sarı) + kisiselqr.com (4,4 mm, 800, beyaz) + alt satır; sağda lot kutusu
+  function yanKimlik(ctx, w, h) {
+    vertical(ctx, w, h, h * 0.22, () => dikeyLogo(ctx, 9.5, C.Y));
+    vertical(ctx, w, h, h * 0.56, () => {
+      txt(ctx, 'kisiselqr.com', 0, -0.7, { size: 4.4, w: 800, color: C.W, align: 'center' });
+      txt(ctx, 'Araç + Dijital Kartvizit', 0, 3.3, { size: 7 * PT, w: 500, color: C.Y, align: 'center' });
     });
-    const ic = 8; logoIcon(ctx, (w - ic) / 2, h - SAFE - 2 - ic, ic, C.Y);
   }
+  function sideLeft(ctx, w, h) { yanKimlik(ctx, w, h); }
   function sideRight(ctx, w, h) {
-    const s1 = 4.2, s2 = 7 * PT;
-    vertical(ctx, w, h, (h - 8 - 15) * 0.47, () => {
-      txt(ctx, 'kisiselqr.com', 0, -0.9, { size: s1, w: 700, color: C.Y, align: 'center' });
-      txt(ctx, 'Araç + Dijital Kartvizit', 0, 2.9, { size: s2, w: 500, color: C.W, align: 'center' });
-    });
+    yanKimlik(ctx, w, h);
     // lot / tarih kutucuğu: beyaz, laksız, SELEFONSUZ (inkjet)
     ctx.fillStyle = C.W; ctx.fillRect((w - 10) / 2, h - 8 - 15, 10, 15);
   }
@@ -671,15 +787,15 @@
   }
 
   function ready() {
-    if (!document.fonts || !document.fonts.load) return loadScreen();
+    if (!document.fonts || !document.fonts.load) return Promise.all([loadScreen(), loadRozetler()]);
     const sample = 'KİŞİSEL QR ARAÇ SAHİBİNE ULAŞMAK İÇİN ğüşıöç ₺';
     const fonts = [400, 500, 600, 700, 800, 900].map(w => document.fonts.load(`${w} 12px Inter`, sample));
     fonts.push(document.fonts.load('800 12px Montserrat', sample));
-    return Promise.all(fonts.concat([loadScreen()])).catch(() => {});
+    return Promise.all(fonts.concat([loadScreen(), loadRozetler()])).catch(() => {});
   }
 
   // Ortak araçlar: Tasarım 2–4 modülleri de aynı ürün gerçeklerini (sticker, QR, logo, ekran görüntüsü) kullanır.
   const lib = { geom, trace, panelPath, rectPts, rr, font, tw, txt, wrap, inPanel, logo, logoIcon, logoWidth,
-                ICONS, drawQR, appQR, sticker, phone, drawDieline, PT, SAFE, BLEED, FONT, STK_FONT, colors: C };
+                ICONS, drawQR, appQR, sticker, phone, drawDieline, magazaRozetleri, PT, SAFE, BLEED, FONT, STK_FONT, colors: C };
   window.KQRTasarim1 = { render, drawDieline, ready, sticker, colors: C, lib };
 })();
