@@ -239,13 +239,14 @@
     return Promise.all([appleRozetYukle(), resimYukle(BASE + 'rozet_googleplay_tr.png')])
       .then(([a, g]) => { ROZET.apple = a; ROZET.google = g; });
   }
-  // App Store önde, alt alta (dikey) ya da yan yana; h = rozet yüksekliği (mm). Döndürür: kapladığı {w, h}
-  function magazaRozetleri(ctx, x, y, h, yon) {
-    const aw = h * 151.29018 / 40, gw = h * GOOGLE_KIRP[2] / GOOGLE_KIRP[3], ara = h / 4;
+  // App Store önde, alt alta ve AYNI GENİŞLİKTE: App Store h yüksekliğinde (≥ 10 mm), Google Play aynı genişliğe
+  // ölçeklenir, bu yüzden biraz daha yüksek olur (Google kuralı: diğer rozetlerle aynı boy ya da daha büyük;
+  // Apple'ın buna kısıtı yok). Aradaki boşluk büyük rozetin ¼'ü. Döndürür: {w, h, gh (Google yüksekliği), ara}
+  function magazaRozetleri(ctx, x, y, h) {
+    const aw = ROZET_GEN(h), gh = aw * GOOGLE_KIRP[3] / GOOGLE_KIRP[2], ara = Math.max(h, gh) / 4;
     if (ROZET.apple) ctx.drawImage(ROZET.apple, x, y, aw, h);
-    const gx = yon === 'yan' ? x + aw + ara : x, gy = yon === 'yan' ? y : y + h + ara;
-    if (ROZET.google) ctx.drawImage(ROZET.google, GOOGLE_KIRP[0], GOOGLE_KIRP[1], GOOGLE_KIRP[2], GOOGLE_KIRP[3], gx, gy, gw, h);
-    return yon === 'yan' ? { w: aw + ara + gw, h } : { w: Math.max(aw, gw), h: 2 * h + ara };
+    if (ROZET.google) ctx.drawImage(ROZET.google, GOOGLE_KIRP[0], GOOGLE_KIRP[1], GOOGLE_KIRP[2], GOOGLE_KIRP[3], x, y + h + ara, aw, gh);
+    return { w: aw, h: h + ara + gh, gh, ara };
   }
   const ROZET_GEN = (h) => h * 151.29018 / 40;
 
@@ -386,7 +387,7 @@
     ['Q', 400, 792, 0, 776]];
   const IZGARA = [['M', 0, 744], ['L', 356, 730], ['Q', 392, 722, 386, 700], ['L', 346, 642], ['Q', 334, 628, 300, 628], ['L', 0, 630]];
   const ALT_GIRIS = [['M', 0, 524], ['L', 440, 518], ['Q', 480, 516, 472, 488], ['L', 444, 350], ['Q', 436, 324, 404, 322], ['L', 0, 316]];
-  const PLAKA = { x: -255, y: 382, w: 510, h: 110 };     // TR plakası 520 × 110 (önden)
+  const PLAKA = { x: -255, y: 382, w: 510, h: 110 };     // TR plakası 520 × 110 (önden), kurgusal 34 ABC 123
   const FAR = [['M', 386, 706], ['Q', 600, 752, 850, 790], ['Q', 882, 793, 885, 768], ['Q', 888, 736, 858, 729],
     ['Q', 620, 700, 420, 672], ['Q', 378, 678, 386, 706]];
   const YAN_GIRIS = [['M', 566, 576], ['L', 690, 562], ['Q', 736, 557, 744, 520], ['L', 756, 438], ['Q', 761, 396, 724, 394],
@@ -616,7 +617,9 @@
     ctx.strokeStyle = '#000'; ctx.lineWidth = 0.12; rr(ctx, pk.x + 0.18, pk.y + 0.18, pk.w - 0.36, pk.h - 0.36, 0.25); ctx.stroke();
     ctx.fillStyle = '#1F4FA3'; ctx.fillRect(pk.x + 0.3, pk.y + 0.3, pk.h * 0.36, pk.h - 0.6);
     txt(ctx, 'TR', pk.x + 0.3 + pk.h * 0.18, pk.y + pk.h - 0.62, { size: pk.h * 0.2, w: 700, color: C.W, align: 'center' });
-    txt(ctx, '34 KQR 26', pk.x + pk.w / 2 + pk.h * 0.18, pk.y + pk.h * 0.74, { size: pk.h * 0.6, w: 600, color: '#000', align: 'center' });
+    const pyAlan = pk.w - 0.3 - pk.h * 0.36 - 0.9, pyz = '34 ABC 123';
+    const pfs = Math.min(pk.h * 0.6, pk.h * 0.6 * pyAlan / tw(ctx, pyz, pk.h * 0.6, 600));
+    txt(ctx, pyz, pk.x + 0.3 + pk.h * 0.36 + (pk.w - 0.3 - pk.h * 0.36) / 2, pk.y + pk.h / 2 + pfs * 0.36, { size: pfs, w: 600, color: '#000', align: 'center' });
 
     // sticker: camın sol alt köşesinde gerçek boyutunda (önden bakışta dikeyde kısalır)
     const st = { x: o.cx + ARAC.STK_X * s, w: ARAC.STK_W * s, h: ARAC.STK_H * ARAC.CAM_K * s };
@@ -843,38 +846,43 @@
     dl.forEach((ln, i) => txt(ctx, ln, L, 14.8 + i * 3.45, { size: ds, w: 500, color: C.W }));
     const ustAlt = Math.max(14.8 + (dl.length - 1) * 3.45 + 1, qy + box + 6.5);
 
-    // Orta-sol: sticker (ürünün birebir kopyası, 5:8, gölgeli); içindeki QR demo profile gider
-    const sw = 21.5, sx = L + 0.75, sy = ustAlt + 2.6;
-    const sh = sticker(ctx, sx, sy, sw, { shadow: 2.2 * (px || 10), edge: 14 });
-    txt(ctx, 'Okut: demo profil', sx + sw / 2, sy + sh + 3.3, { size: 7 * PT, w: 600, color: C.Y, align: 'center' });
+    // Alt sıra ölçüleri önce hesaplanır: rozet yığını (eşit genişlik) ve onun üstündeki aktivasyon kutusu,
+    // orta bloğun alt sınırını belirler.
+    const bY = h - BACK_BAND, rh = 10, rw = ROZET_GEN(rh), gh = rw * GOOGLE_KIRP[3] / GOOGLE_KIRP[2];
+    const rx = R - rw, ry0 = bY - 3 - (rh + Math.max(rh, gh) / 4 + gh);   // Google'ın altında ≥ ¼ boşluk (3 mm)
+    const sw = 21.5, sx = L + 0.75, fx = sx + sw + 4, fw = R - fx - 4.2, fs = 7 * PT;
+    const kx = fx, kw = R - fx, kb = ry0 - rh / 4 - 0.3, pad = 1.4;          // 0,3: kontur rozet boşluğuna taşmasın
+    const kts = 7 * PT, ktx = kx + pad + 5.2, ktW = kx + kw - pad - ktx;
+    const govde = wrap(ctx, 'Kartı kamerayla değil, uygulamadan okut.', ktW, kts, 500);
+    const kh = pad + 2.6 + govde.length * 2.95 + 0.9 + pad * 0.6, ky = kb - kh;
 
-    // Orta-sağ: 5 özellik, sarı tik
+    // Orta-sağ: 5 özellik, sarı tik; satır aralığı aktivasyon kutusuna sığacak şekilde
     const feats = ['Numaran gizli kalır, sana yine ulaşılır.', 'Mesaj ve bildirim anında telefonunda.',
                    'Dijital kartvizitini uygulamada oluştur.', 'Profilini sosyal medyada paylaş.',
                    'Aracın olmasa da kullan: kartvizit olarak yeterli.'];
-    const fx = sx + sw + 4, fw = R - fx - 4.2, fs = 7 * PT;
-    let fy = sy + 3.6;
+    const fy0 = ustAlt + 6.2, fAra = Math.min(6.6, (ky - 2.6 - fy0) / (feats.length - 1));
+
+    // Orta-sol: sticker (ürünün birebir kopyası, 5:8, gölgeli; içindeki QR demo profile gider),
+    // sağdaki blokla (özellikler + aktivasyon kutusu) dikeyde ortalı
+    const sy = (fy0 - 2.35 + kb) / 2 - sw * 0.8;
+    sticker(ctx, sx, sy, sw, { shadow: 2.2 * (px || 10), edge: 14 });
+
+    let fy = fy0;
     feats.forEach(f => {
       ctx.fillStyle = C.Y; ctx.beginPath(); ctx.arc(fx + 1.5, fy - 0.85, 1.5, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = C.K; ctx.lineWidth = 0.35; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
       ctx.beginPath(); ctx.moveTo(fx + 0.8, fy - 0.85); ctx.lineTo(fx + 1.35, fy - 0.25); ctx.lineTo(fx + 2.25, fy - 1.45); ctx.stroke();
       const lines = wrap(ctx, f, fw, fs, 500);
       lines.forEach((ln, i) => txt(ctx, ln, fx + 4.2, fy + i * 3.0, { size: fs, w: 500, color: C.W }));
-      fy += lines.length > 1 ? 7.6 : 5.8;
+      fy += lines.length > 1 ? fAra + 1.8 : fAra;
     });
 
-    // Alt sıra: 3 adımlı kurulum (çizimli) | App Store + Google Play rozetleri (10 mm, alt alta)
-    const bY = h - BACK_BAND, rh = 10, rw = ROZET_GEN(rh);
-    const rx = R - rw, ry0 = bY - 3 - (2 * rh + rh / 4);
-    magazaRozetleri(ctx, rx, ry0, rh, 'alt');
+    // Alt sıra: 3 adımlı kurulum (çizimli) | App Store + Google Play rozetleri (alt alta, eşit genişlik)
+    magazaRozetleri(ctx, rx, ry0, rh);
 
     // Aktivasyon uyarısı: kart, telefon kamerasıyla değil uygulamanın içinden okutulur
-    // (özellik listesinin altında; alt kenarı rozetin ¼ boşluğuna kadar)
+    // (özellik listesinin altında; alt kenarı App Store rozetinin ¼ boşluğuna kadar)
     {
-      const kx = fx, kw = R - fx, kb = ry0 - rh / 4 - 0.3, pad = 1.4;   // 0,3: kontur rozet boşluğuna taşmasın
-      const ts = 7 * PT, tx = kx + pad + 5.2, tW = kx + kw - pad - tx;
-      const govde = wrap(ctx, 'Kartı kamerayla değil, uygulamadan okut.', tW, ts, 500);
-      const kh = pad + 2.6 + govde.length * 2.95 + 0.9 + pad * 0.6, ky = kb - kh;
       ctx.fillStyle = '#161616'; rr(ctx, kx, ky, kw, kh, 1.6); ctx.fill();
       ctx.strokeStyle = C.Y; ctx.lineWidth = 0.3; rr(ctx, kx, ky, kw, kh, 1.6); ctx.stroke();
       // mini telefon: uygulamanın tarama ekranı
@@ -883,15 +891,15 @@
       ctx.strokeStyle = C.Y; ctx.lineWidth = 0.25; rr(ctx, tfx, tfy, 3.7, 6.6, 0.7); ctx.stroke();
       logoIcon(ctx, tfx + 1.25, tfy + 0.75, 1.2, C.Y);
       ctx.strokeStyle = C.Y; ctx.lineWidth = 0.2; ctx.lineCap = 'round';
-      const fx0 = tfx + 0.75, fy0 = tfy + 2.55, fs0 = 2.2, kl = 0.6;
-      [[fx0, fy0, 1, 1], [fx0 + fs0, fy0, -1, 1], [fx0, fy0 + fs0, 1, -1], [fx0 + fs0, fy0 + fs0, -1, -1]].forEach(([x, y, dx, dy]) => {
+      const fx0 = tfx + 0.75, fy1 = tfy + 2.55, fs0 = 2.2, kl = 0.6;
+      [[fx0, fy1, 1, 1], [fx0 + fs0, fy1, -1, 1], [fx0, fy1 + fs0, 1, -1], [fx0 + fs0, fy1 + fs0, -1, -1]].forEach(([x, y, dx, dy]) => {
         ctx.beginPath(); ctx.moveTo(x + dx * kl, y); ctx.lineTo(x, y); ctx.lineTo(x, y + dy * kl); ctx.stroke();
       });
-      txt(ctx, 'Aktivasyon için önce uygulamayı indir', tx, ky + pad + 2.0, { size: ts, w: 700, color: C.Y });
-      govde.forEach((ln, i) => txt(ctx, ln, tx, ky + pad + 2.0 + 2.95 * (i + 1), { size: ts, w: 500, color: C.W }));
+      txt(ctx, 'Aktivasyon için önce uygulamayı indir', ktx, ky + pad + 2.0, { size: kts, w: 700, color: C.Y });
+      govde.forEach((ln, i) => txt(ctx, ln, ktx, ky + pad + 2.0 + 2.95 * (i + 1), { size: kts, w: 500, color: C.W }));
     }
-    // sX1: rozetin ¼ yükseklik boşluğu, kutucuk konturu (0,25 mm) taşsa da korunur
-    const sX0 = L + 0.15, sX1 = rx - rh / 4 - 0.3, sGap = 1.6, sW = (sX1 - sX0 - 2 * sGap) / 3, sH = 12.5;
+    // sX1: büyük rozetin ¼ yükseklik boşluğu, kutucuk konturu (0,25 mm) taşsa da korunur
+    const sX0 = L + 0.15, sX1 = rx - Math.max(rh, gh) / 4 - 0.3, sGap = 1.6, sW = (sX1 - sX0 - 2 * sGap) / 3, sH = 12.5;
     const sY = ry0 + 0.2;
     const adimlar = [['Temizle', 'Camı sil'], ['Yapıştır', 'Sol alt köşe'], ['Aktif Et', 'Kartı okut']];
     adimlar.forEach(([t, alt], i) => {
