@@ -275,7 +275,8 @@
     ['Tutkal', 'UstDil'].forEach(n => { ctx.fillStyle = C.RAW; panelPath(ctx, P[n].p); ctx.fill(); });
   }
   const BACK_BAND = 30.5;   // arka yüz alt yasal bant yüksekliği (sarı)
-  const FRONT_BAND = 24;    // ön yüz alt sarı bant: ikon satırı (14 mm) + mühür bandı (10 mm)
+  const FRONT_BAND = 24;    // ön yüz alt sarı bant: ikon satırı + alt kenar
+  const MUHUR_D = 20, MUHUR_PAY = 0.8;   // Ø20 void mühür etiketi: yarısı ön yüzün alt kenarında, ortada (kutu_acinim.py)
 
   // ------------------------------------------------------------ ÖN YÜZ
   function front(ctx, w, h, px) {
@@ -292,21 +293,22 @@
 
     const bandY = h - FRONT_BAND;              // sarı bandın üst kenarı
     const slogY = bandY - 14;                  // slogan bloğunun üstü
-    const dy = 3;                              // araç + rozet, eski yerine göre 3 mm aşağıda
-    // Görsel alan: aracın önden görünümü + cama yapışık sticker
+    // Görsel alan: gerçek oranlı araç (önden) + camdaki sticker için büyüteç
     const vTop = 39, vBot = slogY - 1;
     ctx.save();
     ctx.beginPath(); ctx.rect(-BLEED, vTop, w + 2 * BLEED, vBot - vTop); ctx.clip();
-    ctx.translate(0, dy);
-    (window.KQR_CAM_OVERRIDE || windshield)(ctx, { w, vTop: vTop - dy, vBot: vBot - dy, px, BLEED, SAFE, C, PT, rr, txt, sticker });
+    const st = arabaOn(ctx, { cx: 36.5, yer: 93.8, s: 0.028, px });
     ctx.restore();
 
     // Telefon mockup (~28 × 56 mm), sağa yakın; ekran lokal UV lak
     phone(ctx, w - SAFE - 2 - 28, 39.5, 28, 56, px);
 
+    // Büyüteç: sticker'ın yakın planı (sol üstte, araçla telefonun arasında kalmaz)
+    buyutec(ctx, 12.9, 47.9, 8.7, st, px);
+
     // Rozet: sarı zemin, siyah yazı, eğik etiket (lak almaz)
     ctx.save();
-    ctx.translate(22.2, 84.4 + dy); ctx.rotate(-6 * Math.PI / 180);
+    ctx.translate(53, 90.4); ctx.rotate(-6 * Math.PI / 180);
     ctx.fillStyle = C.Y; rr(ctx, -17, -4.75, 34, 9.5, 2.2); ctx.fill();
     txt(ctx, 'Artık numaratöre', 0, -0.55, { size: 8.3 * PT, w: 800, color: C.K100, align: 'center' });
     txt(ctx, 'gerek yok', 0, 2.75, { size: 8.3 * PT, w: 800, color: C.K100, align: 'center' });
@@ -322,192 +324,384 @@
     const items = [['gizli', 'Numaran', 'gizli'], ['bildirim', 'Anında', 'bildirim'],
                    ['kartvizit', 'Dijital', 'kartvizit'], ['ucretsiz', 'Aylık', 'ücret yok']];
     // gruplar eşit aralıkla dağıtılır: ilk grup L'de (logo/slogan hizası), son grup w − L'de biter
-    const ic = 7.2, ls = 7 * PT, iy = bandY + (14 - ic) / 2;
+    const ic = 7.2, ls = 7 * PT;
     const gruplar = items.map(it => ic + 1.3 + Math.max(tw(ctx, it[1], ls, 600), tw(ctx, it[2], ls, 600)));
     const ara = (w - 2 * L - gruplar.reduce((a, b) => a + b, 0)) / (items.length - 1);
-    let gx = L;
+    const gxs = gruplar.map((g, i) => L + gruplar.slice(0, i).reduce((a, b) => a + b, 0) + i * ara);
+    // Dikey konum: sarı alanın ortasına olabildiğince yakın. Sınır, alt kenarın ortasındaki Ø20 mühür
+    // etiketinin ön yüzdeki yarım dairesi (metin/ikon giremez): her grup ona en az MUHUR_PAY uzak kalır.
+    const muhurUzak = y => Math.min(...gxs.map((x0, i) => {
+      const dx = Math.max(x0 - w / 2, 0, w / 2 - (x0 + gruplar[i]));
+      return Math.hypot(dx, h - (y + ic));
+    }));
+    let iy = bandY + (FRONT_BAND - ic) / 2;
+    while (muhurUzak(iy) < MUHUR_D / 2 + MUHUR_PAY) iy -= 0.05;
     items.forEach((it, i) => {
-      if (i) gx += gruplar[i - 1] + ara;
+      const gx = gxs[i];
       ctx.save(); ctx.translate(gx, iy); ctx.scale(ic / 10, ic / 10); ICONS[it[0]](ctx); ctx.restore();
       txt(ctx, it[1], gx + ic + 1.3, iy + ic / 2 - 0.35, { size: ls, w: 600, color: C.K100 });
       txt(ctx, it[2], gx + ic + 1.3, iy + ic / 2 + 2.45, { size: ls, w: 600, color: C.K100 });
     });
-    // En alt 10 mm: mühür bandı – yalnızca zemin rengi
+    // Alt kenarın ortası: Ø20 mühür etiketi alanı – yalnızca zemin rengi
   }
 
-  // Ön cam illüstrasyonu: aracın önden sade çizgisel görünümü (tavan, ön cam, iç dikiz aynası,
-  // yan aynalar, kaput, farlar, ızgara); sticker camın sol alt köşesinde, sarı odak köşeleriyle.
-  // (3 adaylı tasarım turundan seçildi.) o: { w, vTop, vBot, px, BLEED, SAFE, C, PT, rr, txt, sticker }
-  function windshield(ctx, o) {
-    const C = o.C;
-    const cx = 42;                       // araç eksen x
-    const M = x => 2 * cx - x;           // sağa aynala
+  // ------------------------------------------------------------ ARAÇ (önden, gerçek oranlarla)
+  // Modern bir kompakt otomobilin önden görünüşü gerçek ölçülerle tanımlanır (mm, x eksenden sağa, y yerden
+  // yukarı) ve kutuya s ölçeğiyle çizilir. Ölçüler: gövde 1836 × 1480, iz 1560, lastik 215, ayna açıklığı 2074.
+  // Sticker (50 × 80 mm) camın sol alt köşesinde GERÇEK boyutunda durur; ayrıca büyüteçte yakından gösterilir.
+  // Ön görünüşte cam eğik olduğu için dikey ölçüler CAM_K oranında kısalır.
+  const ARAC = { STK_X: -618, STK_Y: 1064, STK_W: 50, STK_H: 80, CAM_K: 0.45 };
 
-    function line(a, b, c, d) { ctx.beginPath(); ctx.moveTo(a, b); ctx.lineTo(c, d); ctx.stroke(); }
-    function both(fn) { fn(x => x); fn(M); }
+  function yolCiz(ctx, segs, devam) {
+    segs.forEach((g, i) => {
+      if (g[0] === 'M') { if (devam && i === 0) ctx.lineTo(g[1], g[2]); else ctx.moveTo(g[1], g[2]); }
+      else if (g[0] === 'L') ctx.lineTo(g[1], g[2]);
+      else if (g[0] === 'Q') ctx.quadraticCurveTo(g[1], g[2], g[3], g[4]);
+      else ctx.bezierCurveTo(g[1], g[2], g[3], g[4], g[5], g[6]);
+    });
+  }
+  const aynala = segs => segs.map(g => g.map((v, i) => (i % 2 === 1 ? -v : v)));   // x → −x
+  function tersYol(segs) {
+    const uc = segs.map(g => [g[g.length - 2], g[g.length - 1]]);
+    const out = [['M', ...uc[uc.length - 1]]];
+    for (let i = segs.length - 1; i >= 1; i--) {
+      const g = segs[i], p = uc[i - 1];
+      if (g[0] === 'L') out.push(['L', ...p]);
+      else if (g[0] === 'Q') out.push(['Q', g[1], g[2], ...p]);
+      else out.push(['C', g[3], g[4], g[1], g[2], ...p]);
+    }
+    return out;
+  }
+  // sağ yarısı (üst ortadan alt ortaya) verilen simetrik kapalı şekil
+  function simetrik(ctx, sag) { ctx.beginPath(); yolCiz(ctx, sag); yolCiz(ctx, tersYol(aynala(sag)), true); ctx.closePath(); }
+  function sekil(ctx, segs) { ctx.beginPath(); yolCiz(ctx, segs); ctx.closePath(); }
+  function ikiYan(ctx, segs, fn) { [segs, aynala(segs)].forEach((s, k) => { sekil(ctx, s); fn(k ? -1 : 1); }); }
 
+  const GOVDE = [['M', 0, 1480], ['Q', 380, 1478, 598, 1452], ['Q', 652, 1446, 668, 1418], ['L', 762, 1186],
+    ['Q', 800, 1082, 866, 998], ['Q', 906, 962, 912, 880], ['L', 918, 640], ['Q', 919, 470, 902, 405],
+    ['Q', 890, 362, 846, 352], ['L', 700, 346], ['Q', 648, 344, 636, 310], ['L', 612, 228], ['Q', 600, 196, 560, 192], ['L', 0, 184]];
+  const CAM = [['M', 0, 1416], ['Q', 330, 1413, 522, 1397], ['Q', 550, 1394, 557, 1370], ['L', 688, 1050],
+    ['Q', 697, 1022, 668, 1019], ['Q', 330, 1010, 0, 1008]];
+  const KAPUT = [['M', 0, 992], ['L', 716, 994], ['Q', 768, 992, 788, 958], ['L', 822, 832], ['Q', 828, 808, 800, 806],
+    ['Q', 400, 792, 0, 776]];
+  const IZGARA = [['M', 0, 744], ['L', 356, 730], ['Q', 392, 722, 386, 700], ['L', 346, 642], ['Q', 334, 628, 300, 628], ['L', 0, 630]];
+  const ALT_GIRIS = [['M', 0, 524], ['L', 440, 518], ['Q', 480, 516, 472, 488], ['L', 444, 350], ['Q', 436, 324, 404, 322], ['L', 0, 316]];
+  const PLAKA = { x: -255, y: 382, w: 510, h: 110 };     // TR plakası 520 × 110 (önden)
+  const FAR = [['M', 386, 706], ['Q', 600, 752, 850, 790], ['Q', 882, 793, 885, 768], ['Q', 888, 736, 858, 729],
+    ['Q', 620, 700, 420, 672], ['Q', 378, 678, 386, 706]];
+  const YAN_GIRIS = [['M', 566, 576], ['L', 690, 562], ['Q', 736, 557, 744, 520], ['L', 756, 438], ['Q', 761, 396, 724, 394],
+    ['L', 604, 392], ['Q', 570, 393, 568, 426]];
+  const SUTUN = [['M', 545, 1404], ['L', 636, 1421], ['L', 783, 1000], ['L', 703, 1010]];
+  const YAN_CAM = [['M', 636, 1421], ['L', 666, 1419], ['L', 760, 1188], ['Q', 798, 1084, 860, 1000], ['L', 783, 1000]];
+  const AYNA = [['M', 840, 1004], ['Q', 930, 984, 1000, 990], ['Q', 1042, 996, 1042, 1046], ['Q', 1042, 1100, 990, 1110],
+    ['L', 886, 1108], ['Q', 846, 1104, 840, 1066]];
+  const LASTIK = [['M', 668, 330], ['L', 886, 330], ['L', 888, 70], ['Q', 888, 8, 846, 4], ['L', 708, 4], ['Q', 666, 8, 666, 70]];
+
+  // o: { cx, yer, s, px } → kutu mm; döndürür: sticker'ın kutudaki kutusu {x, y, w, h}
+  function arabaOn(ctx, o) {
+    const s = o.s, lw = mm => mm / s, px = o.px || 10;
+    const isik = a => `rgba(255,255,255,${a})`;
     ctx.save();
+    ctx.translate(o.cx, o.yer); ctx.scale(s, -s);
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
 
-    // ---------------------------------------------------------------- gövde
-    // kabin (tavan + A sütunları)
-    ctx.beginPath();
-    ctx.moveTo(cx - 22.6, 44.2);
-    ctx.quadraticCurveTo(cx, 41.2, cx + 22.6, 44.2);
-    ctx.lineTo(cx + 30.6, 66.6);
-    ctx.lineTo(cx - 30.6, 66.6);
-    ctx.closePath();
-    ctx.fillStyle = C.K; ctx.fill();
+    // zemin parıltısı (stüdyo ışığı, aracı zemine oturtur)
+    ctx.save(); ctx.scale(1, 0.085);
+    const zg = ctx.createRadialGradient(0, 0, 0, 0, 0, 1350);
+    zg.addColorStop(0, isik(0.10)); zg.addColorStop(0.55, isik(0.035)); zg.addColorStop(1, isik(0));
+    ctx.fillStyle = zg; ctx.beginPath(); ctx.arc(0, 0, 1350, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
 
-    // alt gövde (omuz → tampon)
-    ctx.beginPath();
-    ctx.moveTo(cx - 30.6, 66.4);
-    ctx.quadraticCurveTo(cx - 34.2, 67.2, cx - 34.8, 70.2);
-    ctx.lineTo(cx - 35.3, 80.5);
-    ctx.quadraticCurveTo(cx - 35.3, 86.4, cx - 31, 86.8);
-    ctx.lineTo(cx + 31, 86.8);
-    ctx.quadraticCurveTo(cx + 35.3, 86.4, cx + 35.3, 80.5);
-    ctx.lineTo(cx + 34.8, 70.2);
-    ctx.quadraticCurveTo(cx + 34.2, 67.2, cx + 30.6, 66.4);
-    ctx.closePath();
-    ctx.fillStyle = C.K; ctx.fill();
-    const gb = ctx.createLinearGradient(0, 66, 0, 88);
-    gb.addColorStop(0, 'rgba(42,42,42,0.55)'); gb.addColorStop(1, 'rgba(42,42,42,0)');
-    ctx.fillStyle = gb; ctx.fill();
+    // temas gölgesi
+    ctx.save(); ctx.scale(1, 0.06);
+    const cs = ctx.createRadialGradient(0, 0, 0, 0, 0, 1000);
+    cs.addColorStop(0, 'rgba(0,0,0,0.8)'); cs.addColorStop(0.75, 'rgba(0,0,0,0.55)'); cs.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = cs; ctx.beginPath(); ctx.arc(0, 0, 1000, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
 
-    // gövde konturu
-    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.4;
-    ctx.beginPath();
-    ctx.moveTo(cx - 30.6, 66.6);
-    ctx.quadraticCurveTo(cx - 34.2, 67.2, cx - 34.8, 70.2);
-    ctx.lineTo(cx - 35.3, 80.5);
-    ctx.quadraticCurveTo(cx - 35.3, 86.4, cx - 31, 86.8);
-    ctx.lineTo(cx + 31, 86.8);
-    ctx.quadraticCurveTo(cx + 35.3, 86.4, cx + 35.3, 80.5);
-    ctx.lineTo(cx + 34.8, 70.2);
-    ctx.quadraticCurveTo(cx + 34.2, 67.2, cx + 30.6, 66.6);
-    ctx.stroke();
-    // kabin konturu (tavan + A sütunu dışı)
-    ctx.beginPath();
-    ctx.moveTo(cx - 30.6, 66.6);
-    ctx.lineTo(cx - 22.6, 44.2);
-    ctx.quadraticCurveTo(cx, 41.2, cx + 22.6, 44.2);
-    ctx.lineTo(cx + 30.6, 66.6);
-    ctx.stroke();
+    // lastikler (gövdenin arkasında kalır): sırt yüzeyi silindir gibi gölgelenir
+    ikiYan(ctx, LASTIK, k => {
+      const tg = ctx.createLinearGradient(0, 0, 0, 340);
+      tg.addColorStop(0, '#060707'); tg.addColorStop(0.3, '#1d1f21'); tg.addColorStop(0.62, '#17181a'); tg.addColorStop(1, '#0b0c0d');
+      ctx.fillStyle = tg; ctx.fill();
+      ctx.save(); ctx.clip();
+      ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = lw(0.12);
+      [736, 777, 818].forEach(x => { ctx.beginPath(); ctx.moveTo(k * x, 14); ctx.lineTo(k * x, 330); ctx.stroke(); });
+      const omuz = ctx.createLinearGradient(k * 666, 0, k * 888, 0);
+      omuz.addColorStop(0, 'rgba(0,0,0,0.6)'); omuz.addColorStop(0.18, 'rgba(0,0,0,0)'); omuz.addColorStop(0.82, 'rgba(0,0,0,0)'); omuz.addColorStop(1, 'rgba(0,0,0,0.6)');
+      ctx.fillStyle = omuz; ctx.fillRect(k > 0 ? 660 : -892, 0, 232, 340);
+      ctx.restore();
+      ctx.strokeStyle = isik(0.1); ctx.lineWidth = lw(0.1); ctx.stroke();
+    });
 
-    // ---------------------------------------------------------------- ön cam
-    const gT = 45.4, gB = 66.2, hT = 21.0, hB = 27.8;   // üst/alt y, yarı genişlik
-    const glass = () => {
-      ctx.beginPath();
-      ctx.moveTo(cx - hT, gT + 0.4);
-      ctx.quadraticCurveTo(cx, gT - 1.6, cx + hT, gT + 0.4);
-      ctx.lineTo(cx + hB, gB - 0.6);
-      ctx.quadraticCurveTo(cx, gB + 1.2, cx - hB, gB - 0.6);
-      ctx.closePath();
-    };
-    glass(); ctx.fillStyle = C.K; ctx.fill();
-    const gg = ctx.createLinearGradient(cx - 30, gT, cx + 10, gB + 6);
-    gg.addColorStop(0, C.A); gg.addColorStop(0.6, 'rgba(42,42,42,0.45)'); gg.addColorStop(1, 'rgba(42,42,42,0.2)');
+    // gövde: temel dolgu (üst yüzeyler ışık alır)
+    simetrik(ctx, GOVDE);
+    const gg = ctx.createLinearGradient(0, 176, 0, 1480);
+    gg.addColorStop(0, '#0f1011'); gg.addColorStop(0.18, '#18191b'); gg.addColorStop(0.45, '#212326');
+    gg.addColorStop(0.62, '#272a2d'); gg.addColorStop(0.7, '#1f2124'); gg.addColorStop(0.93, '#2b2e32'); gg.addColorStop(1, '#43474c');
     ctx.fillStyle = gg; ctx.fill();
-    // yansıma bantları
-    ctx.save(); glass(); ctx.clip();
-    ctx.fillStyle = 'rgba(244,244,242,0.07)';
-    ctx.beginPath(); ctx.moveTo(cx + 2, gT - 2); ctx.lineTo(cx + 9, gT - 2); ctx.lineTo(cx - 3, gB + 2); ctx.lineTo(cx - 10, gB + 2); ctx.closePath(); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(cx + 11, gT - 2); ctx.lineTo(cx + 13, gT - 2); ctx.lineTo(cx + 1, gB + 2); ctx.lineTo(cx - 1, gB + 2); ctx.closePath(); ctx.fill();
+    // yan yüzeyler kenara doğru koyulaşır (hacim)
+    ctx.save(); simetrik(ctx, GOVDE); ctx.clip();
+    const yg = ctx.createLinearGradient(-930, 0, 930, 0);
+    yg.addColorStop(0, 'rgba(0,0,0,0.55)'); yg.addColorStop(0.16, 'rgba(0,0,0,0)'); yg.addColorStop(0.84, 'rgba(0,0,0,0)'); yg.addColorStop(1, 'rgba(0,0,0,0.55)');
+    ctx.fillStyle = yg; ctx.fillRect(-940, 150, 1880, 1350);
     ctx.restore();
-    // cam konturu
-    glass(); ctx.strokeStyle = C.W; ctx.lineWidth = 0.55; ctx.stroke();
 
-    // iç dikiz aynası
-    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.3;
-    line(cx, gT - 0.9, cx, gT + 1.2);
-    ctx.fillStyle = C.A; o.rr(ctx, cx - 4.2, gT + 1.2, 8.4, 2.6, 1.2); ctx.fill(); ctx.stroke();
-
-    // silecekler (cam alt kenarında park)
-    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.35;
-    line(cx + 1.5, gB + 0.2, cx - 9.5, gB - 0.9);
-    line(cx + 21, gB - 0.4, cx + 6.5, gB - 1.0);
-
-    // ---------------------------------------------------------------- yan aynalar
-    both(f => {
-      // ayak
-      ctx.beginPath();
-      ctx.moveTo(f(cx - 30.4), 64.2); ctx.lineTo(f(cx - 32.6), 64.6); ctx.lineTo(f(cx - 32.6), 66.2); ctx.lineTo(f(cx - 30.9), 66.5);
-      ctx.fillStyle = C.K; ctx.fill(); ctx.strokeStyle = C.KB; ctx.lineWidth = 0.35; ctx.stroke();
-      // gövde
-      ctx.beginPath();
-      ctx.moveTo(f(cx - 32.4), 62.4);
-      ctx.quadraticCurveTo(f(cx - 37.9), 62.0, f(cx - 37.8), 64.4);
-      ctx.quadraticCurveTo(f(cx - 37.6), 66.9, f(cx - 33.4), 67.0);
-      ctx.quadraticCurveTo(f(cx - 32.2), 67.0, f(cx - 32.2), 65.6);
-      ctx.lineTo(f(cx - 32.2), 63.4);
-      ctx.quadraticCurveTo(f(cx - 32.2), 62.4, f(cx - 32.4), 62.4);
-      ctx.closePath();
-      ctx.fillStyle = C.K; ctx.fill();
-      ctx.strokeStyle = C.KB; ctx.lineWidth = 0.4; ctx.stroke();
+    // kaput: yukarı bakan yüzey, gövdeden açık
+    simetrik(ctx, KAPUT);
+    const kg = ctx.createLinearGradient(0, 776, 0, 992);
+    kg.addColorStop(0, '#24272a'); kg.addColorStop(0.35, '#3b3f44'); kg.addColorStop(1, '#30343a');
+    ctx.fillStyle = kg; ctx.fill();
+    ctx.save(); simetrik(ctx, KAPUT); ctx.clip();
+    ctx.fillStyle = yg; ctx.fillRect(-940, 760, 1880, 240);
+    const hs = ctx.createRadialGradient(-140, 905, 10, -140, 905, 560);
+    hs.addColorStop(0, 'rgba(255,255,255,0.12)'); hs.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = hs; ctx.fillRect(-940, 760, 1880, 240);
+    // kaput kıvrımları (ışık + gölge çifti)
+    [[1, 0.2], [-1, 0.2]].forEach(([k]) => {
+      ctx.strokeStyle = isik(0.16); ctx.lineWidth = lw(0.16);
+      ctx.beginPath(); ctx.moveTo(k * 238, 786); ctx.quadraticCurveTo(k * 300, 880, k * 372, 990); ctx.stroke();
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.beginPath(); ctx.moveTo(k * 252, 786); ctx.quadraticCurveTo(k * 316, 880, k * 390, 990); ctx.stroke();
     });
-
-    // ---------------------------------------------------------------- kaput
-    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.3;
-    // kaput ön kenarı
-    ctx.beginPath(); ctx.moveTo(cx - 33.8, 71.2); ctx.quadraticCurveTo(cx, 73.2, cx + 33.8, 71.2); ctx.stroke();
-    // kaput kıvrımları
-    ctx.strokeStyle = C.A; ctx.lineWidth = 0.4;
-    both(f => { ctx.beginPath(); ctx.moveTo(f(cx - 13), 67.6); ctx.quadraticCurveTo(f(cx - 11), 70, f(cx - 10), 72.4); ctx.stroke(); });
-
-    // ---------------------------------------------------------------- farlar
-    both(f => {
-      ctx.beginPath();
-      ctx.moveTo(f(cx - 33.9), 72.6);
-      ctx.quadraticCurveTo(f(cx - 25), 73.4, f(cx - 17.5), 74.4);
-      ctx.quadraticCurveTo(f(cx - 16.4), 74.6, f(cx - 17.2), 75.6);
-      ctx.lineTo(f(cx - 19.5), 77.4);
-      ctx.quadraticCurveTo(f(cx - 27), 77.2, f(cx - 33.2), 76.4);
-      ctx.closePath();
-      ctx.fillStyle = C.A; ctx.fill();
-      ctx.strokeStyle = C.W; ctx.lineWidth = 0.35; ctx.stroke();
-      // gündüz farı çizgisi
-      ctx.strokeStyle = C.KB; ctx.lineWidth = 0.3;
-      ctx.beginPath(); ctx.moveTo(f(cx - 32.4), 73.6); ctx.quadraticCurveTo(f(cx - 25), 74.3, f(cx - 19), 75.2); ctx.stroke();
-      // mercek
-      ctx.strokeStyle = C.KB; ctx.lineWidth = 0.25;
-      ctx.beginPath(); ctx.arc(f(cx - 28.5), 75.4, 0.9, 0, Math.PI * 2); ctx.stroke();
-      ctx.beginPath(); ctx.arc(f(cx - 25), 75.7, 0.9, 0, Math.PI * 2); ctx.stroke();
-    });
-
-    // ---------------------------------------------------------------- ızgara
-    const grille = () => {
-      ctx.beginPath();
-      ctx.moveTo(cx - 14.8, 74.2); ctx.quadraticCurveTo(cx, 74.9, cx + 14.8, 74.2);
-      ctx.lineTo(cx + 12.2, 79.6); ctx.quadraticCurveTo(cx, 80.3, cx - 12.2, 79.6);
-      ctx.closePath();
-    };
-    grille(); ctx.fillStyle = C.K; ctx.fill();
-    ctx.save(); grille(); ctx.clip();
-    ctx.strokeStyle = C.A; ctx.lineWidth = 0.35;
-    for (let y = 75.6; y < 80; y += 1.3) line(cx - 16, y, cx + 16, y);
     ctx.restore();
-    grille(); ctx.strokeStyle = C.KB; ctx.lineWidth = 0.35; ctx.stroke();
+    // kaput ön kenarı parlaklığı + yan kapı (çamurluk) derz çizgileri
+    ctx.strokeStyle = isik(0.42); ctx.lineWidth = lw(0.18);
+    ctx.beginPath(); ctx.moveTo(-800, 806); ctx.quadraticCurveTo(-400, 792, 0, 776); ctx.quadraticCurveTo(400, 792, 800, 806); ctx.stroke();
+    ctx.strokeStyle = '#060707'; ctx.lineWidth = lw(0.16);
+    [1, -1].forEach(k => { ctx.beginPath(); ctx.moveTo(k * 788, 958); ctx.lineTo(k * 822, 832); ctx.stroke(); });
 
-    // tampon alt hava girişi
-    ctx.strokeStyle = C.KB; ctx.lineWidth = 0.3;
-    ctx.beginPath();
-    ctx.moveTo(cx - 20, 82.6); ctx.lineTo(cx + 20, 82.6); ctx.lineTo(cx + 17.5, 85.4); ctx.lineTo(cx - 17.5, 85.4); ctx.closePath(); ctx.stroke();
+    // ön cam bölgesi: torpido gözü (cowl) + silecek
+    ctx.fillStyle = '#0a0b0c';
+    ctx.beginPath(); ctx.moveTo(-716, 994); ctx.lineTo(716, 994); ctx.lineTo(690, 1016); ctx.quadraticCurveTo(0, 1004, -690, 1016); ctx.closePath(); ctx.fill();
 
-    // ---------------------------------------------------------------- sticker (camın sol alt köşesi)
-    const sw = 9.5, sh = sw * 1.6;
-    const sx = cx - hB + 7.4, sy = gB - 1.9 - sh;
-    // kesim kenarı: 0.2 mm beyaz pay (baskıda seçilsin)
-    ctx.fillStyle = C.W; o.rr(ctx, sx - 0.2, sy - 0.2, sw + 0.4, sh + 0.4, sw * 112 / 764 + 0.2); ctx.fill();
-    o.sticker(ctx, sx, sy, sw, { edge: 16 });
+    // CAM: koyu, içi hafif görünür
+    simetrik(ctx, CAM); ctx.fillStyle = '#0c0e11'; ctx.fill();
+    ctx.save(); simetrik(ctx, CAM); ctx.clip();
+    // arka cam ışığı (derinlik)
+    ctx.fillStyle = isik(0.05);
+    ctx.beginPath(); ctx.moveTo(-470, 1352); ctx.lineTo(470, 1352); ctx.lineTo(520, 1168); ctx.lineTo(-520, 1168); ctx.closePath(); ctx.fill();
+    // koltuk sırtları ve başlıklar
+    [-1, 1].forEach(k => {
+      ctx.fillStyle = '#16181a'; rr(ctx, k * 355 - 165, 1100, 330, 140, 60); ctx.fill();
+      ctx.fillStyle = '#1d2023'; rr(ctx, k * 355 - 86, 1222, 172, 108, 42); ctx.fill();
+      ctx.strokeStyle = isik(0.07); ctx.lineWidth = lw(0.12); rr(ctx, k * 355 - 86, 1222, 172, 108, 42); ctx.stroke();
+      ctx.fillStyle = '#131416'; rr(ctx, k * 300 - 58, 1200, 116, 66, 26); ctx.fill();
+    });
+    // direksiyon (sürücü = aracın solu = görüntünün sağı)
+    ctx.strokeStyle = '#2b2e31'; ctx.lineWidth = lw(0.9);
+    ctx.beginPath(); ctx.ellipse(362, 1092, 176, 124, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = isik(0.10); ctx.lineWidth = lw(0.14);
+    ctx.beginPath(); ctx.ellipse(362, 1092, 190, 138, 0, Math.PI * 0.15, Math.PI * 0.85); ctx.stroke();
+    // torpido (camın arkasında)
+    ctx.fillStyle = '#111214';
+    ctx.beginPath(); ctx.moveTo(-720, 1000); ctx.lineTo(-720, 1056); ctx.quadraticCurveTo(0, 1102, 720, 1056); ctx.lineTo(720, 1000); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#16181a';
+    ctx.beginPath(); ctx.moveTo(214, 1084); ctx.quadraticCurveTo(362, 1146, 512, 1076); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = isik(0.09); ctx.lineWidth = lw(0.12);
+    ctx.beginPath(); ctx.moveTo(-700, 1058); ctx.quadraticCurveTo(0, 1104, 700, 1058); ctx.stroke();
+    // iç dikiz aynası + sensör kapağı
+    ctx.fillStyle = '#050606'; rr(ctx, -72, 1352, 144, 70, 18); ctx.fill();
+    ctx.fillStyle = '#121416'; rr(ctx, -124, 1296, 248, 58, 22); ctx.fill();
+    ctx.strokeStyle = isik(0.32); ctx.lineWidth = lw(0.12); rr(ctx, -124, 1296, 248, 58, 22); ctx.stroke();
+    // serigrafi (siyah seramik bant): üst kenar
+    const sg = ctx.createLinearGradient(0, 1416, 0, 1360);
+    sg.addColorStop(0, 'rgba(0,0,0,0.95)'); sg.addColorStop(0.55, 'rgba(0,0,0,0.85)'); sg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = sg; ctx.fillRect(-700, 1360, 1400, 60);
+    // gökyüzü yansıması + çapraz parlamalar
+    const rg = ctx.createLinearGradient(0, 1416, 0, 1008);
+    rg.addColorStop(0, 'rgba(205,215,228,0.20)'); rg.addColorStop(0.45, 'rgba(205,215,228,0.05)'); rg.addColorStop(1, 'rgba(205,215,228,0.0)');
+    ctx.fillStyle = rg; ctx.fillRect(-720, 1000, 1440, 420);
+    ctx.fillStyle = isik(0.055);
+    ctx.beginPath(); ctx.moveTo(-60, 1420); ctx.lineTo(90, 1420); ctx.lineTo(-170, 1000); ctx.lineTo(-320, 1000); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(140, 1420); ctx.lineTo(185, 1420); ctx.lineTo(-75, 1000); ctx.lineTo(-120, 1000); ctx.closePath(); ctx.fill();
+    ctx.restore();
+    // cam kenarı
+    simetrik(ctx, CAM); ctx.strokeStyle = isik(0.42); ctx.lineWidth = lw(0.15); ctx.stroke();
+    // silecekler
+    ctx.strokeStyle = '#1b1d1f'; ctx.lineWidth = lw(0.32);
+    ctx.beginPath(); ctx.moveTo(-36, 1013); ctx.lineTo(-650, 1027); ctx.moveTo(612, 1013); ctx.lineTo(70, 1024); ctx.stroke();
+    ctx.strokeStyle = isik(0.22); ctx.lineWidth = lw(0.1);
+    ctx.beginPath(); ctx.moveTo(-36, 1019); ctx.lineTo(-650, 1033); ctx.moveTo(612, 1019); ctx.lineTo(70, 1030); ctx.stroke();
 
-    // sarı odak köşe işaretleri
-    const g = 0.9, L = 2.0, x0 = sx - g, y0 = sy - g, x1 = sx + sw + g, y1 = sy + sh + g;
-    ctx.strokeStyle = C.Y; ctx.lineWidth = 0.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    [[x0, y0, 1, 1], [x1, y0, -1, 1], [x0, y1, 1, -1], [x1, y1, -1, -1]].forEach(([x, y, dx, dy]) => {
-      ctx.beginPath(); ctx.moveTo(x + dx * L, y); ctx.lineTo(x, y); ctx.lineTo(x, y + dy * L); ctx.stroke();
+    // A sütunları ve yan camlar
+    ikiYan(ctx, YAN_CAM, () => { ctx.fillStyle = '#0b0d0f'; ctx.fill(); ctx.strokeStyle = isik(0.18); ctx.lineWidth = lw(0.1); ctx.stroke(); });
+    ikiYan(ctx, SUTUN, () => {
+      const pg = ctx.createLinearGradient(0, 1000, 0, 1420);
+      pg.addColorStop(0, '#1d1f22'); pg.addColorStop(1, '#2c2f33');
+      ctx.fillStyle = pg; ctx.fill();
+    });
+    // tavan kenarı ve gövde silüeti (kenar ışığı)
+    simetrik(ctx, GOVDE); ctx.strokeStyle = isik(0.38); ctx.lineWidth = lw(0.16); ctx.stroke();
+    ctx.strokeStyle = isik(0.55); ctx.lineWidth = lw(0.2);
+    ctx.beginPath(); ctx.moveTo(-598, 1452); ctx.quadraticCurveTo(0, 1484, 598, 1452); ctx.stroke();
+    // omuz çizgisi (aynadan fara)
+    ctx.strokeStyle = isik(0.2); ctx.lineWidth = lw(0.14);
+    [1, -1].forEach(k => { ctx.beginPath(); ctx.moveTo(k * 868, 990); ctx.quadraticCurveTo(k * 896, 900, k * 884, 800); ctx.stroke(); });
+
+    // yan aynalar
+    ikiYan(ctx, AYNA, k => {
+      const ag = ctx.createLinearGradient(0, 990, 0, 1115);
+      ag.addColorStop(0, '#16181a'); ag.addColorStop(1, '#30343a');
+      ctx.fillStyle = ag; ctx.fill();
+      ctx.strokeStyle = isik(0.4); ctx.lineWidth = lw(0.14); ctx.stroke();
+      ctx.strokeStyle = isik(0.5); ctx.lineWidth = lw(0.12);   // üst kenar ışığı
+      ctx.beginPath(); ctx.moveTo(k * 880, 1104); ctx.lineTo(k * 986, 1106); ctx.quadraticCurveTo(k * 1030, 1098, k * 1038, 1060); ctx.stroke();
     });
 
+    // ızgara
+    simetrik(ctx, IZGARA); ctx.fillStyle = '#0a0b0c'; ctx.fill();
+    ctx.save(); simetrik(ctx, IZGARA); ctx.clip();
+    ctx.strokeStyle = '#2a2d30'; ctx.lineWidth = lw(0.16);
+    [716, 694, 672, 650].forEach(y => { ctx.beginPath(); ctx.moveTo(-400, y); ctx.lineTo(400, y); ctx.stroke(); });
+    ctx.restore();
+    ctx.strokeStyle = isik(0.5); ctx.lineWidth = lw(0.14);
+    ctx.beginPath(); ctx.moveTo(-356, 730); ctx.lineTo(0, 744); ctx.lineTo(356, 730); ctx.stroke();
+    // amblem (markasız)
+    ctx.fillStyle = '#15171a'; ctx.beginPath(); ctx.arc(0, 688, 30, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = isik(0.7); ctx.lineWidth = lw(0.16); ctx.stroke();
+    ctx.strokeStyle = isik(0.35); ctx.lineWidth = lw(0.1); ctx.beginPath(); ctx.arc(0, 688, 17, 0, Math.PI * 2); ctx.stroke();
+
+    // farlar
+    ikiYan(ctx, FAR, k => {
+      const fg = ctx.createLinearGradient(0, 672, 0, 792);
+      fg.addColorStop(0, '#08090a'); fg.addColorStop(1, '#2a2e33');
+      ctx.fillStyle = fg; ctx.fill();
+      ctx.strokeStyle = isik(0.55); ctx.lineWidth = lw(0.14); ctx.stroke();
+      // gündüz farı (LED şerit, hafif ışıma)
+      ctx.save();
+      ctx.shadowColor = 'rgba(255,255,255,0.9)'; ctx.shadowBlur = 0.6 * px;
+      ctx.strokeStyle = '#F4F4F2'; ctx.lineWidth = lw(0.32);
+      ctx.beginPath(); ctx.moveTo(k * 420, 712); ctx.quadraticCurveTo(k * 610, 750, k * 846, 781); ctx.stroke();
+      ctx.restore();
+      [[700, 742, 27], [566, 724, 21]].forEach(([x, y, r]) => {
+        const lg = ctx.createRadialGradient(k * x - k * 6, y + 6, 2, k * x, y, r);
+        lg.addColorStop(0, '#4a4f56'); lg.addColorStop(1, '#0b0c0e');
+        ctx.fillStyle = lg; ctx.beginPath(); ctx.arc(k * x, y, r, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = isik(0.45); ctx.lineWidth = lw(0.1); ctx.stroke();
+      });
+    });
+
+    // tampon: yatay kıvrım + alt hava girişi + yan girişler
+    ctx.strokeStyle = isik(0.14); ctx.lineWidth = lw(0.14);
+    ctx.beginPath(); ctx.moveTo(-560, 612); ctx.quadraticCurveTo(0, 626, 560, 612); ctx.stroke();
+    simetrik(ctx, ALT_GIRIS); ctx.fillStyle = '#0a0b0c'; ctx.fill();
+    ctx.save(); simetrik(ctx, ALT_GIRIS); ctx.clip();
+    ctx.strokeStyle = '#1e2124'; ctx.lineWidth = lw(0.1);
+    for (let d = -1100; d < 1100; d += 30) {
+      ctx.beginPath(); ctx.moveTo(d, 280); ctx.lineTo(d + 280, 560); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(d, 560); ctx.lineTo(d + 280, 280); ctx.stroke();
+    }
+    ctx.restore();
+    ctx.strokeStyle = isik(0.32); ctx.lineWidth = lw(0.14);
+    ctx.beginPath(); ctx.moveTo(-440, 518); ctx.lineTo(0, 524); ctx.lineTo(440, 518); ctx.stroke();
+    // ön spoyler dudağı
+    ctx.strokeStyle = isik(0.12); ctx.lineWidth = lw(0.12);
+    ctx.beginPath(); ctx.moveTo(-560, 214); ctx.lineTo(560, 214); ctx.stroke();
+    ikiYan(ctx, YAN_GIRIS, k => {
+      ctx.fillStyle = '#0a0b0c'; ctx.fill(); ctx.strokeStyle = isik(0.22); ctx.lineWidth = lw(0.12); ctx.stroke();
+      ctx.save(); ctx.clip();
+      ctx.strokeStyle = '#1e2124'; ctx.lineWidth = lw(0.12);
+      [440, 470, 500, 530].forEach(y => { ctx.beginPath(); ctx.moveTo(k * 560, y); ctx.lineTo(k * 770, y + 6); ctx.stroke(); });
+      ctx.restore();
+      const sl = ctx.createRadialGradient(k * 660, 420, 2, k * 660, 420, 24);
+      sl.addColorStop(0, '#d9dbdd'); sl.addColorStop(0.5, '#5b6066'); sl.addColorStop(1, '#16181b');
+      ctx.fillStyle = sl; ctx.beginPath(); ctx.ellipse(k * 660, 420, 30, 22, 0, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.restore();
+
+    // plaka (TR): 520 × 110 mm, kurgusal numara
+    const pk = { x: o.cx + PLAKA.x * s, y: o.yer - (PLAKA.y + PLAKA.h) * s, w: PLAKA.w * s, h: PLAKA.h * s };
+    ctx.fillStyle = '#E6E6E3'; rr(ctx, pk.x, pk.y, pk.w, pk.h, 0.35); ctx.fill();
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 0.12; rr(ctx, pk.x + 0.18, pk.y + 0.18, pk.w - 0.36, pk.h - 0.36, 0.25); ctx.stroke();
+    ctx.fillStyle = '#1F4FA3'; ctx.fillRect(pk.x + 0.3, pk.y + 0.3, pk.h * 0.36, pk.h - 0.6);
+    txt(ctx, 'TR', pk.x + 0.3 + pk.h * 0.18, pk.y + pk.h - 0.62, { size: pk.h * 0.2, w: 700, color: C.W, align: 'center' });
+    txt(ctx, '34 KQR 26', pk.x + pk.w / 2 + pk.h * 0.18, pk.y + pk.h * 0.74, { size: pk.h * 0.6, w: 600, color: '#000', align: 'center' });
+
+    // sticker: camın sol alt köşesinde gerçek boyutunda (önden bakışta dikeyde kısalır)
+    const st = { x: o.cx + ARAC.STK_X * s, w: ARAC.STK_W * s, h: ARAC.STK_H * ARAC.CAM_K * s };
+    st.y = o.yer - (ARAC.STK_Y * s) - st.h;
+    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); sticker(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
+    return st;
+  }
+
+  // Büyüteç: camın sol alt köşesinin yakın planı (dik bakış). k = kutu mm / gerçek mm.
+  // Sticker gerçek oranıyla durur: A sütunu, serigrafi bandı, torpido ve kaputla birlikte.
+  function buyutec(ctx, bx, by, br, st, px) {
+    const k = 0.12;
+    // hedef işareti ve bağlantı çizgisi
+    const hx = st.x + st.w / 2, hy = st.y + st.h / 2, hr = 1.9;
+    const ang = Math.atan2(hy - by, hx - bx);
+    ctx.save();
+    ctx.strokeStyle = C.Y; ctx.lineWidth = 0.3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(hx, hy, hr, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(bx + Math.cos(ang) * (br + 0.3), by + Math.sin(ang) * (br + 0.3));
+    ctx.lineTo(hx - Math.cos(ang) * hr, hy - Math.sin(ang) * hr); ctx.stroke();
+    // büyüteç içi
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 1.6 * (px || 10);
+    ctx.fillStyle = '#0c0e11'; ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    ctx.save();
+    ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.clip();
+    ctx.translate(bx, by); ctx.scale(k, k);
+    ctx.translate(14, -12);                 // görüş merkezi sticker'ın sol altında: köşe görünsün
+    // yerel eksen (gerçek mm, y aşağı): sticker merkezi (0,0), boyut 50 × 80. Cam yüzüne dik bakış.
+    const R = br / k + 40;
+    const ic = y => -50 + 0.18 * (40 - y);          // serigrafinin iç kenarı (A sütunu tarafı)
+    const CAM_ALT = 66;                             // camın alt kenarı (serigrafi bitişi)
+    // cam + içerisi
+    const cg = ctx.createLinearGradient(0, -R, 0, R);
+    cg.addColorStop(0, '#1a1f25'); cg.addColorStop(0.55, '#0e1115'); cg.addColorStop(1, '#0a0b0d');
+    ctx.fillStyle = cg; ctx.fillRect(-R, -R, 2 * R, 2 * R);
+    ctx.fillStyle = '#101113';                      // torpido üstü (camın arkasında)
+    ctx.beginPath(); ctx.moveTo(-R, 47); ctx.quadraticCurveTo(0, 43, R, 46); ctx.lineTo(R, R); ctx.lineTo(-R, R); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(-R, 47); ctx.quadraticCurveTo(0, 43, R, 46); ctx.stroke();
+    // parlama
+    ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    ctx.beginPath(); ctx.moveTo(30, -R); ctx.lineTo(70, -R); ctx.lineTo(10, R); ctx.lineTo(-30, R); ctx.closePath(); ctx.fill();
+    // sticker (gerçek tasarım)
+    sticker(ctx, -25, -40, 50, { edge: 3 });
+    // serigrafi bandı: alt kenar ve A sütunu kenarı (noktalı geçiş)
+    ctx.fillStyle = '#050505';
+    ctx.fillRect(-R, CAM_ALT - 12, 2 * R, R);
+    for (let x = -R; x < R; x += 4.2) for (let j = 0; j < 3; j++) {
+      ctx.beginPath(); ctx.arc(x + (j % 2) * 2.1, CAM_ALT - 15 - j * 4.2, 1.5 - j * 0.45, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.beginPath(); ctx.moveTo(ic(-R), -R); ctx.lineTo(ic(R), R); ctx.lineTo(-R, R); ctx.lineTo(-R, -R); ctx.closePath(); ctx.fill();
+    for (let y = -R; y < CAM_ALT - 12; y += 4.2) for (let j = 0; j < 3; j++) {
+      ctx.beginPath(); ctx.arc(ic(y) + 3 + j * 4.2, y + (j % 2) * 2.1, 1.5 - j * 0.45, 0, Math.PI * 2); ctx.fill();
+    }
+    // A sütunu (lastik fitil + gövde rengi)
+    const gx = y => ic(y) - 20;
+    ctx.fillStyle = '#08090a';
+    ctx.beginPath(); ctx.moveTo(gx(-R), -R); ctx.lineTo(gx(R), R); ctx.lineTo(-R, R); ctx.lineTo(-R, -R); ctx.closePath(); ctx.fill();
+    const pg = ctx.createLinearGradient(-R, 0, gx(0) - 6, 0);
+    pg.addColorStop(0, '#1a1c1f'); pg.addColorStop(1, '#34383d');
+    ctx.fillStyle = pg;
+    ctx.beginPath(); ctx.moveTo(gx(-R) - 6, -R); ctx.lineTo(gx(R) - 6, R); ctx.lineTo(-R, R); ctx.lineTo(-R, -R); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1.3;
+    ctx.beginPath(); ctx.moveTo(gx(-R) - 6, -R); ctx.lineTo(gx(R) - 6, R); ctx.stroke();
+    // torpido kapağı (cowl), silecek ve kaput kenarı
+    ctx.fillStyle = '#08090a'; ctx.fillRect(-R, CAM_ALT, 2 * R, 9);
+    ctx.strokeStyle = '#1b1d1f'; ctx.lineWidth = 3.2;
+    ctx.beginPath(); ctx.moveTo(-R, CAM_ALT + 3.5); ctx.lineTo(R, CAM_ALT + 2.2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 0.9;
+    ctx.beginPath(); ctx.moveTo(-R, CAM_ALT + 1.8); ctx.lineTo(R, CAM_ALT + 0.5); ctx.stroke();
+    const hg = ctx.createLinearGradient(0, CAM_ALT + 9, 0, R);
+    hg.addColorStop(0, '#3e4248'); hg.addColorStop(1, '#202326');
+    ctx.fillStyle = hg; ctx.fillRect(-R, CAM_ALT + 9, 2 * R, R);
+    ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.lineWidth = 1.1;
+    ctx.beginPath(); ctx.moveTo(-R, CAM_ALT + 9); ctx.lineTo(R, CAM_ALT + 9); ctx.stroke();
+    ctx.restore();
+    // mercek kenarı: sarı halka + koyu dış kontur + üstte cam parlaması
+    ctx.save();
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 1.0; ctx.beginPath(); ctx.arc(bx, by, br + 0.45, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = C.Y; ctx.lineWidth = 0.6; ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = 0.35;
+    ctx.beginPath(); ctx.arc(bx, by, br - 1.1, Math.PI * 1.1, Math.PI * 1.45); ctx.stroke();
+    ctx.restore();
     ctx.restore();
   }
 
@@ -612,9 +806,16 @@
       ctx.beginPath(); ctx.moveTo(x + 9.6, y + 6.2); ctx.lineTo(x + 2.0, y + 4.3); ctx.lineTo(x + 2.4, y + 10.6); ctx.closePath(); ctx.fill();
       ctx.fillStyle = C.K; rr(ctx, x + 9.3, y + 1.4, 4.6, 9.4, 0.9); ctx.fill();
       ctx.strokeStyle = C.Y; ctx.lineWidth = 0.3; rr(ctx, x + 9.3, y + 1.4, 4.6, 9.4, 0.9); ctx.stroke();
-      ctx.fillStyle = C.Y; ctx.beginPath(); ctx.arc(x + 11.6, y + 6.1, 1.35, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = C.K; ctx.lineWidth = 0.32;
-      ctx.beginPath(); ctx.moveTo(x + 11.0, y + 6.1); ctx.lineTo(x + 11.45, y + 6.6); ctx.lineTo(x + 12.25, y + 5.6); ctx.stroke();
+      // uygulamanın tarama ekranı: üstte logo, ortada tarama çerçevesi, altta onay
+      logoIcon(ctx, x + 10.85, y + 2.3, 1.5, C.Y);
+      ctx.strokeStyle = C.Y; ctx.lineWidth = 0.22;
+      const tx0 = x + 10.35, ty0 = y + 4.35, tsz = 2.5, tk = 0.7;
+      [[tx0, ty0, 1, 1], [tx0 + tsz, ty0, -1, 1], [tx0, ty0 + tsz, 1, -1], [tx0 + tsz, ty0 + tsz, -1, -1]].forEach(([qx, qy, dx, dy]) => {
+        ctx.beginPath(); ctx.moveTo(qx + dx * tk, qy); ctx.lineTo(qx, qy); ctx.lineTo(qx, qy + dy * tk); ctx.stroke();
+      });
+      ctx.fillStyle = C.Y; ctx.beginPath(); ctx.arc(x + 11.6, y + 8.75, 1.05, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = C.K; ctx.lineWidth = 0.28;
+      ctx.beginPath(); ctx.moveTo(x + 11.12, y + 8.75); ctx.lineTo(x + 11.48, y + 9.15); ctx.lineTo(x + 12.12, y + 8.35); ctx.stroke();
     }
     ctx.restore();
     // adım numarası (sarı daire)
@@ -659,13 +860,36 @@
       ctx.beginPath(); ctx.moveTo(fx + 0.8, fy - 0.85); ctx.lineTo(fx + 1.35, fy - 0.25); ctx.lineTo(fx + 2.25, fy - 1.45); ctx.stroke();
       const lines = wrap(ctx, f, fw, fs, 500);
       lines.forEach((ln, i) => txt(ctx, ln, fx + 4.2, fy + i * 3.0, { size: fs, w: 500, color: C.W }));
-      fy += lines.length > 1 ? 8.0 : 6.6;
+      fy += lines.length > 1 ? 7.6 : 5.8;
     });
 
     // Alt sıra: 3 adımlı kurulum (çizimli) | App Store + Google Play rozetleri (10 mm, alt alta)
     const bY = h - BACK_BAND, rh = 10, rw = ROZET_GEN(rh);
     const rx = R - rw, ry0 = bY - 3 - (2 * rh + rh / 4);
     magazaRozetleri(ctx, rx, ry0, rh, 'alt');
+
+    // Aktivasyon uyarısı: kart, telefon kamerasıyla değil uygulamanın içinden okutulur
+    // (özellik listesinin altında; alt kenarı rozetin ¼ boşluğuna kadar)
+    {
+      const kx = fx, kw = R - fx, kb = ry0 - rh / 4 - 0.3, pad = 1.4;   // 0,3: kontur rozet boşluğuna taşmasın
+      const ts = 7 * PT, tx = kx + pad + 5.2, tW = kx + kw - pad - tx;
+      const govde = wrap(ctx, 'Kartı kamerayla değil, uygulamadan okut.', tW, ts, 500);
+      const kh = pad + 2.6 + govde.length * 2.95 + 0.9 + pad * 0.6, ky = kb - kh;
+      ctx.fillStyle = '#161616'; rr(ctx, kx, ky, kw, kh, 1.6); ctx.fill();
+      ctx.strokeStyle = C.Y; ctx.lineWidth = 0.3; rr(ctx, kx, ky, kw, kh, 1.6); ctx.stroke();
+      // mini telefon: uygulamanın tarama ekranı
+      const tfx = kx + pad, tfy = ky + (kh - 6.6) / 2;
+      ctx.fillStyle = C.K; rr(ctx, tfx, tfy, 3.7, 6.6, 0.7); ctx.fill();
+      ctx.strokeStyle = C.Y; ctx.lineWidth = 0.25; rr(ctx, tfx, tfy, 3.7, 6.6, 0.7); ctx.stroke();
+      logoIcon(ctx, tfx + 1.25, tfy + 0.75, 1.2, C.Y);
+      ctx.strokeStyle = C.Y; ctx.lineWidth = 0.2; ctx.lineCap = 'round';
+      const fx0 = tfx + 0.75, fy0 = tfy + 2.55, fs0 = 2.2, kl = 0.6;
+      [[fx0, fy0, 1, 1], [fx0 + fs0, fy0, -1, 1], [fx0, fy0 + fs0, 1, -1], [fx0 + fs0, fy0 + fs0, -1, -1]].forEach(([x, y, dx, dy]) => {
+        ctx.beginPath(); ctx.moveTo(x + dx * kl, y); ctx.lineTo(x, y); ctx.lineTo(x, y + dy * kl); ctx.stroke();
+      });
+      txt(ctx, 'Aktivasyon için önce uygulamayı indir', tx, ky + pad + 2.0, { size: ts, w: 700, color: C.Y });
+      govde.forEach((ln, i) => txt(ctx, ln, tx, ky + pad + 2.0 + 2.95 * (i + 1), { size: ts, w: 500, color: C.W }));
+    }
     // sX1: rozetin ¼ yükseklik boşluğu, kutucuk konturu (0,25 mm) taşsa da korunur
     const sX0 = L + 0.15, sX1 = rx - rh / 4 - 0.3, sGap = 1.6, sW = (sX1 - sX0 - 2 * sGap) / 3, sH = 12.5;
     const sY = ry0 + 0.2;
