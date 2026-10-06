@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """
-Demo profilin gerçek mobil ekran görüntüsünü alır → assets/tasarim1/demo_profil_ekran.jpg
-Chrome'u DevTools Protokolü ile mobil emülasyonda (430 pt, 3x = 1290 px) açar,
-"Araç Sahibine Bildir" bölümünü genişletip ekranı çeker.
+Kutudaki telefon ekranı: gerçek profil sayfasının mobil ekran görüntüsü → assets/tasarim1/demo_profil_ekran.jpg
+Chrome'u DevTools Protokolü ile mobil emülasyonda (430 pt, 3x = 1290 px) açar, sayfayı VİTRİN içeriğiyle
+doldurur, "Araç Sahibine Bildir" bölümünü genişletip ekranı çeker.
+
+Vitrin: sayfanın kendisi (tasarım, CSS, butonlar) canlıdakiyle aynıdır; yalnız örnek içerik değişir.
+  - isim ve kısa bilgi örnek bir kişiyle değiştirilir
+  - telefon butonu kaldırılır: profilde "numarayı gizle" açıkken sayfa tam böyle görünür (kutunun vaadi)
+  - WhatsApp bağlantısı numarayı açık ettiği için LinkedIn ile değiştirilir
 
 Gereksinim: Google Chrome, pip install websocket-client
 Kullanım:   python araclar/demo_ekran_goruntusu.py [url]
@@ -18,6 +23,17 @@ CLICK = """(()=>{const c=[...document.querySelectorAll('button,a,[role=button],s
   .filter(e=>/Araç Sahibine Bildir/.test(e.textContent)).sort((a,b)=>a.textContent.length-b.textContent.length);
   const el=c.find(e=>e.tagName==='BUTTON'||e.tagName==='SUMMARY'||e.getAttribute('role')==='button')||c[0];
   if(el) el.click(); return !!el})()"""
+
+VITRIN = {'isim': 'Ahmet Yılmaz', 'bilgi': 'Mimar · İstanbul'}
+DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
+  const h=q('.profile-header h1'); if(h) h.textContent=V.isim;
+  const im=q('.profile-photo'); if(im) im.alt=V.isim+' profil fotoğrafı';
+  const b=q('.profile-header .bio'); if(b) b.textContent=V.bilgi;
+  document.querySelectorAll('.contact-info').forEach(e=>e.remove());
+  document.querySelectorAll('a.social-list-btn').forEach(a=>{ if(/wa\\.me|whatsapp/i.test(a.href)){
+    a.href='https://www.linkedin.com/'; const i=a.querySelector('i'); if(i) i.className='fab fa-linkedin';
+    const t=a.querySelector('.btn-title'); if(t) t.textContent='LinkedIn'; }});
+  return !!h})(%s)""" % json.dumps(VITRIN, ensure_ascii=False)
 
 prof = tempfile.mkdtemp()
 p = subprocess.Popen([CHROME, '--headless=new', '--disable-gpu', '--hide-scrollbars', f'--remote-debugging-port={PORT}',
@@ -42,6 +58,7 @@ try:
     cmd('Emulation.setUserAgentOverride', userAgent='Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) '
         'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1')
     cmd('Page.enable'); cmd('Page.navigate', url=URL); time.sleep(6)
+    print('vitrin içeriği:', cmd('Runtime.evaluate', expression=DOLDUR, returnByValue=True)['result'].get('value'))
     print('bildir paneli açıldı:', cmd('Runtime.evaluate', expression=CLICK, returnByValue=True)['result'].get('value'))
     time.sleep(2)
     shot = cmd('Page.captureScreenshot', format='jpeg', quality=86)

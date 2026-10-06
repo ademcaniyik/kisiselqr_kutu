@@ -249,6 +249,7 @@ figcaption{font-size:13px; color:var(--muted); margin-top:8px}
     <div class="row" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:10px">
       <label class="tog" style="display:flex; gap:8px; align-items:center"><input type="checkbox" id="flat-dieline" checked> Bıçak izini üstte göster</label>
       <label class="tog" style="display:flex; gap:8px; align-items:center"><input type="checkbox" id="flat-tasma"> Taşmayı göster (kesimde atılan 3 mm)</label>
+      <label class="tog" style="display:flex; gap:8px; align-items:center"><input type="checkbox" id="flat-ic"> İç yüz: iç baskı (opsiyonel, tek renk)</label>
       <button type="button" id="flat-png">PNG indir (açınım, 10 px/mm)</button>
     </div>
     <div class="row" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px">
@@ -260,7 +261,7 @@ figcaption{font-size:13px; color:var(--muted); margin-top:8px}
     </div>
     <p style="font-size:12.5px; color:var(--muted); margin:0 0 10px">Matbaa PDF'i: seçili tasarım, 3 mm taşma, CMYK görsel (marka renkleri birebir), bıçak izi ayrı katmanda (spot "Bicak", overprint), 2. sayfada yalnız bıçak. Numune ve dijital baskı içindir; ofset seri üretim için vektörel PDF/X ayrıca hazırlanır.</p>
     <div class="sheet" style="overflow-x:auto"><canvas id="flat-cv" style="display:block; width:100%; min-width:720px; height:auto; background:#fff"></canvas></div>
-    <p style="font-size:13px; color:var(--muted); margin-top:8px">Seçili tasarımın açınımdaki yerleşimi. Magenta düz çizgi: kesim · kesikli: bigi. Taşma kapalıyken kesilmiş kutunun şekli görünür; baskı dosyalarında 3 mm taşma her zaman vardır. Başlığın ön katı 180° katlandığı için açınımda ters görünür.</p>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px">Seçili tasarımın açınımdaki yerleşimi. Magenta düz çizgi: kesim · kesikli: bigi. Taşma kapalıyken kesilmiş kutunun şekli görünür; baskı dosyalarında 3 mm taşma her zaman vardır. Başlığın ön katı 180° katlandığı için açınımda ters görünür. <b>İç yüz</b> seçiliyken kartonun arka yüzü görünür (açınım aynalı): kutu yalnız alttan açıldığı için müşterinin gördüğü iç yüzey alt kapak ve geçme dilidir; iç baskı yalnız oraya, tek renk siyah olarak önerilir. Yapılıp yapılmayacağı maliyete göre karar verilecek.</p>
   </section>
 
   <section aria-labelledby="hchk">
@@ -1079,6 +1080,15 @@ const GEO = {"version":"v1","W":245.0,"H":239.0,"T":0.45,"inner":[96.0,18.0,136.
     flatCv.width = cv.width; flatCv.height = cv.height;
     const f = flatCv.getContext('2d');
     f.fillStyle = '#FFFFFF'; f.fillRect(0, 0, flatCv.width, flatCv.height);
+    // İç yüz (opsiyonel iç baskı): kartonun arka yüzü, açınım yatayda aynalı
+    const icMod = ($('#flat-ic') && $('#flat-ic').checked) ? baskiModulu() : null;
+    if (icMod && icMod.renderIc) {
+      f.save(); f.setTransform(PX, 0, 0, PX, 0, 0); icMod.renderIc(f, GEO, { px: PX }); f.restore();
+      if ($('#flat-dieline') && $('#flat-dieline').checked && window.KQRTasarim1) {
+        f.save(); f.setTransform(-PX, 0, 0, PX, GEO.W * PX, 0); KQRTasarim1.drawDieline(f, GEO); f.restore();
+      }
+      return;
+    }
     if ($('#flat-tasma') && $('#flat-tasma').checked) {
       f.drawImage(cv, 0, 0);
     } else {
@@ -1103,6 +1113,7 @@ const GEO = {"version":"v1","W":245.0,"H":239.0,"T":0.45,"inner":[96.0,18.0,136.
   }
   if ($('#flat-dieline')) $('#flat-dieline').addEventListener('change', updateFlat);
   if ($('#flat-tasma')) $('#flat-tasma').addEventListener('change', updateFlat);
+  if ($('#flat-ic')) $('#flat-ic').addEventListener('change', updateFlat);
   // ---------- Baskı PDF'leri (assets/matbaa_pdf.js)
   function baskiModulu() {
     const th = DESIGN_CONFIGS[currentDesignKey] && DESIGN_CONFIGS[currentDesignKey].theme;
@@ -1113,6 +1124,8 @@ const GEO = {"version":"v1","W":245.0,"H":239.0,"T":0.45,"inner":[96.0,18.0,136.
   function pdfDugmeleri() {
     const ok = !!baskiModulu() && !!window.KQRMatbaa;
     ['#pdf-matbaa', '#pdf-maket'].forEach(k => { const b = $(k); if (b) b.disabled = !ok; });
+    const ic = $('#flat-ic'), m = baskiModulu();
+    if (ic) { ic.disabled = !(m && m.renderIc); if (ic.disabled && ic.checked) { ic.checked = false; updateFlat(); } }
     const d = $('#pdf-durum');
     if (d && !d.dataset.mesgul) d.textContent = ok ? '' : 'Baskı dosyası için Tasarım 1–4\'ten birini seçin.';
   }
@@ -1143,7 +1156,7 @@ const GEO = {"version":"v1","W":245.0,"H":239.0,"T":0.45,"inner":[96.0,18.0,136.
     flatCv.toBlob(b => {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(b);
-      a.download = `kisiselqr_kutu_${currentDesignKey}_acinim.png`;
+      a.download = `kisiselqr_kutu_${currentDesignKey}_${$('#flat-ic') && $('#flat-ic').checked ? 'ic_baski' : 'acinim'}.png`;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     }, 'image/png');

@@ -9,7 +9,7 @@ görünümünde gösterir hem de 3D kutuya doku olarak giydirir. Ölçü değiş
 
 | # | Ad | Konsept | Klasör |
 |---|---|---|---|
-| 1 | Kişisel QR · Siyah-Sarı | Brifteki temel yerleşim. Üst 2/3 siyah (logo, KİŞİSEL QR, önden araç camı + sticker, telefon, rozet), alt 1/3 sarı (4 ikon). Arka yüzde sticker, 5 özellik, 3 adım, uygulama QR'ı, sarı yasal bant. | `tasarim1/` |
+| 1 | Kişisel QR · Siyah-Sarı | Brifteki temel yerleşim. Üst 2/3 siyah (büyük logo, AKILLI ARAÇ ETİKETİ başlığı, önden araç camı + sticker, telefon, rozet), alt sarı bant (4 ikon). Arka yüzde sticker, "Uygulamada ayrıca" 6 ikonlu özellik, aktivasyon uyarısı, 3 adım, uygulama QR'ı, sarı yasal bant. Opsiyonel tek renk iç baskı (alt kapağın iç yüzü). | `tasarim1/` |
 | 2 | Sticker Kahraman | Kahraman ürünün kendisi. Ön camın sol alt köşesi yakın planda: A-sütunu, frit bandı ve silecekle birlikte camda duran büyük, eğik sticker. Önden mini araç anahtarı ile "Ön camın sol alt köşesine" konumu, sarı kaput bandında halkalı ikonlar. Arka yüzde sarı adım şeridi (Temizle › Yapıştır › Aktif Et). | `tasarim2/` |
 | 3 | Gece Sahnesi | Sinematik gece sahnesi: sokak lambası altında 3/4 perspektiften park etmiş araç, ön camın sol alt köşesinde perspektifli sticker, ön planda elde telefon ve sticker'a giden sarı tarama ışını. Dişli kenarlı mühür rozeti, afiş künyesi gibi alta yerleşen KİŞİSEL QR. Arka yüzde 3 kareli film şeridi. | `tasarim3/` |
 | 4 | Tipografik Izgara | İsviçre/editoryal tipografi: 12 kolonlu ızgara, çentikli ince kurallar, numaralı başlıklar. Ön yüz tam ortadan siyah/sarı bölünür, dev iki renkli "QR" harfleri bölünme çizgisine taşar. Araç piktogramında camın sol alt köşesine odak halkası. Arka yüzde dev 1-2-3 adım satırı ve 01–05 özellik listesi. | `tasarim4/` |
@@ -22,6 +22,7 @@ Her tasarımın ayrıntılı notları (yerleşim, lak, açık sorular, Candemsof
 window.KQRTasarimN = {
   meta: { ad: 'Kısa ad', renk: '#hex', aciklama: 'Tek cümle' }, // buton etiketi ve renk noktası
   render(ctx, GEO, opts), // ctx mm → px ölçekli (1 birim = 1 mm), açınımın tamamını çizer
+  renderIc(ctx, GEO),     // isteğe bağlı: iç yüz (kartonun arka yüzü, açınım aynalı) – opsiyonel iç baskı
   ready()                 // Promise: fontlar + demo profil ekran görüntüsü yüklenince çözülür
 };
 ```
@@ -53,7 +54,11 @@ Başlık görseli düz (okunur yönde) hazırlanır; açınımda 180° çevriler
 
 Sitede 2D açınım bölümünde, seçili tasarım (Tasarım 1–4) için:
 
-- **Matbaa PDF'i:** 1:1 açınım + 3 mm taşma. TrimBox = açınım sınırı (245 × 239 mm), BleedBox = +3 mm. Grafik CMYK görsel olarak 300 ya da 400 dpi'dır. Marka renkleri birebir CMYK'ye eşlenir (siyah zemin 60/40/40/100, sarı 0/15/100/0, antrasit K85, küçük metin K100); diğer renkler yaklaşık dönüşümle çevrilir. Tutkal alanları mürekkepsizdir. Bıçak izi ayrı PDF katmanındadır (spot "Bicak", 0,25 pt, overprint; düz = kesim, kesikli = bigi). 2. sayfada yalnız bıçak izi vardır.
+- **Matbaa PDF'i:** 1:1 açınım + 3 mm taşma. TrimBox = açınım sınırı (245 × 239 mm), BleedBox = +3 mm. Grafik CMYK görsel olarak 300 ya da 400 dpi'dır. Marka renkleri birebir CMYK'ye eşlenir (siyah zemin 60/40/40/100, sarı 0/15/100/0, antrasit K85, küçük metin K100); diğer renkler yaklaşık dönüşümle çevrilir. Toplam mürekkep (TAC) %300'le sınırlanır: K korunur, C/M/Y orantılı azaltılır (Tasarım 1'de en yüksek %298). Tutkal alanları mürekkepsizdir. Bıçak izi ayrı PDF katmanındadır (spot "Bicak", 0,25 pt, overprint; düz = kesim, kesikli = bigi). 2. sayfada yalnız bıçak izi vardır.
 - **A3 renkli maket PDF'i:** %100 ölçek, siyah kesim/bigi çizgileri, 50 mm kontrol çizgileri, katlama sırası.
 
 Sınır: yazılar görselin içindedir (vektör değil). Numune ve dijital baskı içindir; ofset seri üretim için vektörel PDF/X-4 (Fogra39, outline font) Aşama 3'te hazırlanacaktır.
+
+## İç yüz (opsiyonel iç baskı)
+
+2D açınım bölümündeki **"İç yüz"** seçeneği, modül `renderIc` sunuyorsa kartonun arka yüzünü gösterir (açınım yatayda aynalı, kartona arkadan bakış). Kutu yalnız alttan açıldığı için müşterinin gördüğü iç yüzey alt kapak ve geçme dilidir; gövde panellerinin içi 18 mm derin kutuda görünmez. İç baskı ikinci yüz baskısı (ek kalıp + ek baskı geçişi) demektir; maliyete göre karar verilecek. Şimdilik yalnız önizleme ve PNG var; karar çıkarsa matbaa PDF'ine iç yüz sayfası eklenir.

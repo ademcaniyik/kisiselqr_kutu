@@ -38,6 +38,12 @@
       const f = Math.min(1, (K - 0.75) / 0.21);
       C = Math.max(C, 0.6 * f); M = Math.max(M, 0.4 * f); Y = Math.max(Y, 0.4 * f);
     }
+    // Toplam mürekkep (TAC) ≤ %300 (şartname): K korunur, C/M/Y orantılı azaltılır. Neredeyse siyah ama hafif
+    // renkli piksellerde (kenar yumuşatma, ekran görüntüsündeki JPEG gürültüsü) 1 − K çok küçük olduğu için
+    // C/M/Y %100'e fırlıyor, toplam %360'a çıkabiliyordu.
+    // Sınır 2,98: kanallar tek tek yuvarlandığında toplam yine %300'ü aşmasın.
+    const cmy = C + M + Y;
+    if (cmy + K > 2.98) { const k = (2.98 - K) / cmy; C *= k; M *= k; Y *= k; }
     return [Math.round(C * 255), Math.round(M * 255), Math.round(Y * 255), Math.round(K * 255)];
   }
 
