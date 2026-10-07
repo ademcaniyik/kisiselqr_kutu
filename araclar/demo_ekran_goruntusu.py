@@ -8,6 +8,7 @@ Vitrin: sayfanın kendisi (tasarım, CSS, butonlar) canlıdakiyle aynıdır; yal
   - isim ve kısa bilgi örnek bir kişiyle değiştirilir
   - telefon butonu kaldırılır: profilde "numarayı gizle" açıkken sayfa tam böyle görünür (kutunun vaadi)
   - WhatsApp bağlantısı numarayı açık ettiği için LinkedIn ile değiştirilir
+  - plaka (kutudaki araçla aynı) sayfanın kendi plaka bloğuyla isim altına eklenir
 
 Gereksinim: Google Chrome, pip install websocket-client
 Kullanım:   python araclar/demo_ekran_goruntusu.py [url]
@@ -24,11 +25,19 @@ CLICK = """(()=>{const c=[...document.querySelectorAll('button,a,[role=button],s
   const el=c.find(e=>e.tagName==='BUTTON'||e.tagName==='SUMMARY'||e.getAttribute('role')==='button')||c[0];
   if(el) el.click(); return !!el})()"""
 
-VITRIN = {'isim': 'Ahmet Yılmaz', 'bilgi': 'Mimar · İstanbul'}
+VITRIN = {'isim': 'Ahmet Yılmaz', 'bilgi': 'Mimar · İstanbul', 'plaka': '34 ABC 123'}   # plaka: kutudaki araçla aynı
 DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
   const h=q('.profile-header h1'); if(h) h.textContent=V.isim;
   const im=q('.profile-photo'); if(im) im.alt=V.isim+' profil fotoğrafı';
   const b=q('.profile-header .bio'); if(b) b.textContent=V.bilgi;
+  // plaka: profile.php'nin kendi plaka bloğu (profilde plaka girilince isim altında bu işaretleme basılır)
+  if(h && V.plaka && !q('.license-plate-wrapper')) h.insertAdjacentHTML('afterend',
+    '<div class="license-plate-wrapper" style="display:flex;justify-content:center;margin:15px 0;">'+
+    '<div class="license-plate" style="display:inline-flex;align-items:stretch;background:#fff;border:2px solid #000;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);overflow:hidden;height:50px;">'+
+    '<div class="tr-section" style="background:#003399;width:35px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:4px;border-radius:6px 0 0 6px;">'+
+    '<span style="color:#fff;font-size:12px;font-weight:bold;">TR</span></div>'+
+    '<div class="plate-text" style="padding:0 15px;display:flex;align-items:center;justify-content:center;font-family:\\'Segoe UI\\',Roboto,Helvetica,Arial,sans-serif;font-size:26px;font-weight:800;color:#000;letter-spacing:1px;">'+
+    V.plaka.toUpperCase()+'</div></div></div>');
   document.querySelectorAll('.contact-info').forEach(e=>e.remove());
   document.querySelectorAll('a.social-list-btn').forEach(a=>{ if(/wa\\.me|whatsapp/i.test(a.href)){
     a.href='https://www.linkedin.com/'; const i=a.querySelector('i'); if(i) i.className='fab fa-linkedin';

@@ -216,7 +216,25 @@
     return h;
   }
 
-  // Telefon ekranı: demo profilin gerçek mobil ekran görüntüsü (kisiselqr.com/qr/071qydlb)
+  // Telefon ekranı: gerçek profil sayfasının mobil ekran görüntüsü, vitrin içeriğiyle (araclar/demo_ekran_goruntusu.py)
+  const EKRAN_ZEMIN = '#F8F9FB';   // profil sayfasının zemini (ekran görüntüsünden ölçüldü): durum çubuğu bununla dolar
+  // iPhone durum çubuğu: sol kulakta saat, sağ kulakta sinyal + Wi-Fi + pil. cy: çentiğin dikey ortası,
+  // c0/c1: çentiğin sol/sağ kenarı.
+  function durumCubugu(ctx, X, cy, SW, c0, c1) {
+    const k = '#111111', soluk = 'rgba(17,17,17,0.45)';
+    txt(ctx, '9:41', (X + c0) / 2, cy + 0.48, { size: 1.35, w: 600, color: k, align: 'center' });
+    const r0 = (c1 + X + SW) / 2 - 2.75, alt = cy + 0.42;
+    ctx.fillStyle = k;
+    [0.32, 0.48, 0.64, 0.8].forEach((hh, i) => { rr(ctx, r0 + i * 0.36, alt - hh, 0.24, hh, 0.06); ctx.fill(); });
+    const wx = r0 + 2.3;
+    ctx.strokeStyle = k; ctx.lineWidth = 0.14; ctx.lineCap = 'round';
+    [0.35, 0.6, 0.85].forEach(r => { ctx.beginPath(); ctx.arc(wx, alt, r, Math.PI * 1.25, Math.PI * 1.75); ctx.stroke(); });
+    ctx.beginPath(); ctx.arc(wx, alt - 0.06, 0.1, 0, Math.PI * 2); ctx.fill();
+    const bx = r0 + 3.45, by = cy - 0.38, bw = 1.85, bh = 0.82;
+    ctx.strokeStyle = soluk; ctx.lineWidth = 0.1; rr(ctx, bx, by, bw, bh, 0.24); ctx.stroke();
+    ctx.fillStyle = k; rr(ctx, bx + 0.16, by + 0.16, bw - 0.6, bh - 0.32, 0.12); ctx.fill();
+    ctx.fillStyle = soluk; rr(ctx, bx + bw + 0.08, by + 0.27, 0.12, 0.28, 0.05); ctx.fill();
+  }
   const BASE = (document.currentScript && document.currentScript.src || '').replace(/[^/]*$/, '');
   let SCREEN = null;
   function loadScreen() {
@@ -730,10 +748,15 @@
     ctx.fillStyle = '#101010'; rr(ctx, X, Yy, SW, SH, 3.1); ctx.fill();
     ctx.save(); rr(ctx, X, Yy, SW, SH, 3.1); ctx.clip();
     if (SCREEN) {
-      // genişliğe oturt, üstten hizala (alttaki fazlalık kırpılır)
+      // Üstte iPhone durum çubuğu (sayfa zemini rengi), sayfa onun altından başlar: ekran görüntüsü ekranın en
+      // üstünden başlayınca profil fotoğrafının üstü çentiğin altında kalıyordu. Genişliğe oturur, alt fazlalık kırpılır.
+      const SB = 3.5;
+      ctx.fillStyle = EKRAN_ZEMIN; ctx.fillRect(X, Yy, SW, SB + 0.2);
       const ih = SW * SCREEN.naturalHeight / SCREEN.naturalWidth;
-      ctx.drawImage(SCREEN, X, Yy, SW, ih);
+      ctx.drawImage(SCREEN, X, Yy + SB, SW, ih);
       ctx.fillStyle = C.K; rr(ctx, x + w / 2 - 4, Yy + 1.1, 8, 1.7, 0.85); ctx.fill();          // çentik
+      durumCubugu(ctx, X, Yy + 1.95, SW, x + w / 2 - 4, x + w / 2 + 4);
+      ctx.fillStyle = 'rgba(0,0,0,0.8)'; rr(ctx, x + w / 2 - 3.6, Yy + SH - 0.95, 7.2, 0.42, 0.21); ctx.fill();   // ana çubuk
       ctx.restore();
       return;
     }
