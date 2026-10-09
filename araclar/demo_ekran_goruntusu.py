@@ -6,7 +6,8 @@ doldurur, "Araç Sahibine Bildir" bölümünü genişletip ekranı çeker.
 
 Vitrin: sayfanın kendisi (tasarım, CSS, butonlar) canlıdakiyle aynıdır; yalnız örnek içerik değişir.
   - isim ve kısa bilgi örnek bir kişiyle değiştirilir
-  - telefon butonu kaldırılır: profilde "numarayı gizle" açıkken sayfa tam böyle görünür (kutunun vaadi)
+  - telefon butonu kaldırılır: web sayfası phone_hidden=1 iken tam böyle görünür (kutunun vaadi).
+    DİKKAT (9 Ekim): uygulamada bu ayar henüz yok, yeni profillerde numara varsayılan olarak görünür.
   - WhatsApp bağlantısı numarayı açık ettiği için LinkedIn ile değiştirilir
   - plaka (kutudaki araçla aynı) sayfanın kendi plaka bloğuyla isim altına eklenir
 
