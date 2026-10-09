@@ -9,7 +9,8 @@ Tasarım görsel dosyası değil, kod olarak çizilir: `tasarim1.js`, açınım�
 | `tasarim1.js` | Tüm panellerin çizimi, logo (vektörel yeniden çizim), ikonlar, sticker kopyası, telefon, gerçek oranlı araç ve büyüteç |
 | `qr_kodlar.js` | Gerçek QR matrisleri (ECC M): `KQR_QR_APP` → `https://mobile.kisiselqr.com`, `KQR_QR_DEMO` → `https://kisiselqr.com/qr/071qydlb` (demo profil). `araclar/qr_uret.py` üretir, elle düzenlemeyin |
 | `rozet_appstore_tr.svg`, `rozet_googleplay_tr.png` | Apple ve Google'ın resmi Türkçe mağaza rozetleri ("App Store'dan İndirin", "İndirin Google Play"); Apple marketing toolbox ve Google Play rozet sayfasından alındı, değiştirilmeden kullanılır |
-| `demo_profil_ekran.jpg` | Gerçek profil sayfasının mobil ekran görüntüsü (1290 × 2796 px), **vitrin içeriğiyle**: "Ahmet Yılmaz · Mimar · İstanbul", isim altında plaka **34 ABC 123** (kutudaki araçla aynı; sayfanın kendi plaka bloğu), telefon butonu yok (web profil sayfası `phone_hidden` açıkken tam böyle görünür; **uygulamada bu ayar henüz yok**, varsayılanda numara görünür (9 Ekim tespiti)), WhatsApp yerine LinkedIn, "Araç Sahibine Bildir" açık. Sayfanın tasarımı canlıdakiyle aynı, yalnız örnek içerik değişir. `araclar/demo_ekran_goruntusu.py` yeniden çeker. Telefon çiziminde üstte iPhone durum çubuğu (9:41, sinyal, Wi-Fi, pil) var, sayfa onun altından başlar: profil fotoğrafı çentiğin altında kalmaz |
+| `vitrin_profil_ekran.jpg` | **Tasarım 1'in telefon ekranı** (9 Ekim): gerçek profil sayfasının mobil ekran görüntüsü, sade araç profili olarak: "Ahmet Yılmaz", isim altında plaka 34 ABC 123 (sayfanın kendi plaka bloğu), "Araç Sahibine Bildir" ve 8 bildirim butonu. Bilgi satırı, sosyal bağlantılar ve telefon butonu yok (web sayfası `phone_hidden` açıkken böyle görünür; **uygulamada bu ayar henüz yok**, varsayılanda numara görünür). `araclar/demo_ekran_goruntusu.py` çeker. Telefon çiziminde üstte iPhone durum çubuğu var |
+| `demo_profil_ekran.jpg` | Ortak telefonun (Tasarım 2–4, `lib.phone` varsayılanı) 7 Ekim görüntüsü: Ahmet Yılmaz · Mimar · İstanbul, plaka, Instagram, LinkedIn. Adem'in isteğiyle 2–4'e dokunulmadığı için yerinde bırakıldı |
 
 ## Renkler (brif)
 
@@ -40,6 +41,33 @@ Kutudaki sticker çizimleri (ön yüzdeki büyüteçte ve arka yüzde), Candemso
 - **Tutkal payı ve üst yapıştırma dili:** Baskısız (ekranda ham karton rengi).
 - **Taşma:** Baskılı her yüzeyin zemini kesim hattından 3 mm dışarı taşar.
 - **İç baskı (opsiyonel, maliyete göre karar verilecek):** `renderIc`. Kutu yalnız alttan açıldığı için müşterinin gördüğü iç yüzey alt kapak ve geçme dili; ikisinin iç yüzüne tek renk siyah (K100, GC1'in krem arka yüzüne). Kapak: logo + "Önce beni oku", "Kurulum 3 adım" ve 1 Camı temizle → 2 Etiketi yapıştır → 3 Uygulamadan aktif et. Dil: "Etiketi telefonun kamerasıyla değil, Kişisel QR uygulamasında “QR Kodunu Tanımla” ile okut. Yardım: kisiselqr.com". Kapak aşağı sarkarken okunur yönde (menteşe üstte). Sitede 2D açınımda "İç yüz" seçeneğiyle görünür.
+
+## 9 Ekim: rakip ve psikoloji analizinden gelen değişiklikler (yalnız Tasarım 1)
+
+Kaynak: kasadaki "KisiselQR Rakip ve Kutu Analizi" §5. Tasarım 2–4'e dokunulmadı; render'ları değişiklikten önceki halleriyle piksel piksel aynı.
+
+- **Ön yüz:**
+  - Slogan 12 → 14 pt, rozet "Artık numaratöre gerek yok" 8,3 → 9 pt. Fayda öne çıktı; logo 13 mm kaldı.
+  - Sloganın sağında "Arkadaki QR'ı okut, dene →" (7,5 pt, sarı).
+  - Bantta "Aylık ücret yok" → **"Abonelik yok"**. Rakiplerde norm "ömür boyu"; "aylık" deyince yıllık ücret sorusu kalıyordu.
+  - Telefonda sade araç profili (`vitrin_profil_ekran.jpg`).
+- **Arka yüz:**
+  - Açıklama kısaldı. Altında 3 güven satırı var, hepsi koddan doğrulandı: okutanın uygulama indirmesi gerekmez · bildirimleri istediğin an kapatabilirsin · bilgilerin değişse de etiket aynı kalır.
+  - Uygulama QR'ının altında sistem gereksinimi: "iOS 15+ · Android 7+" (App Store sayfası; Android minSdk 24).
+  - Örnek sticker'ın üstünde sarı **"ÖRNEK · Okut, dene"** etiketi; etiket QR'ın üstüne binmez. Sticker boyu sağdaki bloğa göre ayarlanıyor (~18 mm).
+  - "Uygulamada ayrıca" 3 sütun × 2 satır, kısa adlarla.
+  - Aktivasyon uyarısı: "**Etiketini** kamerayla değil, uygulamadan okut." Kutudaki örnek kamerayla okutulduğu için talimatlar çelişmesin diye.
+- **Yasal bant (37 mm):**
+  - etiket ölçüsü (5 × 8 cm)
+  - **[Su/UV dayanımı – test raporu bekleniyor]** yer tutucusu: sitede iddia var ama kanıt gerekli
+  - "Acil durum hizmeti değildir; tehlikede 112."
+  - sahte QR uyarısı: "Ödeme ya da şifre istemez; adres kisiselqr.com"
+
+  Satır sığmazsa 6 pt'ye iner (şartname: yasal bilgi ≥ 6 pt).
+- **İç baskı (geçme dili):** "Yapıştırınca başka bir telefonla okut, bildirimin geldiğini gör." Rakiplerde en sık şikâyet "bildirim gelmiyor".
+
+**Baskıdan önce şart:** Ön yüzdeki "Numaran gizli" ve arkadaki "numaran görünmez" ifadeleri, uygulamaya "numaramı gizle" anahtarı gelip yeni profillerde varsayılan gizli olunca doğru olur (kasada "Numara gizliliği" maddesi).
+
 
 ## Yer tutucular (Candemsoft'tan gelecek)
 

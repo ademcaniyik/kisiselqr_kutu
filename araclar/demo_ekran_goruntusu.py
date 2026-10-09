@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Kutudaki telefon ekranı: gerçek profil sayfasının mobil ekran görüntüsü → assets/tasarim1/demo_profil_ekran.jpg
+Kutudaki telefon ekranı: gerçek profil sayfasının mobil ekran görüntüsü → assets/tasarim1/vitrin_profil_ekran.jpg
 Chrome'u DevTools Protokolü ile mobil emülasyonda (430 pt, 3x = 1290 px) açar, sayfayı VİTRİN içeriğiyle
 doldurur, "Araç Sahibine Bildir" bölümünü genişletip ekranı çeker.
 
 Vitrin: sayfanın kendisi (tasarım, CSS, butonlar) canlıdakiyle aynıdır; yalnız örnek içerik değişir.
-  - isim ve kısa bilgi örnek bir kişiyle değiştirilir
+  - isim örnek bir kişiyle değiştirilir; kısa bilgi satırı ve sosyal bağlantılar kaldırılır (sade araç profili)
   - telefon butonu kaldırılır: web sayfası phone_hidden=1 iken tam böyle görünür (kutunun vaadi).
     DİKKAT (9 Ekim): uygulamada bu ayar henüz yok, yeni profillerde numara varsayılan olarak görünür.
   - WhatsApp bağlantısı numarayı açık ettiği için LinkedIn ile değiştirilir
@@ -18,7 +18,9 @@ import base64, json, os, subprocess, sys, tempfile, time, urllib.request
 import websocket
 
 URL = sys.argv[1] if len(sys.argv) > 1 else 'https://kisiselqr.com/qr/071qydlb'
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'tasarim1', 'demo_profil_ekran.jpg')
+# Tasarım 1 kendi ekranını kullanır (vitrin_profil_ekran.jpg). demo_profil_ekran.jpg, Tasarım 2–4'ün ortak
+# telefonunda kalan önceki görüntüdür (7 Ekim); Adem'in isteğiyle 2–4'e dokunulmuyor (9 Ekim).
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'tasarim1', 'vitrin_profil_ekran.jpg')
 CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 W, H, DPR, PORT = 430, 932, 3, 9333
 CLICK = """(()=>{const c=[...document.querySelectorAll('button,a,[role=button],summary,div')]
@@ -26,11 +28,14 @@ CLICK = """(()=>{const c=[...document.querySelectorAll('button,a,[role=button],s
   const el=c.find(e=>e.tagName==='BUTTON'||e.tagName==='SUMMARY'||e.getAttribute('role')==='button')||c[0];
   if(el) el.click(); return !!el})()"""
 
-VITRIN = {'isim': 'Ahmet Yılmaz', 'bilgi': 'Mimar · İstanbul', 'plaka': '34 ABC 123'}   # plaka: kutudaki araçla aynı
+# Sade araç profili (9 Ekim): ad + plaka + bildirim butonları. Kartvizit öğeleri (bilgi satırı, sosyal
+# bağlantılar) gösterilmez: gizlilik vaadini zayıflatıyordu (psikoloji analizi, kasada "KisiselQR Rakip ve Kutu Analizi").
+VITRIN = {'isim': 'Ahmet Yılmaz', 'bilgi': '', 'plaka': '34 ABC 123', 'sosyal': False}   # plaka: kutudaki araçla aynı
 DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
   const h=q('.profile-header h1'); if(h) h.textContent=V.isim;
   const im=q('.profile-photo'); if(im) im.alt=V.isim+' profil fotoğrafı';
-  const b=q('.profile-header .bio'); if(b) b.textContent=V.bilgi;
+  const b=q('.profile-header .bio'); if(b){ if(V.bilgi) b.textContent=V.bilgi; else b.remove(); }
+  if(!V.sosyal) document.querySelectorAll('.social-media-list').forEach(e=>e.remove());
   // plaka: profile.php'nin kendi plaka bloğu (profilde plaka girilince isim altında bu işaretleme basılır)
   if(h && V.plaka && !q('.license-plate-wrapper')) h.insertAdjacentHTML('afterend',
     '<div class="license-plate-wrapper" style="display:flex;justify-content:center;margin:15px 0;">'+
