@@ -216,6 +216,55 @@
     return h;
   }
 
+  // Etiket v2 (10 Ekim, yalnız Tasarım 1): rakiplerden ayrışan etiket önerisi. Aynı ölçü (50 × 80 mm, 5:8) ve
+  // büyük QR korunur. Rakiplerdeki birebir metin ("ARAÇ SAHİBİNE ULAŞMAK İÇİN KAREKODU OKUTUN", AutoTag/vTag) ve
+  // düzen yerine: üstte siyah marka bandı (sarı logo; her araçta marka görünür), beyaz QR kartı, sarı alanda birinci
+  // ağızdan çağrı "BANA HABER VER / KAREKODU OKUT" + doğrulanmış fayda (okutana uygulama gerekmez), altta siyah
+  // şeritte adres. Numara iddiası yok (varsayılanda numara görünür). Tasarım 2–4 eski `sticker`ı kullanmaya devam eder.
+  const ET2 = { W: 764, H: 1244, R: 112, BANT: 176, KART_Y: 196, KART_X: 34, KART_R: 70, QS: 624, SARI_Y: 912, ALT_Y: 1150 };
+  function etiket2(ctx, x, y, w, opts) {
+    opts = opts || {};
+    const h = w * 1.6, E = ET2;
+    ctx.save();
+    ctx.translate(x, y); ctx.scale(w / E.W, h / E.H);
+    const dis = () => rr(ctx, 0, 0, E.W, E.H, E.R);
+    if (opts.edge) { ctx.save(); ctx.lineWidth = opts.edge; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; dis(); ctx.stroke(); ctx.restore(); }
+    if (opts.shadow) {
+      ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.65)'; ctx.shadowBlur = opts.shadow; ctx.shadowOffsetY = opts.shadow * 0.35;
+      dis(); ctx.fillStyle = C.K100; ctx.fill(); ctx.restore();
+    }
+    ctx.save(); dis(); ctx.clip();
+    ctx.fillStyle = C.K100; ctx.fillRect(0, 0, E.W, E.H);                               // siyah zemin
+    ctx.fillStyle = C.Y; ctx.fillRect(0, E.SARI_Y, E.W, E.ALT_Y - E.SARI_Y);           // sarı çağrı alanı
+    ctx.restore();
+    // beyaz QR kartı
+    const kw = E.W - 2 * E.KART_X, kh = E.SARI_Y - 20 - E.KART_Y;
+    rr(ctx, E.KART_X, E.KART_Y, kw, kh, E.KART_R); ctx.fillStyle = C.W; ctx.fill();
+    drawQR(ctx, opts.qr === undefined ? window.KQR_QR_DEMO : opts.qr, (E.W - E.QS) / 2, E.KART_Y + (kh - E.QS) / 2, E.QS, C.K100);
+    // marka bandı: logo ikonu + "Kişisel QR" (sarı), ortalı
+    const li = 96, ly = (E.BANT - li) / 2 + 6, ms = 74;
+    const mw = li + 26 + tw(ctx, 'Kişisel QR', ms, 800), mx = (E.W - mw) / 2;
+    logoIcon(ctx, mx, ly, li, C.Y);
+    if (opts.yazisiz) { ctx.restore(); return h; }   // çok küçük çizimlerde yazılar okunmaz
+    txt(ctx, 'Kişisel QR', mx + li + 26, ly + li / 2 + 0.36 * ms, { size: ms, w: 800, color: C.Y });
+    // çağrı (Montserrat 800, siyah) + fayda satırı
+    ctx.fillStyle = C.K100; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    ctx.font = `800 100px ${STK_FONT}`;
+    const fs = 100 * 660 / Math.max(ctx.measureText('KAREKODU OKUT').width, ctx.measureText('BANA HABER VER').width);
+    ctx.font = `800 ${fs}px ${STK_FONT}`;
+    ctx.fillText('BANA HABER VER', E.W / 2, E.SARI_Y + 22 + 0.72 * fs);
+    ctx.fillText('KAREKODU OKUT', E.W / 2, E.SARI_Y + 22 + 0.72 * fs + fs * 1.02);
+    ctx.font = `800 100px ${STK_FONT}`;
+    const ks = Math.min(44, 100 * 640 / ctx.measureText('Uygulama gerekmez · tek dokunuşla bildir').width);
+    ctx.font = `800 ${ks}px ${STK_FONT}`;
+    ctx.fillText('Uygulama gerekmez · tek dokunuşla bildir', E.W / 2, E.ALT_Y - 24);
+    // alt şerit: adres
+    ctx.fillStyle = C.Y; ctx.font = `800 54px ${STK_FONT}`;
+    ctx.fillText('kisiselqr.com', E.W / 2, E.ALT_Y + (E.H - E.ALT_Y) / 2 + 19);
+    ctx.restore();
+    return h;
+  }
+
   // Telefon ekranı: gerçek profil sayfasının mobil ekran görüntüsü, vitrin içeriğiyle (araclar/demo_ekran_goruntusu.py)
   const EKRAN_ZEMIN = '#F8F9FB';   // profil sayfasının zemini (ekran görüntüsünden ölçüldü): durum çubuğu bununla dolar
   // iPhone durum çubuğu: sol kulakta saat, sağ kulakta sinyal + Wi-Fi + pil. cy: çentiğin dikey ortası,
@@ -358,7 +407,8 @@
 
     // İkon şeridi (sarı bant): 4 küçük çizgisel ikon (7,2 mm) + yanında 7 pt iki satırlık etiket
     // 9 Ekim: "Aylık ücret yok" → "Abonelik yok" (rakiplerde norm "ömür boyu"; aylık deyince yıllık soru kalıyordu)
-    const items = [['gizli', 'Numaran', 'gizli'], ['bildirim', 'Anında', 'bildirim'],
+    // 10 Ekim: Adem'in kararıyla numara varsayılanda görünür; gizlemek kullanıcının seçimi → "gizlenebilir"
+    const items = [['gizli', 'Numaran', 'gizlenebilir'], ['bildirim', 'Anında', 'bildirim'],
                    ['kartvizit', 'Dijital', 'kartvizit'], ['ucretsiz', 'Abonelik', 'yok']];
     // gruplar eşit aralıkla dağıtılır: ilk grup L'de (logo/slogan hizası), son grup w − L'de biter
     const ic = 7.2, ls = 7 * PT;
@@ -660,7 +710,7 @@
     // sticker: camın sol alt köşesinde gerçek boyutunda (önden bakışta dikeyde kısalır)
     const st = { x: o.cx + ARAC.STK_X * s, w: ARAC.STK_W * s, h: ARAC.STK_H * ARAC.CAM_K * s };
     st.y = o.yer - (ARAC.STK_Y * s) - st.h;
-    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); sticker(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
+    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); etiket2(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
     return st;
   }
 
@@ -701,7 +751,7 @@
     ctx.fillStyle = 'rgba(255,255,255,0.06)';
     ctx.beginPath(); ctx.moveTo(30, -R); ctx.lineTo(70, -R); ctx.lineTo(10, R); ctx.lineTo(-30, R); ctx.closePath(); ctx.fill();
     // sticker (gerçek tasarım)
-    sticker(ctx, -25, -40, 50, { edge: 3 });
+    etiket2(ctx, -25, -40, 50, { edge: 3 });
     // serigrafi bandı: alt kenar ve A sütunu kenarı (noktalı geçiş)
     ctx.fillStyle = '#050505';
     ctx.fillRect(-R, CAM_ALT - 12, 2 * R, R);
@@ -819,7 +869,7 @@
     // küçük sticker: koyu zeminde seçilsin diye beyaz kenar payıyla
     const miniSticker = (kx, ky, kw) => {
       ctx.fillStyle = C.W; rr(ctx, kx - 0.15, ky - 0.15, kw + 0.3, kw * 1.6 + 0.3, kw * 112 / 764 + 0.15); ctx.fill();
-      sticker(ctx, kx, ky, kw, { yazisiz: true });
+      etiket2(ctx, kx, ky, kw, { yazisiz: true });
     };
     if (i === 0) {                            // Temizle: camı sil
       cam();
@@ -949,13 +999,17 @@
     // Üst-sol: başlık + açıklama (QR'ın solunda). Yapıştırma yeri belirtilmez: etiket dilenen yere yapıştırılır.
     txt(ctx, 'Nasıl çalışır?', L, 9.6, { size: 12 * PT, w: 800, color: C.Y });
     // 9 Ekim: açıklama kısaldı, altına koddan doğrulanmış 3 güven satırı geldi (rakip/psikoloji analizi)
-    const desc = "Kişisel QR'ı aracına yapıştır. Sana ulaşmak isteyen QR'ı okutur; seçtiği uyarı telefonuna bildirim " +
-                 'olarak gelir, numaran görünmez. Aynı profil, aracın olmasa da dijital kartvizitin olur.';
+    // 10 Ekim: etiket camın iç yüzüne yapıştırılır (Adem); yerin neresi olduğu yine belirtilmez
+    const desc = 'Etiketi aracının camına içten yapıştır. Okutan kişi uygulama indirmeden seçtiği uyarıyı gönderir, ' +
+                 'bildirim telefonuna gelir. Numaranı istersen gizleyebilirsin. Aynı profil dijital kartvizitin olur.';
     const ds = 7.5 * PT;
     const dl = wrap(ctx, desc, qx - 3 - L, ds, 500);
     dl.forEach((ln, i) => txt(ctx, ln, L, 14.8 + i * 3.45, { size: ds, w: 500, color: C.W }));
-    const guven = ['Okutanın uygulama indirmesi gerekmez.', 'Bildirimleri istediğin an kapatabilirsin.',
-                   'Bilgilerin değişse de etiket aynı kalır.'];
+    // 4. satır (10 Ekim): hizmet ve değişim taahhüdü. 2 yıl = ayıplı malda yasal sorumluluk süresi; "garanti"
+    // kelimesi bilerek yok (garanti belgesi yükümlülüğü doğurmasın). Koşullar sitede yazılmalı.
+    // "okutana uygulama gerekmez" açıklamaya ve etikete taşındı; güven satırları 3'te kalır (orta blok sığsın)
+    const guven = ['Bildirimleri istediğin an kapatabilirsin.', 'Bilgilerin değişse de etiket aynı kalır.',
+                   'En az 3 yıl hizmet, 2 yıl ücretsiz değişim.'];
     const gy0 = 14.8 + (dl.length - 1) * 3.45 + 4.2;
     guven.forEach((g, i) => {
       const y = gy0 + i * 3.15;
@@ -992,7 +1046,7 @@
     const etW = tw(ctx, et, etS, 800) + 2.4;
     ctx.fillStyle = C.Y; rr(ctx, sx, by0, etW, etH, 1.2); ctx.fill();
     txt(ctx, et, sx + etW / 2, by0 + etH / 2 + 0.36 * etS, { size: etS, w: 800, color: C.K100, align: 'center' });
-    sticker(ctx, sx, by0 + etH + etAra, sw, { shadow: 2.2 * (px || 10), edge: 14 });
+    etiket2(ctx, sx, by0 + etH + etAra, sw, { shadow: 2.2 * (px || 10), edge: 14 });
 
     // Orta-sağ: "Uygulamada ayrıca" + 6 ikonlu özellik, 3 sütun × 2 satır (9 Ekim: güven satırlarına yer açmak için)
     const ei = 5.0, eg = 1.0, es = 7 * PT, ecA = 1.4, ecW = (fw - 2 * ecA) / 3;
@@ -1031,7 +1085,7 @@
     const sX0 = L + 0.15, sX1 = rx - Math.max(rh, gh) / 4 - 0.3, sGap = 1.6, sW = (sX1 - sX0 - 2 * sGap) / 3, sH = 12.5;
     const sY = ry0 + 0.2;
     // alt yazılar kutucuk genişliğini aşmasın: 3. adımın taşan kelimesi rozetin ¼ boşluğuna girer ("Uygulamadan" girdi)
-    const adimlar = [['Temizle', 'Camı sil'], ['Yapıştır', 'Dilediğin yere'], ['Aktif Et', 'Uygulamada okut']];
+    const adimlar = [['Temizle', 'Camı sil'], ['Yapıştır', 'Camın içine'], ['Aktif Et', 'Uygulamada okut']];
     adimlar.forEach(([t, alt], i) => {
       const x = sX0 + i * (sW + sGap);
       adimCizim(ctx, i, x, sY, sW, sH);
@@ -1050,7 +1104,7 @@
     const eanW = 29.8, eanH = 20.7, ex = w - 8 - eanW, ey = h - 10 - eanH, solW = ex - L - 3;
     let ly = bY + 3.6;
     [[['Kutu içeriği: ', 700], ['1 QR Etiket (5 × 8 cm)', 400]],
-     [['[Su/UV dayanımı – test raporu bekleniyor]', 400]],
+     [['Su geçirmez · UV dayanımlı · camın içine', 600]],
      [['Üretici: Candemsoft', 700]],
      [['[Adres – Candemsoft onayı bekleniyor]', 400]],
      [['Destek: ', 700], ['kisiselqr.com (WhatsApp)', 400]],
@@ -1230,5 +1284,5 @@
   // Ortak araçlar: Tasarım 2–4 modülleri de aynı ürün gerçeklerini (sticker, QR, logo, ekran görüntüsü) kullanır.
   const lib = { geom, trace, panelPath, rectPts, rr, font, tw, txt, wrap, inPanel, logo, logoIcon, logoWidth,
                 ICONS, drawQR, appQR, sticker, phone, drawDieline, magazaRozetleri, PT, SAFE, BLEED, FONT, STK_FONT, colors: C };
-  window.KQRTasarim1 = { render, renderIc, drawDieline, ready, sticker, colors: C, lib };
+  window.KQRTasarim1 = { render, renderIc, drawDieline, ready, sticker, etiket2, colors: C, lib };
 })();

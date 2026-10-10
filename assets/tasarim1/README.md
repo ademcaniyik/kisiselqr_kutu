@@ -69,6 +69,31 @@ Kaynak: kasadaki "KisiselQR Rakip ve Kutu Analizi" §5. Tasarım 2–4'e dokunul
 **Baskıdan önce şart:** Ön yüzdeki "Numaran gizli" ve arkadaki "numaran görünmez" ifadeleri, uygulamaya "numaramı gizle" anahtarı gelip yeni profillerde varsayılan gizli olunca doğru olur (kasada "Numara gizliliği" maddesi).
 
 
+## 10 Ekim: Adem'in cevaplarıyla güncellemeler (yalnız Tasarım 1)
+
+- **Etiket v2 (`etiket2`)** rakiplerden ayrışmak için. Ölçü aynı (50 × 80 mm).
+  - Üstte siyah marka bandı, sarı Kişisel QR logosu.
+  - Ortada beyaz kart, büyük QR.
+  - Sarı alanda "BANA HABER VER / KAREKODU OKUT", altında "Uygulama gerekmez · tek dokunuşla bildir".
+  - Altta siyah şerit, "kisiselqr.com".
+  - Eski metin ("ARAÇ SAHİBİNE ULAŞMAK İÇİN KAREKODU OKUTUN") AutoTag ve vTag etiketlerinde birebir aynıydı.
+  - Kutudaki tüm Tasarım 1 çizimleri (araç, büyüteç, adım kutucukları, arka örnek) v2'yi kullanıyor. Demo QR OpenCV ile çözüldü.
+  - Tasarım 2–4 eski `sticker`ı kullanıyor.
+  - **Candemsoft'un onayı gerekir.** Gerçek etiket baskısı bu tasarıma geçmeli; geçmezse kutu ürünü yanlış gösterir.
+- **Dayanım:** Adem'in teyidiyle yer tutucu kalktı → "Su geçirmez · UV dayanımlı · camın içine".
+- **Yapıştırma yüzü:**
+  - Etiket camın **iç yüzüne** yapıştırılıyor; 2. adımda "Camın içine" yazıyor.
+  - Camın neresi olduğu yine belirtilmiyor.
+  - Motosiklet için ayrı bir etiket ürünü olacak; bu kutuda motosiklet iddiası yok.
+- **Numara:** Adem'in kararıyla varsayılan "görünür".
+  - "Numaran gizli" → "Numaran gizlenebilir"; "numaran görünmez" → "Numaranı istersen gizleyebilirsin".
+  - **Uygulamada ana numarayı gizleme anahtarı henüz yok.** Mevcut "Profilde Gizle" anahtarı acil durum numarası için. Bu ifadelerin doğru olması için anahtar eklenmeli.
+- **Güven satırı:** "En az 3 yıl hizmet, 2 yıl ücretsiz değişim."
+  - 2 yıl, ayıplı malda yasal sorumluluk süresi.
+  - "Garanti" kelimesi bilerek kullanılmadı.
+  - Koşullar sitede yazılmalı.
+- **Açıklama:** "okutana uygulama gerekmez" bilgisi açıklamaya ve etikete taşındı; güven satırları 3'te kaldı.
+
 ## Yer tutucular (Candemsoft'tan gelecek)
 
 | Öğe | Şu anki durum |
