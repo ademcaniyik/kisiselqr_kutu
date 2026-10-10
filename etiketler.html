@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Kişisel QR Etiket Tasarımları</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap">
+<style>
+:root{--paper:#0d1117; --surface:#161b22; --surface-2:#21262d; --ink:#f0f6fc; --muted:#8b949e; --rule:#30363d; --accent:#FDD309; --focus:#58a6ff;
+  --sans:"Outfit", -apple-system, "Segoe UI", sans-serif; --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace}
+:root[data-theme="light"]{--paper:#f6f8fa; --surface:#fff; --surface-2:#f0f2f5; --ink:#1f2328; --muted:#656d76; --rule:#d0d7de; --accent:#B38F00; --focus:#0969da}
+*{box-sizing:border-box}
+body{background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; margin:0}
+.wrap{max-width:1280px; margin:0 auto; padding:24px clamp(16px,3vw,36px) 64px; display:grid; gap:28px}
+h1{font-size:clamp(24px,3.2vw,34px); line-height:1.15; margin:6px 0 8px; font-weight:800}
+h2{font-size:19px; margin:0}
+.eyebrow{font:600 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+.lead{color:var(--muted); max-width:80ch; margin:0}
+.top{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap}
+a{color:var(--focus)}
+button{font:600 13px/1 var(--sans); color:var(--ink); background:var(--surface-2); border:1px solid var(--rule); padding:9px 12px; border-radius:6px; cursor:pointer}
+button[aria-pressed="true"]{background:var(--accent); color:#000; border-color:var(--accent)}
+.bar{position:sticky; top:0; z-index:5; display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:10px 12px; background:color-mix(in srgb,var(--surface) 90%,transparent); backdrop-filter:blur(8px); border:1px solid var(--rule); border-radius:10px}
+.bar .lbl{font:600 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+.seg{display:flex; gap:4px}
+.tog{display:flex; gap:8px; align-items:center; font-size:13.5px; cursor:pointer}
+.grid{display:grid; gap:22px}
+.card{background:var(--surface); border:1px solid var(--rule); border-radius:12px; padding:18px; display:grid; gap:14px}
+.card-h{display:flex; gap:12px; align-items:baseline; flex-wrap:wrap}
+.no{font:700 13px/1 var(--mono); color:var(--accent)}
+.metin{font:700 14px/1.4 var(--sans)}
+.metin span{display:block; font-weight:500; color:var(--muted)}
+.views{display:flex; gap:16px; align-items:flex-end}
+.view{min-width:0; display:grid; gap:6px}
+.view canvas{width:100%; height:auto; display:block; border-radius:8px; cursor:zoom-in}
+.real .view{flex:none!important}
+.view small{font:500 12px/1.3 var(--mono); color:var(--muted); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap}
+.view small button{padding:4px 8px; font-size:11px}
+.cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; font-size:14px}
+.cols b{font:600 11px/1 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
+.cols ul{margin:6px 0 0; padding-left:18px}
+.box{background:var(--surface); border:1px solid var(--rule); border-radius:12px; padding:18px}
+.box ul{padding-left:20px; display:grid; gap:6px; margin:10px 0 0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:14px; margin-top:10px}
+th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--rule); vertical-align:top}
+th{font:600 11px/1.2 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+#ov{position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:20; display:none; place-items:center; padding:16px}
+#ov.on{display:grid}
+#ov .in{display:grid; gap:14px; justify-items:center; max-width:100%}
+#ov canvas{max-width:min(92vw,900px); max-height:72vh; width:auto; height:auto}
+#ov p{color:#fff; font-size:18px; text-align:center; margin:0; max-width:60ch}
+#ov .sayac{font:700 44px/1 var(--mono); color:#FDD309}
+#ov .btns{display:flex; gap:8px; flex-wrap:wrap; justify-content:center}
+@media (max-width:640px){ .views{gap:10px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="top">
+      <div class="eyebrow">Kişisel QR · Etiket Tasarım Stüdyosu</div>
+      <div style="display:flex; gap:8px"><a href="index.html"><button type="button">← Kutu stüdyosu</button></a><button type="button" id="tema">🌙 / ☀️ Tema</button></div>
+    </div>
+    <h1>Araç Etiketi: 4 Konsept, Dikey ve Yatay</h1>
+    <p class="lead">Her konsept iki yönde çizildi: dikey 50 × 80 mm, yatay 80 × 50 mm. Etiketlerdeki QR gerçek ve demo profile gider; ekrandan telefonla okutup deneyebilirsin. Etiket camın içine yapıştırılır; çizimler dışarıdan görünüşü gösterir. Hepsi konsept, Candemsoft onayı bekliyor.</p>
+  </header>
+
+  <div class="bar" role="toolbar" aria-label="Görünüm">
+    <span class="lbl">Zemin</span>
+    <div class="seg" id="zemin">
+      <button type="button" data-z="duz" aria-pressed="true">Düz</button>
+      <button type="button" data-z="gunduz" aria-pressed="false">Camda · gündüz</button>
+      <button type="button" data-z="gece" aria-pressed="false">Camda · gece</button>
+    </div>
+    <label class="tog"><input type="checkbox" id="gercek"> Gerçek boyut (yaklaşık)</label>
+    <button type="button" id="test">▶ 3 saniye testi</button>
+  </div>
+
+  <section class="grid" id="grid" aria-label="Etiket konseptleri"></section>
+
+  <section class="box">
+    <h2>Metinlerin dayanağı</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>İfade</th><th>Dayanak</th><th>Durum</th></tr></thead>
+      <tbody>
+        <tr><td>"Uygulama gerekmez"</td><td>Okutan kişi profil sayfasını tarayıcıda açar, uyarıyı oradan gönderir.</td><td>Doğrulandı</td></tr>
+        <tr><td>"Tek dokunuşla bildir"</td><td>Profil sayfasında uyarı butonuna bir dokunuş yeter.</td><td>Doğrulandı. Sahibinin bildirim izni yoksa okutan İngilizce hata görüyor; düzeltme yapılacaklarda.</td></tr>
+        <tr><td>"Anında"</td><td>Push bildirimi; sahibinin telefonu açık ve izin verilmişse.</td><td>Koşullu</td></tr>
+        <tr><td>Cam açık · Far açık · Yanlış park · Lastik inik</td><td>Profil sayfasındaki gerçek uyarı türleri (car_window, lights_on, wrong_parking, flat_tire).</td><td>Doğrulandı</td></tr>
+        <tr><td>"Numara yerine"</td><td>Torpidodaki numaratörün yerine geçer; numaranın gizli olduğunu iddia etmez.</td><td>Doğru (numara varsayılanda görünür)</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="box">
+    <h2>Üretim notları</h2>
+    <ul>
+      <li><b>Camın içine:</b> etiket iç yüzden yapıştırılıp dışarıdan okunduğu için yapışkan baskının önünde olur. Şeffaf filme ters (ayna) baskı ve arkasına beyaz kat gerekir; matbaayla netleşecek.</li>
+      <li><b>Gece görünürlüğü:</b> "Camda · gece" görünümünde siyah zeminli etiketler (01, 04) koyu camda kenarını kaybeder. Sarı (02) ve beyaz (03) zeminler uzaktan seçilir.</li>
+      <li><b>QR:</b> her etikette tekil kod; adres uzunluğu aynı olduğu için hep 29 × 29 modül. Çevresinde en az 3 modül beyaz boşluk var. Okuma mesafesi kabaca QR kenarının 10 katı: 35 mm QR için yaklaşık 35 cm.</li>
+      <li><b>Kutu:</b> seçilen konsept, Tasarım 1'deki etiket çizimlerine (araç, büyüteç, arkadaki örnek) de işlenmeli.</li>
+      <li><b>Metin testi:</b> "3 saniye testi" etiketleri rastgele sırayla 3 saniye gösterir, sonra sorar. 8–10 kişiye "Bu ne işe yarıyor, görsen ne yapardın?" diye sormak için.</li>
+    </ul>
+  </section>
+</div>
+
+<div id="ov" role="dialog" aria-modal="true" aria-label="Etiket görünümü">
+  <div class="in">
+    <div class="sayac" id="sayac"></div>
+    <canvas id="ovc"></canvas>
+    <p id="ovp"></p>
+    <div class="btns" id="ovb"></div>
+  </div>
+</div>
+
+<script src="assets/tasarim1/qr_kodlar.js"></script>
+<script src="assets/tasarim1/tasarim1.js"></script>
+<script src="assets/etiketler/etiketler.js"></script>
+<script>
+(function () {
+  const E = window.KQREtiket, $ = s => document.querySelector(s);
+  const durum = { zemin: 'duz', gercek: false };
+  const YON = { dikey: 'Dikey · 50 × 80 mm', yatay: 'Yatay · 80 × 50 mm' };
+  const PAY = 9;
+
+  $('#tema').addEventListener('click', () => {
+    const koyu = document.documentElement.getAttribute('data-theme') !== 'light';
+    document.documentElement.setAttribute('data-theme', koyu ? 'light' : 'dark');
+  });
+
+  function kartlar() {
+    const g = $('#grid'); g.innerHTML = '';
+    E.TASARIMLAR.forEach(t => {
+      const el = document.createElement('article'); el.className = 'card';
+      el.innerHTML = `<div class="card-h"><span class="no">${t.no}</span><h2>${t.ad}</h2></div>
+        <div class="metin">${t.metin[0]}<span>${t.metin.slice(1).join(' · ')}</span></div>
+        <div class="views"></div>
+        <div class="cols"><div><b>Fikir</b><p style="margin:6px 0 0">${t.fikir}</p></div>
+          <div><b>Artısı</b><ul>${t.arti.map(a => `<li>${a}</li>`).join('')}</ul></div>
+          <div><b>Riski</b><ul>${t.risk.map(a => `<li>${a}</li>`).join('')}</ul></div></div>`;
+      const v = el.querySelector('.views');
+      ['dikey', 'yatay'].forEach(o => {
+        const [w, h] = E.OLCU[o], d = document.createElement('div'); d.className = 'view';
+        d.style.flex = `${w + 2 * PAY} 1 0`;
+        const c = document.createElement('canvas'); c.dataset.id = t.id; c.dataset.o = o;
+        c.setAttribute('aria-label', `${t.ad}, ${YON[o]}`); c.setAttribute('role', 'img');
+        c.addEventListener('click', () => buyut(t.id, o));
+        const s = document.createElement('small');
+        s.innerHTML = `<span>${YON[o]} · QR <span class="qr"></span> mm</span>`;
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = 'PNG';
+        b.addEventListener('click', () => png(t, o)); s.appendChild(b);
+        d.append(c, s); v.appendChild(d);
+      });
+      g.appendChild(el);
+    });
+  }
+
+  function ciz() {
+    document.querySelectorAll('#grid canvas').forEach(c => {
+      const r = E.ciz(c, c.dataset.id, c.dataset.o, { zemin: durum.zemin, pay: PAY, pxmm: 10 });
+      c.parentNode.querySelector('.qr').textContent = r.qr.toFixed(1).replace('.', ',');
+      c.style.width = durum.gercek ? r.W + 'mm' : '';
+    });
+    $('#grid').classList.toggle('real', durum.gercek);
+  }
+
+  function png(t, o) {
+    const c = document.createElement('canvas');
+    E.ciz(c, t.id, o, { pay: 0, pxmm: 12 });          // ~305 dpi, köşeler şeffaf
+    const a = document.createElement('a');
+    a.download = `kisiselqr_etiket_${t.no}_${t.id}_${o}.png`; a.href = c.toDataURL('image/png'); a.click();
+  }
+
+  // Büyük görünüm ve 3 saniye testi
+  const ov = $('#ov'), ovc = $('#ovc');
+  let testSira = [], testI = 0, zam = null;
+  function dugmeler(list) {
+    const b = $('#ovb'); b.innerHTML = '';
+    list.forEach(([ad, fn]) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = ad; x.addEventListener('click', fn); b.appendChild(x); });
+  }
+  function kapat() { clearInterval(zam); ov.classList.remove('on'); }
+  function buyut(id, o) {
+    clearInterval(zam);
+    E.ciz(ovc, id, o, { zemin: durum.zemin, pay: PAY, pxmm: 14 });
+    ovc.style.visibility = 'visible'; $('#sayac').textContent = '';
+    const t = E.TASARIMLAR.find(x => x.id === id);
+    $('#ovp').textContent = `${t.no} ${t.ad} · ${YON[o]}`;
+    dugmeler([['Kapat', kapat]]); ov.classList.add('on');
+  }
+  function testGoster() {
+    const [id, o] = testSira[testI % testSira.length];
+    E.ciz(ovc, id, o, { zemin: durum.zemin === 'duz' ? 'gunduz' : durum.zemin, pay: PAY, pxmm: 14 });
+    ovc.style.visibility = 'visible'; $('#ovp').textContent = ''; dugmeler([]);
+    let k = 3; $('#sayac').textContent = k; ov.classList.add('on');
+    clearInterval(zam);
+    zam = setInterval(() => {
+      k--; $('#sayac').textContent = k > 0 ? k : '';
+      if (k > 0) return;
+      clearInterval(zam); ovc.style.visibility = 'hidden';
+      $('#ovp').textContent = 'Bu etiket ne işe yarıyor? Bir araçta görsen ne yapardın?';
+      const t = E.TASARIMLAR.find(x => x.id === id);
+      dugmeler([['Hangisiydi?', () => { $('#ovp').textContent = `${t.no} ${t.ad} · ${YON[o]}`; }],
+                ['Sonraki etiket', () => { testI++; testGoster(); }], ['Kapat', kapat]]);
+    }, 1000);
+  }
+  $('#test').addEventListener('click', () => {
+    testSira = []; E.TASARIMLAR.forEach(t => ['dikey', 'yatay'].forEach(o => testSira.push([t.id, o])));
+    for (let i = testSira.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [testSira[i], testSira[j]] = [testSira[j], testSira[i]]; }
+    testI = 0; testGoster();
+  });
+  ov.addEventListener('click', e => { if (e.target === ov) kapat(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
+
+  $('#zemin').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    durum.zemin = b.dataset.z;
+    $('#zemin').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    ciz();
+  });
+  $('#gercek').addEventListener('change', e => { durum.gercek = e.target.checked; ciz(); });
+
+  kartlar();
+  E.ready().then(ciz);
+})();
+</script>
+</body>
+</html>
