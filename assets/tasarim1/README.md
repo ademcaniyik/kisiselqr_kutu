@@ -81,6 +81,7 @@ Kaynak: kasadaki "KisiselQR Rakip ve Kutu Analizi" §5. Tasarım 2–4'e dokunul
   - Tasarım 2–4 eski `sticker`ı kullanıyor.
   - **Candemsoft'un onayı gerekir.** Gerçek etiket baskısı bu tasarıma geçmeli; geçmezse kutu ürünü yanlış gösterir.
 - **Dayanım:** Adem'in teyidiyle yer tutucu kalktı → "Su geçirmez · UV dayanımlı · camın içine".
+  - 29 Ekim: "Su geçirmez" kaldırıldı (Adem): etiket camın iç yüzüne yapışıyor, suyla temas etmiyor. Satır artık "UV dayanımlı · camın içine".
 - **Yapıştırma yüzü:**
   - Etiket camın **iç yüzüne** yapıştırılıyor; 2. adımda "Camın içine" yazıyor.
   - Camın neresi olduğu yine belirtilmiyor.

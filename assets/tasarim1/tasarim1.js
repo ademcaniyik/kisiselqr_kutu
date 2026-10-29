@@ -1099,12 +1099,13 @@
     // (çevirisi serbest). Google Play rozet kılavuzunda böyle bir şart yok.
     // 9 Ekim eklemeleri: etiket ölçüsü, dayanım (Candemsoft test raporu gelene kadar yer tutucu; sitede
     // "su geçirmez & UV dayanımlı" yazıyor ama kanıt gerekli), "acil durum hizmeti değildir", sahte QR uyarısı.
+    // 29 Ekim: "Su geçirmez" kaldırıldı (Adem): etiket camın iç yüzüne yapışıyor, suyla temas etmiyor.
     // Sol sütun genişliği EAN'a kadar (≈ 51,7 mm); sığmayan satır 6 pt'ye iner (şartname: yasal ≥ 6 pt).
     const ls = 6.5 * PT, lc = C.K100;
     const eanW = 29.8, eanH = 20.7, ex = w - 8 - eanW, ey = h - 10 - eanH, solW = ex - L - 3;
     let ly = bY + 3.6;
     [[['Kutu içeriği: ', 700], ['1 QR Etiket (5 × 8 cm)', 400]],
-     [['Su geçirmez · UV dayanımlı · camın içine', 600]],
+     [['UV dayanımlı · camın içine', 600]],
      [['Üretici: Candemsoft', 700]],
      [['[Adres – Candemsoft onayı bekleniyor]', 400]],
      [['Destek: ', 700], ['kisiselqr.com (WhatsApp)', 400]],
