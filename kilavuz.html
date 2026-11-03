@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Kişisel QR Kullanım Kılavuzu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap">
+<style>
+:root{--paper:#0d1117; --surface:#161b22; --surface-2:#21262d; --ink:#f0f6fc; --muted:#8b949e; --rule:#30363d; --accent:#FDD309; --focus:#58a6ff;
+  --sans:"Outfit", -apple-system, "Segoe UI", sans-serif; --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace}
+:root[data-theme="light"]{--paper:#f6f8fa; --surface:#fff; --surface-2:#f0f2f5; --ink:#1f2328; --muted:#656d76; --rule:#d0d7de; --accent:#B38F00; --focus:#0969da}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; margin:0}
+.wrap{max-width:1280px; margin:0 auto; padding:24px clamp(16px,3vw,36px) 64px; display:grid; gap:26px}
+.wrap > *{min-width:0}
+h1{font-size:clamp(24px,3.2vw,34px); line-height:1.15; margin:6px 0 8px; font-weight:800}
+h2{font-size:19px; margin:0 0 4px}
+.eyebrow{font:600 12px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+.lead{color:var(--muted); max-width:82ch; margin:0}
+.top{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap}
+.nav{display:flex; gap:8px; flex-wrap:wrap}
+button{font:600 13px/1 var(--sans); color:var(--ink); background:var(--surface-2); border:1px solid var(--rule); padding:9px 12px; border-radius:6px; cursor:pointer}
+button[aria-pressed="true"]{background:var(--accent); color:#000; border-color:var(--accent)}
+.antet{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); border:1px solid var(--rule); background:var(--surface); border-radius:8px; overflow:hidden; margin:14px 0 0}
+.antet div{padding:10px 14px; border-right:1px solid var(--rule); border-bottom:1px solid var(--rule); min-width:0}
+.antet dt{font:600 10.5px/1.2 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
+.antet dd{margin:4px 0 0; font:600 14px/1.3 var(--mono)}
+.bar{position:sticky; top:0; z-index:5; display:flex; gap:10px 16px; flex-wrap:wrap; align-items:center; padding:10px 12px; background:color-mix(in srgb,var(--surface) 90%,transparent); backdrop-filter:blur(8px); border:1px solid var(--rule); border-radius:10px}
+.seg{display:flex; gap:4px; flex-wrap:wrap}
+.tog{display:flex; gap:8px; align-items:center; font-size:13.5px; cursor:pointer}
+.yuz{background:var(--surface); border:1px solid var(--rule); border-radius:12px; padding:16px; display:grid; gap:10px}
+.yuz-h{display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap}
+.yuz-h p{margin:0; color:var(--muted); font-size:14px}
+.sheet{overflow-x:auto; border-radius:8px; background:#8a8f96}
+.sheet canvas{display:block; width:100%; min-width:640px; height:auto; margin:0 auto}
+.kapali{display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; justify-content:center; padding:18px; background:#8a8f96; border-radius:8px}
+.kapali figure{margin:0; display:grid; gap:8px; justify-items:center}
+.kapali canvas{display:block; height:auto; box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.kapali figcaption{font:500 12px/1.3 var(--mono); color:#fff}
+.box{background:var(--surface); border:1px solid var(--rule); border-radius:12px; padding:18px}
+.box ul{padding-left:20px; display:grid; gap:6px; margin:10px 0 0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:14px; margin-top:10px}
+th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--rule); vertical-align:top}
+th{font:600 11px/1.2 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.real .sheet canvas{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="top">
+      <div class="eyebrow">Kişisel QR · Kutu içi kâğıt</div>
+      <div class="nav"><a href="index.html"><button type="button">← Kutu stüdyosu</button></a><a href="etiketler.html"><button type="button">Etiket tasarımları</button></a><button type="button" id="tema">🌙 / ☀️ Tema</button></div>
+    </div>
+    <h1>Kullanım Kılavuzu: Ortadan Katlanan Tek Yaprak</h1>
+    <p class="lead">Kutunun içine ortadan katlanıp konan kılavuz. Dış yüzde kapak ve sık sorulanlar, iç yüzde 7 adım: kurulum (1–4), profili hazırlama ve deneme (5–7). Kutuyla aynı çizimler ve aynı etiket kullanıldı. Uygulama QR'ı gerçek, mobile.kisiselqr.com'a gider.</p>
+    <dl class="antet">
+      <div><dt>Açık ölçü</dt><dd>180 × 130 mm</dd></div>
+      <div><dt>Kapalı (ortadan kırım)</dt><dd>90 × 130 mm</dd></div>
+      <div><dt>Kutu iç ölçüsü</dt><dd>96 × 136 mm · 3 mm pay</dd></div>
+      <div><dt>Taşma / güvenli alan</dt><dd>3 mm / 4 mm</dd></div>
+      <div><dt>Baskı</dt><dd>4 + 4 renk, çift yüz</dd></div>
+      <div><dt>Kâğıt (öneri)</dt><dd>115–135 g mat kuşe</dd></div>
+    </dl>
+  </header>
+
+  <div class="bar" role="toolbar" aria-label="Görünüm">
+    <div class="seg" id="gorunum">
+      <button type="button" data-g="acik" aria-pressed="true">Açık (iki yüz)</button>
+      <button type="button" data-g="kapali" aria-pressed="false">Katlanmış görünüm</button>
+    </div>
+    <label class="tog"><input type="checkbox" id="kilavuz" checked> Kırım, kesim ve güvenli alan çizgileri</label>
+    <label class="tog"><input type="checkbox" id="tasma" checked> Taşmayı göster</label>
+    <button type="button" id="png-dis">PNG indir: dış yüz</button>
+    <button type="button" id="png-ic">PNG indir: iç yüz</button>
+  </div>
+
+  <div id="acik" style="display:grid; gap:22px">
+    <section class="yuz" aria-labelledby="h-dis">
+      <div class="yuz-h"><h2 id="h-dis">Dış yüz</h2><p>Sol: arka (sık sorulanlar) · Sağ: kapak</p></div>
+      <div class="sheet"><canvas id="cv-dis" role="img" aria-label="Kılavuzun dış yüzü: arka ve kapak"></canvas></div>
+    </section>
+    <section class="yuz" aria-labelledby="h-ic">
+      <div class="yuz-h"><h2 id="h-ic">İç yüz</h2><p>Kapak açılınca soldan sağa okunur · Sol: kurulum 1–4 · Sağ: 5–7</p></div>
+      <div class="sheet"><canvas id="cv-ic" role="img" aria-label="Kılavuzun iç yüzü: kurulum adımları"></canvas></div>
+    </section>
+  </div>
+
+  <section id="kapali" class="yuz" hidden aria-label="Katlanmış görünüm">
+    <div class="yuz-h"><h2>Katlanmış görünüm</h2><p>Kutudan çıktığı hali, açılınca görülen iç yüz ve arkası</p></div>
+    <div class="kapali">
+      <figure><canvas id="cv-kapak" width="10" height="10"></canvas><figcaption>Kapak (90 × 130 mm)</figcaption></figure>
+      <figure><canvas id="cv-acilmis" width="10" height="10"></canvas><figcaption>Açılınca</figcaption></figure>
+      <figure><canvas id="cv-arka" width="10" height="10"></canvas><figcaption>Arka</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="box">
+    <h2>Bilgilerin dayanağı</h2>
+    <p class="lead">Kılavuzdaki her bilgi uygulamanın ve sitenin kodundan alındı. Ekran adları uygulamadaki Türkçe metinlerle birebir aynı.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Kılavuzda</th><th>Dayanak</th></tr></thead>
+      <tbody>
+        <tr><td>"Karekodu okutarak giriş yap", Google ya da Apple ile giriş, "QR Eşleşti"</td><td>Uygulamanın giriş ekranı (Google ve Apple girişi var).</td></tr>
+        <tr><td>Ana Sayfa → "QR Kodunu Tanımla"</td><td>Giriş yapmış ama etiketi olmayan kullanıcıya Ana Sayfa'da çıkan düğme.</td></tr>
+        <tr><td>Temel Bilgiler, Araç, Acil Durum, Sosyal Medya; "Kişisel Sayfamı Önizle"</td><td>Profil düzenleme sekmeleri ve Ana Sayfa düğmesi.</td></tr>
+        <tr><td>Fotoğraf, e-posta, acil durum numarası, sağlık bilgisi gizlenebilir</td><td>Profil düzenlemedeki gizleme anahtarları. Ana cep numarası için anahtar henüz yok; kılavuz bunu iddia etmiyor.</td></tr>
+        <tr><td>"Bildirim İzinleri" anahtarı</td><td>Profil düzenleme: "Kullanıcıların size bildirim göndermesine izin ver".</td></tr>
+        <tr><td>Aynı uyarı aynı telefondan 15 dakikada bir</td><td>Sitenin uyarı gönderme sınırı (profil + IP + uyarı türü başına 15 dk).</td></tr>
+        <tr><td>Camınız açık, Farlarınız açık, Yanlış park, Lastiğiniz inik; dörtlüler, hasar, iletişim isteği</td><td>Profil sayfasındaki gerçek uyarı türleri.</td></tr>
+        <tr><td>"Henüz aktif değil" sayfası</td><td>Tanımlanmamış etiket kamerayla okutulunca açılan sayfa.</td></tr>
+        <tr><td>iOS 15+, Android 7+; uygulama ücretsiz, abonelik yok</td><td>App Store sayfası, Android minSdk 24; uygulamada satın alma yok.</td></tr>
+        <tr><td>En az 3 yıl hizmet, 2 yıl ücretsiz değişim; 112; ödeme ya da şifre istemez</td><td>Kutunun arka yüzündeki satırlarla aynı.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="box">
+    <h2>Matbaaya gitmeden önce</h2>
+    <ul>
+      <li><b>Etiketin koruyucusu:</b> 3. adımda "koruyucuyu soy, yazılı yüz dışarı bakacak şekilde" yazıyor. Etiket tedarikçisinden gelen gerçek etiketle denenip ifade gerekirse netleşmeli.</li>
+      <li><b>Temizleme mendili:</b> kutuya girerse 2. adım "Kutudaki mendille camın iç yüzünü sil" diye güncellenir.</li>
+      <li><b>Kapaktaki etiket</b> kutudaki etiketle (v2) aynı. Etiket tasarımı değişirse ikisi birlikte güncellenir.</li>
+      <li><b>Dosya:</b> buradaki PNG'ler 300 dpi, taşmalı ve önizleme içindir. Matbaa belli olunca vektörel, CMYK baskı PDF'i çıkarılır.</li>
+    </ul>
+  </section>
+</div>
+
+<script src="assets/tasarim1/qr_kodlar.js"></script>
+<script src="assets/tasarim1/tasarim1.js"></script>
+<script src="assets/etiketler/etiketler.js"></script>
+<script src="assets/kilavuz/kilavuz.js"></script>
+<script>
+(function () {
+  const K = window.KQRKilavuz, $ = s => document.querySelector(s);
+  const d = { kilavuz: true, tasma: true, gorunum: 'acik' };
+  const O = K.OLCU;
+
+  $('#tema').addEventListener('click', () => {
+    const koyu = document.documentElement.getAttribute('data-theme') !== 'light';
+    document.documentElement.setAttribute('data-theme', koyu ? 'light' : 'dark');
+  });
+
+  // Katlanmış görünüm: dış ve iç yüz tam çizilir, istenen panel kesilip gösterilir (taşmasız, çizgisiz)
+  function panel(hedef, kaynak, x0, w, px) {
+    hedef.width = Math.round(w * px); hedef.height = Math.round(O.H * px);
+    hedef.getContext('2d').drawImage(kaynak, x0 * px, 0, w * px, O.H * px, 0, 0, w * px, O.H * px);
+    hedef.style.width = (w * 2.7) + 'px';
+  }
+  function ciz() {
+    if (d.gorunum === 'acik') {
+      K.ciz($('#cv-dis'), 'dis', { kilavuz: d.kilavuz, tasma: d.tasma, pxmm: 10 });
+      K.ciz($('#cv-ic'), 'ic', { kilavuz: d.kilavuz, tasma: d.tasma, pxmm: 10 });
+    } else {
+      const px = 8, dis = document.createElement('canvas'), ic = document.createElement('canvas');
+      K.ciz(dis, 'dis', { tasma: false, pxmm: px }); K.ciz(ic, 'ic', { tasma: false, pxmm: px });
+      panel($('#cv-kapak'), dis, O.P, O.W - O.P, px);
+      panel($('#cv-acilmis'), ic, 0, O.W, px);
+      panel($('#cv-arka'), dis, 0, O.P, px);
+    }
+  }
+  function png(yuz) {
+    const c = document.createElement('canvas');
+    K.ciz(c, yuz, { kilavuz: false, tasma: true, pxmm: 12 });     // ~305 dpi, 3 mm taşmalı
+    const a = document.createElement('a');
+    a.download = `kisiselqr_kilavuz_${yuz === 'dis' ? 'dis' : 'ic'}_yuz_186x136mm.png`; a.href = c.toDataURL('image/png'); a.click();
+  }
+  $('#gorunum').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    d.gorunum = b.dataset.g;
+    $('#gorunum').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    $('#acik').hidden = d.gorunum !== 'acik';
+    $('#kapali').hidden = d.gorunum !== 'kapali';
+    ciz();
+  });
+  $('#kilavuz').addEventListener('change', e => { d.kilavuz = e.target.checked; ciz(); });
+  $('#tasma').addEventListener('change', e => { d.tasma = e.target.checked; ciz(); });
+  $('#png-dis').addEventListener('click', () => png('dis'));
+  $('#png-ic').addEventListener('click', () => png('ic'));
+  K.ready().then(ciz);
+})();
+</script>
+</body>
+</html>

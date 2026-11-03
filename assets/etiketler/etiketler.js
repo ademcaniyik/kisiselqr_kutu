@@ -344,5 +344,5 @@
     return Promise.all(f).catch(() => {});
   }
 
-  window.KQREtiket = { TASARIMLAR, OLCU, ciz, ready };
+  window.KQREtiket = { TASARIMLAR, OLCU, ciz, ready, ikon };
 })();

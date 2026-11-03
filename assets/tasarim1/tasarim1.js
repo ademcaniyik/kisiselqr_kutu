@@ -1284,6 +1284,8 @@
 
   // Ortak araçlar: Tasarım 2–4 modülleri de aynı ürün gerçeklerini (sticker, QR, logo, ekran görüntüsü) kullanır.
   const lib = { geom, trace, panelPath, rectPts, rr, font, tw, txt, wrap, inPanel, logo, logoIcon, logoWidth,
-                ICONS, drawQR, appQR, sticker, phone, drawDieline, magazaRozetleri, PT, SAFE, BLEED, FONT, STK_FONT, colors: C };
+                ICONS, drawQR, appQR, sticker, phone, drawDieline, magazaRozetleri, PT, SAFE, BLEED, FONT, STK_FONT, colors: C,
+                // kullanım kılavuzu (kilavuz.html) kutuyla aynı çizimleri kullanır: adım kutucukları, ek özellik ikonları, vitrin ekranı
+                adimCizim, EK_IKON, EK_OZELLIK, etiket2, vitrinEkrani: () => SCREEN_T1 };
   window.KQRTasarim1 = { render, renderIc, drawDieline, ready, sticker, etiket2, colors: C, lib };
 })();
