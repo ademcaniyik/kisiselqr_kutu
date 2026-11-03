@@ -21,7 +21,7 @@ h2{font-size:19px; margin:0}
 a{color:var(--focus)}
 button{font:600 13px/1 var(--sans); color:var(--ink); background:var(--surface-2); border:1px solid var(--rule); padding:9px 12px; border-radius:6px; cursor:pointer}
 button[aria-pressed="true"]{background:var(--accent); color:#000; border-color:var(--accent)}
-.bar{position:sticky; top:0; z-index:5; display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:10px 12px; background:color-mix(in srgb,var(--surface) 90%,transparent); backdrop-filter:blur(8px); border:1px solid var(--rule); border-radius:10px}
+.bar{position:sticky; top:calc(var(--kqr-menu-h, 0px) + 8px); z-index:5; display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:10px 12px; background:color-mix(in srgb,var(--surface) 90%,transparent); backdrop-filter:blur(8px); border:1px solid var(--rule); border-radius:10px}
 .bar .lbl{font:600 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
 .seg{display:flex; gap:4px}
 .tog{display:flex; gap:8px; align-items:center; font-size:13.5px; cursor:pointer}
@@ -61,7 +61,7 @@ th{font:600 11px/1.2 var(--mono); letter-spacing:.06em; text-transform:uppercase
   <header>
     <div class="top">
       <div class="eyebrow">Kişisel QR · Etiket Tasarım Stüdyosu</div>
-      <div style="display:flex; gap:8px"><a href="index.html"><button type="button">← Kutu stüdyosu</button></a><a href="kilavuz.html"><button type="button">Kullanım kılavuzu</button></a><button type="button" id="tema">🌙 / ☀️ Tema</button></div>
+      <div style="display:flex; gap:8px"><button type="button" id="tema">🌙 / ☀️ Tema</button></div>
     </div>
     <h1>Araç Etiketi: 4 Konsept, Dikey ve Yatay</h1>
     <p class="lead">Her konsept iki yönde çizildi: dikey 50 × 80 mm, yatay 80 × 50 mm. Etiketlerdeki QR gerçek ve demo profile gider; ekrandan telefonla okutup deneyebilirsin. Etiket camın içine yapıştırılır; çizimler dışarıdan görünüşü gösterir. Hepsi konsept, Candemsoft onayı bekliyor.</p>
@@ -225,5 +225,6 @@ th{font:600 11px/1.2 var(--mono); letter-spacing:.06em; text-transform:uppercase
   E.ready().then(ciz);
 })();
 </script>
+<script src="assets/menu.js"></script>
 </body>
 </html>
