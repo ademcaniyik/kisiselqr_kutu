@@ -241,7 +241,7 @@
     },
     {
       id: 'vizor', no: '04', ad: 'Vizör', renk: '#0A0A0A',
-      metin: ['OKUT, SAHİBİNE HABER VER', 'Uygulama gerekmez · tek dokunuşla bildir'],
+      metin: ['OKUT SAHİBİNE HABER VER', 'Uygulama gerekmez · tek dokunuşla bildir'],
       fikir: 'QR\'ın çevresinde telefon kamerasının odak köşeleri: "kamerayı buraya tut" demeden söyler. Tek büyük fiil: OKUT. Sade, premium.',
       arti: ['Okuma sırası tek: köşeler → OKUT → kime.', 'Gece farla aydınlanınca sarı köşeler ve OKUT öne çıkar.'],
       risk: ['"Sahibine" araç bağlamına dayanır.', 'En kısa metin, en az açıklama.'],
@@ -250,9 +250,9 @@
         marka(ctx, w / 2, 5.6, 4.4, C.Y, C.W);
         vizor(ctx, 4.6, 10.4, 40.8, C.Y, 1.15, 7);
         qrKart(ctx, 7.2, 13, 35.6, { r: 1.8 });
-        const s1 = sigdir(ctx, ['OKUT,'], 38, 9.6, 900), s2 = sigdir(ctx, ['SAHİBİNE', 'HABER VER'], 38, 6, 900);
+        const s1 = sigdir(ctx, ['OKUT'], 38, 9.6, 900), s2 = sigdir(ctx, ['SAHİBİNE', 'HABER VER'], 38, 6, 900);
         const s3 = sigdir(ctx, ['Uygulama gerekmez · tek dokunuşla bildir'], 43, 2.3, 700, INTER);
-        blok(ctx, [{ s: 'OKUT,', size: s1, renk: C.Y, w: 900, sonra: 2.1 },
+        blok(ctx, [{ s: 'OKUT', size: s1, renk: C.Y, w: 900, sonra: 2.1 },
                    { s: 'SAHİBİNE', size: s2, renk: C.W, w: 900, sonra: 1.3 },
                    { s: 'HABER VER', size: s2, renk: C.W, w: 900, sonra: 2.3 },
                    { s: 'Uygulama gerekmez · tek dokunuşla bildir', size: s3, renk: BOZ, w: 700, fam: INTER }], w / 2, 52.4, 75.4);
@@ -264,9 +264,9 @@
         qrKart(ctx, 6, 6, 38, { r: 1.8 });
         const x0 = 50, cw = w - x0 - 3, cx = x0 + cw / 2;
         marka(ctx, cx, 6.4, 3.8, C.Y, C.W);
-        const s1 = sigdir(ctx, ['OKUT,'], cw, 10, 900), s2 = sigdir(ctx, ['SAHİBİNE', 'HABER VER'], cw, 5, 900);
+        const s1 = sigdir(ctx, ['OKUT'], cw, 10, 900), s2 = sigdir(ctx, ['SAHİBİNE', 'HABER VER'], cw, 5, 900);
         const s3 = sigdir(ctx, ['tek dokunuşla bildir'], cw, 2.3, 700, INTER);
-        blok(ctx, [{ s: 'OKUT,', size: s1, renk: C.Y, w: 900, sonra: 2.0 },
+        blok(ctx, [{ s: 'OKUT', size: s1, renk: C.Y, w: 900, sonra: 2.0 },
                    { s: 'SAHİBİNE', size: s2, renk: C.W, w: 900, sonra: 1.2 },
                    { s: 'HABER VER', size: s2, renk: C.W, w: 900, sonra: 2.2 },
                    { s: 'Uygulama gerekmez', size: s3, renk: BOZ, w: 700, fam: INTER, sonra: 0.9 },
