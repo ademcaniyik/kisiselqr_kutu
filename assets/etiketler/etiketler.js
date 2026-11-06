@@ -119,7 +119,39 @@
   const CIPLER = [['cam', 'Cam açık'], ['far', 'Far açık'], ['park', 'Yanlış park'], ['lastik', 'Lastik inik']];
 
   // ------------------------------------------------------------ 4 konsept
+  // Orijinal: Candemsoft'un bugün basılan etiketi. Dikey = tasarim1.js `sticker` (birebir vektör kopya).
+  // Yatay = aynı dilin 80 × 50 mm uyarlaması (6 Kasım, deneme baskısı için): siyah zemin solda, beyaz QR kartı siyah ile
+  // sarının sınırına biner (dikeydeki gibi), sarı alanda aynı metin, altta siyah ayırıcı + beyaz şeritte adres, siyah dış kontur.
+  const STK_R = 112 / 764 * 50;   // dikey orijinalin köşe yarıçapı (mm)
+  function orijinalYatay(ctx, w, h) {
+    const k = 50 / 764, OUT = 7 * k, ALT = 95 * k * 1.15, AYR = 7 * k;      // dikeyle aynı kontur / ayırıcı kalınlığı
+    const altY = h - ALT, kart = altY - AYR - 2 * 2.2, kx = 2.2, ky = 2.2, sinir = kx + kart * 0.69;
+    ctx.fillStyle = C.W; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = C.K100; ctx.fillRect(0, 0, sinir, altY - AYR);
+    ctx.fillStyle = C.Y; ctx.fillRect(sinir, 0, w - sinir, altY - AYR);
+    ctx.fillStyle = C.K100; ctx.fillRect(0, altY - AYR, w, AYR);
+    L.rr(ctx, kx, ky, kart, kart, 90 * k); ctx.fillStyle = C.W; ctx.fill();
+    ctx.lineWidth = 5 * k; ctx.strokeStyle = C.K100; ctx.stroke();
+    // 2,5 modül sessiz bölge: dikeydeki oran (≈1,2 modül) yatayda okunmadı
+    const q = kart * 29 / 34; L.drawQR(ctx, window.KQR_QR_DEMO, kx + (kart - q) / 2, ky + (kart - q) / 2, q, C.K100);
+    const x0 = kx + kart + 1.6, cw = w - x0 - 2.6, cx = x0 + cw / 2;
+    const sat = ['ARAÇ SAHİBİNE', 'ULAŞMAK İÇİN', 'KAREKODU', 'OKUTUN'], fs = sigdir(ctx, sat, cw, 5, 800);
+    blok(ctx, sat.map((s, i) => ({ s, size: fs, renk: C.K100, w: 800, sonra: i < 3 ? fs * 0.42 : 0 })), cx, 0, altY - AYR);
+    const us = sigdir(ctx, ['www.kisiselqr.com'], 30, ALT * 0.5, 800);
+    blok(ctx, [{ s: 'www.kisiselqr.com', size: us, renk: C.K100, w: 800 }], w / 2, altY, h - OUT * 0.5);
+    ctx.lineWidth = 2 * OUT; ctx.strokeStyle = C.K100; L.rr(ctx, 0, 0, w, h, STK_R); ctx.stroke();
+  }
+
   const TASARIMLAR = [
+    {
+      id: 'orijinal', no: '00', ad: 'Orijinal (Candemsoft)', renk: C.Y, r: STK_R,
+      metin: ['ARAÇ SAHİBİNE ULAŞMAK İÇİN KAREKODU OKUTUN', 'www.kisiselqr.com'],
+      fikir: 'Bugün basılan etiket; kutuda da bu gösteriliyor. Dikey hali Candemsoft\'un görselinin birebir kopyası, yatay hali aynı dilin 80 × 50 mm uyarlaması.',
+      arti: ['Kime ve ne yapılacağı açık.', 'Kutudaki çizimlerle aynı.'],
+      risk: ['Metin AutoTag ve vTag etiketleriyle birebir aynı; rakiplerden ayrışmaz.'],
+      dikey(ctx, w) { L.sticker(ctx, 0, 0, w); },
+      yatay: orijinalYatay,
+    },
     {
       id: 'klasik', no: '01', ad: 'Klasik Siyah-Sarı', renk: C.Y,
       metin: ['ARAÇ SAHİBİNE HABER VER', 'Kamerayla okut · uygulama gerekmez'],
@@ -323,9 +355,9 @@
     ctx.save(); ctx.translate(M, M);
     if (M > 0 && !cam) {      // düz zeminde yumuşak gölge
       ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.32)'; ctx.shadowBlur = 2.4 * k; ctx.shadowOffsetY = 0.9 * k;
-      L.rr(ctx, 0, 0, w, h, R); ctx.fillStyle = '#000'; ctx.fill(); ctx.restore();
+      L.rr(ctx, 0, 0, w, h, d.r || R); ctx.fillStyle = '#000'; ctx.fill(); ctx.restore();
     }
-    ctx.save(); L.rr(ctx, 0, 0, w, h, R); ctx.clip();
+    ctx.save(); L.rr(ctx, 0, 0, w, h, d.r || R); ctx.clip();
     d[yon](ctx, w, h);
     ctx.restore();
     if (M > 0 && !cam && id === 'sorun') {   // beyaz etiket açık zeminde seçilsin: önizleme kenarı (basılmaz)
