@@ -12,6 +12,7 @@
     ['kilavuz.html', 'Kullanım kılavuzu', 'Kılavuz'],
   ];
   const DOSYALAR = [
+    ['out/kisiselqr_tanitim.mp4', 'Tanıtım videosu · 9:16 MP4'],
     ['out/Kisisel_QR_Etiket_Deneme_Baskisi.pdf', 'Etiket deneme baskısı · A4 PDF'],
     ['out/Candemsoft_QR-Kutu_Acinim_v1.pdf', 'Bıçak izi (açınım) · PDF'],
     ['out/Candemsoft_QR-Kutu_Acinim_v1.svg', 'Bıçak izi (açınım) · SVG'],

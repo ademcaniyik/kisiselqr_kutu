@@ -360,8 +360,8 @@
     ctx.save(); L.rr(ctx, 0, 0, w, h, d.r || R); ctx.clip();
     d[yon](ctx, w, h);
     ctx.restore();
-    if (M > 0 && !cam && id === 'sorun') {   // beyaz etiket açık zeminde seçilsin: önizleme kenarı (basılmaz)
-      L.rr(ctx, 0, 0, w, h, R); ctx.lineWidth = 0.12; ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.stroke();
+    if (M > 0 && !cam && (id === 'sorun' || d.acikZemin)) {   // beyaz etiket açık zeminde seçilsin: önizleme kenarı (basılmaz)
+      L.rr(ctx, 0, 0, w, h, d.r || R); ctx.lineWidth = 0.12; ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.stroke();
     }
     ctx.restore();
     if (cam) camOn(ctx, W, H, zemin);
@@ -376,5 +376,10 @@
     return Promise.all(f).catch(() => {});
   }
 
-  window.KQREtiket = { TASARIMLAR, OLCU, ciz, ready, ikon };
+  // Ek konseptler (assets/etiketler/yeni/NN.js) bu dosyadan sonra yüklenir ve ekle() ile listeye girer.
+  // Ortak yardımcılar yardim altında: aynı ölçü, QR ve yazı kuralları tüm konseptlerde geçerli kalsın.
+  function ekle(t) { if (!TASARIMLAR.some(x => x.id === t.id)) TASARIMLAR.push(t); }
+  const yardim = { L, C, MONT, INTER, R, QZ, BOZ, mf, en, sigdir, blok, qrKart, vizor, marka, adres, ikon, CIPLER, UYARI };
+
+  window.KQREtiket = { TASARIMLAR, OLCU, ciz, ready, ikon, ekle, yardim };
 })();
