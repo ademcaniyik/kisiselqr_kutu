@@ -1,7 +1,7 @@
 /* Kişisel QR – kullanım kılavuzu (kutunun içine konan, ortadan tek kırımlı kâğıt)
  * Açık ölçü 180 × 130 mm, kapalı 90 × 130 mm (kutu iç ölçüsü 96 × 136 mm: her yanda 3 mm pay). Taşma 3 mm, güvenli alan 4 mm.
  * Dış yüz: [Arka | Kapak]. İç yüz: [Kurulum 1–4 | Hazırla ve dene 5–7]. Kapak açılınca iç yüz soldan sağa okunur.
- * Çizimler mm koordinatında; kutuyla aynı öğeler (logo, etiket v2, adım kutucukları, ikonlar, vitrin ekranı) tasarim1.js'ten.
+ * Çizimler mm koordinatında; kutuyla aynı öğeler (logo, orijinal etiket, adım kutucukları, ikonlar, vitrin ekranı) tasarim1.js'ten.
  * Metinlerdeki her bilgi uygulama ve web kodundan doğrulandı (kilavuz.html → "Bilgilerin dayanağı").
  */
 (function () {
@@ -129,7 +129,7 @@
     para(ctx, 'Kurulum 4 adım. İçeriyi aç, 1. adımla uygulamayı indirerek başla.', x0, y, cw * 0.62, 7.6 * PT, { color: '#C9CCD1' });
     // etiket: hafif eğik, gölgeli
     ctx.save(); ctx.translate(P + 45, 70); ctx.rotate(0.08);
-    L.etiket2(ctx, -15, -24, 30, { shadow: 26, edge: 6 });
+    L.sticker(ctx, -15, -24, 30, { shadow: 26, edge: 6 });
     ctx.restore();
     // slogan (kutunun ön yüzüyle aynı)
     const sy = 104, ss = 10.5 * PT;

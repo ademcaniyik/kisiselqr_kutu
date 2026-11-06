@@ -78,6 +78,8 @@ Kaynak: kasadaki "KisiselQR Rakip ve Kutu Analizi" §5. Tasarım 2–4'e dokunul
   - Altta siyah şerit, "kisiselqr.com".
   - Eski metin ("ARAÇ SAHİBİNE ULAŞMAK İÇİN KAREKODU OKUTUN") AutoTag ve vTag etiketlerinde birebir aynıydı.
   - Kutudaki tüm Tasarım 1 çizimleri (araç, büyüteç, adım kutucukları, arka örnek) v2'yi kullanıyor. Demo QR OpenCV ile çözüldü.
+  - **6 Kasım (Adem):** kutuya yeniden Candemsoft'un orijinal etiketi (`sticker`, "ARAÇ SAHİBİNE ULAŞMAK İÇİN KAREKODU OKUTUN") kondu: araç camı, büyüteç, adım kutucukları, arka örnek ve kılavuz kapağı. v2 (`etiket2`) kodda öneri olarak duruyor, hiçbir çizimde kullanılmıyor.
+  - Aynı gün: arka yüzdeki "ÖRNEK · Okut, dene" etiketi tek satırda örnek etiketten geniş kalıp "Uygulamada ayrıca" başlığına biniyordu. Artık iki satır ("ÖRNEK" / "Okut, dene") ve örnek etiketin genişliğinde.
   - Tasarım 2–4 eski `sticker`ı kullanıyor.
   - **Candemsoft'un onayı gerekir.** Gerçek etiket baskısı bu tasarıma geçmeli; geçmezse kutu ürünü yanlış gösterir.
 - **Dayanım:** Adem'in teyidiyle yer tutucu kalktı → "Su geçirmez · UV dayanımlı · camın içine".

@@ -216,6 +216,7 @@
     return h;
   }
 
+  // 6 Kasım (Adem): kutuda yeniden orijinal etiket (`sticker`) kullanılıyor; v2 şu an hiçbir çizimde yok, öneri olarak duruyor.
   // Etiket v2 (10 Ekim, yalnız Tasarım 1): rakiplerden ayrışan etiket önerisi. Aynı ölçü (50 × 80 mm, 5:8) ve
   // büyük QR korunur. Rakiplerdeki birebir metin ("ARAÇ SAHİBİNE ULAŞMAK İÇİN KAREKODU OKUTUN", AutoTag/vTag) ve
   // düzen yerine: üstte siyah marka bandı (sarı logo; her araçta marka görünür), beyaz QR kartı, sarı alanda birinci
@@ -710,7 +711,7 @@
     // sticker: camın sol alt köşesinde gerçek boyutunda (önden bakışta dikeyde kısalır)
     const st = { x: o.cx + ARAC.STK_X * s, w: ARAC.STK_W * s, h: ARAC.STK_H * ARAC.CAM_K * s };
     st.y = o.yer - (ARAC.STK_Y * s) - st.h;
-    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); etiket2(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
+    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); sticker(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
     return st;
   }
 
@@ -751,7 +752,7 @@
     ctx.fillStyle = 'rgba(255,255,255,0.06)';
     ctx.beginPath(); ctx.moveTo(30, -R); ctx.lineTo(70, -R); ctx.lineTo(10, R); ctx.lineTo(-30, R); ctx.closePath(); ctx.fill();
     // sticker (gerçek tasarım)
-    etiket2(ctx, -25, -40, 50, { edge: 3 });
+    sticker(ctx, -25, -40, 50, { edge: 3 });
     // serigrafi bandı: alt kenar ve A sütunu kenarı (noktalı geçiş)
     ctx.fillStyle = '#050505';
     ctx.fillRect(-R, CAM_ALT - 12, 2 * R, R);
@@ -869,7 +870,7 @@
     // küçük sticker: koyu zeminde seçilsin diye beyaz kenar payıyla
     const miniSticker = (kx, ky, kw) => {
       ctx.fillStyle = C.W; rr(ctx, kx - 0.15, ky - 0.15, kw + 0.3, kw * 1.6 + 0.3, kw * 112 / 764 + 0.15); ctx.fill();
-      etiket2(ctx, kx, ky, kw, { yazisiz: true });
+      sticker(ctx, kx, ky, kw, { yazisiz: true });
     };
     if (i === 0) {                            // Temizle: camı sil
       cam();
@@ -1030,7 +1031,7 @@
     // "ÖRNEK · Okut, dene" etiketi (9 Ekim: lider rakipte "Kodu Okut Dene" var; psikoloji: deneme kancası).
     // Etiket QR'ın üstüne binmez (binerse okunmaz). Boy, sağdaki blokla aynı yüksekliğe sığacak kadar.
     // Sol sütunun üstü güven satırlarının hemen altı (sağ sütundaki QR yazılarından bağımsız)
-    const etH = 3.0, etAra = 0.9, ustS = gy0 + (guven.length - 1) * 3.15 + 1.8;
+    const etH = 5.6, etAra = 0.9, ustS = gy0 + (guven.length - 1) * 3.15 + 1.8;
     const sw = Math.min(21.5, (kb - ustS - etH - etAra) / 1.6), sx = L + 0.75, fx = L + 0.75 + sw + 4, fw = R - fx;
     const kx = fx, kw = R - fx;
     const kts = 7 * PT, ktx = kx + pad + 5.2, ktW = kx + kw - pad - ktx;
@@ -1039,14 +1040,13 @@
     const kh = pad + 2.6 + govde.length * 2.95 + 0.9 + pad * 0.6, ky = kb - kh;
 
     const blokH = etH + etAra + sw * 1.6, by0 = (ustS + kb - blokH) / 2;
-    // etiket sticker'ın sol kenarına yaslı; en çok 4 mm'lik ara boşluğun 2,8 mm'sine taşabilir; yazı ≥ 6 pt
-    const et = 'ÖRNEK · Okut, dene', etMax = sw + 2.8 - 2.4;
-    let etS = 6.8 * PT; while (etS > 6 * PT && tw(ctx, et, etS, 800) > etMax) etS -= 0.02;
-    etS = Math.max(etS, 6 * PT);
-    const etW = tw(ctx, et, etS, 800) + 2.4;
-    ctx.fillStyle = C.Y; rr(ctx, sx, by0, etW, etH, 1.2); ctx.fill();
-    txt(ctx, et, sx + etW / 2, by0 + etH / 2 + 0.36 * etS, { size: etS, w: 800, color: C.K100, align: 'center' });
-    etiket2(ctx, sx, by0 + etH + etAra, sw, { shadow: 2.2 * (px || 10), edge: 14 });
+    // Etiket iki satır ("ÖRNEK" / "Okut, dene"), genişliği örnek etiketi aşmaz. 6 Kasım: tek satırda 6 pt'de bile
+    // ~22 mm tutuyordu, sağdaki "Uygulamada ayrıca" başlığına biniyordu.
+    const etS = 6.8 * PT;
+    ctx.fillStyle = C.Y; rr(ctx, sx, by0, sw, etH, 1.2); ctx.fill();
+    txt(ctx, 'ÖRNEK', sx + sw / 2, by0 + 2.45, { size: etS, w: 800, color: C.K100, align: 'center' });
+    txt(ctx, 'Okut, dene', sx + sw / 2, by0 + 4.85, { size: etS, w: 700, color: C.K100, align: 'center' });
+    sticker(ctx, sx, by0 + etH + etAra, sw, { shadow: 2.2 * (px || 10), edge: 14 });
 
     // Orta-sağ: "Uygulamada ayrıca" + 6 ikonlu özellik, 3 sütun × 2 satır (9 Ekim: güven satırlarına yer açmak için)
     const ei = 5.0, eg = 1.0, es = 7 * PT, ecA = 1.4, ecW = (fw - 2 * ecA) / 3;
