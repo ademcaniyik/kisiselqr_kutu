@@ -8,7 +8,10 @@ Vitrin: sayfanın kendisi (tasarım, CSS, butonlar) canlıdakiyle aynıdır; yal
   - isim örnek bir kişiyle değiştirilir; kısa bilgi satırı ve sosyal bağlantılar kaldırılır (sade araç profili)
   - telefon butonu kaldırılır: web sayfası phone_hidden=1 iken tam böyle görünür (kutunun vaadi).
     DİKKAT (9 Ekim): uygulamada bu ayar henüz yok, yeni profillerde numara varsayılan olarak görünür.
-  - WhatsApp bağlantısı numarayı açık ettiği için LinkedIn ile değiştirilir
+  - sosyal: yalnız WhatsApp ve Instagram kalır, iki büyük logo kutucuğu olarak (14 Kasım, Adem). Bu, canlı sayfanın
+    satır görünümünden farklı bir vitrin düzenidir: küçük telefon çiziminde logolar seçilsin diye.
+    (9 Ekim–14 Kasım arası sosyal bağlantılar yoktu ve WhatsApp, LinkedIn ile değiştiriliyordu.)
+  - zoom: sayfa içeriği büyütülür, telefon ekranında her şey daha iri görünür (alt kısım kırpılır)
   - plaka (kutudaki araçla aynı) sayfanın kendi plaka bloğuyla isim altına eklenir
 
 Gereksinim: Google Chrome, pip install websocket-client
@@ -28,14 +31,32 @@ CLICK = """(()=>{const c=[...document.querySelectorAll('button,a,[role=button],s
   const el=c.find(e=>e.tagName==='BUTTON'||e.tagName==='SUMMARY'||e.getAttribute('role')==='button')||c[0];
   if(el) el.click(); return !!el})()"""
 
-# Sade araç profili (9 Ekim): ad + plaka + bildirim butonları. Kartvizit öğeleri (bilgi satırı, sosyal
-# bağlantılar) gösterilmez: gizlilik vaadini zayıflatıyordu (psikoloji analizi, kasada "KisiselQR Rakip ve Kutu Analizi").
-VITRIN = {'isim': 'Ahmet Yılmaz', 'bilgi': '', 'plaka': '34 ABC 123', 'sosyal': False}   # plaka: kutudaki araçla aynı
+# Vitrin: ad + plaka + WhatsApp/Instagram + bildirim butonları (14 Kasım). Bilgi satırı gösterilmez.
+VITRIN = {'isim': 'Ahmet Yılmaz', 'bilgi': '', 'plaka': '34 ABC 123',   # plaka: kutudaki araçla aynı
+          'sosyal': ['whatsapp', 'instagram'], 'zoom': 1.3}
 DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
   const h=q('.profile-header h1'); if(h) h.textContent=V.isim;
   const im=q('.profile-photo'); if(im) im.alt=V.isim+' profil fotoğrafı';
   const b=q('.profile-header .bio'); if(b){ if(V.bilgi) b.textContent=V.bilgi; else b.remove(); }
-  if(!V.sosyal) document.querySelectorAll('.social-media-list').forEach(e=>e.remove());
+  if(!V.sosyal || !V.sosyal.length) document.querySelectorAll('.social-media-list').forEach(e=>e.remove());
+  else {
+    const RENK={whatsapp:'#25D366',instagram:'#E1306C'}, AD={whatsapp:'WhatsApp',instagram:'Instagram'};
+    const tur=a=>/wa\.me|whatsapp/i.test(a.href)?'whatsapp':(/instagram/i.test(a.href)?'instagram':'');
+    document.querySelectorAll('a.social-list-btn').forEach(a=>{ if(!V.sosyal.includes(tur(a))) a.remove(); });
+    document.querySelectorAll('.social-media-list').forEach(l=>{
+      l.style.cssText+=';display:grid;grid-template-columns:1fr 1fr;gap:14px;';
+      [...l.children].forEach(c=>{ if(!c.querySelector('a.social-list-btn') && !c.matches('a.social-list-btn')) c.remove(); });
+    });
+    document.querySelectorAll('a.social-list-btn').forEach(a=>{ const t=tur(a);
+      a.style.cssText+=';order:'+(t==='whatsapp'?0:1)+';display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px 6px;margin:0;height:auto;min-height:0;max-height:none;overflow:visible;border:2px solid '+RENK[t]+';';
+      const i=a.querySelector('i'); if(i){ i.className=t==='whatsapp'?'fab fa-whatsapp':'fab fa-instagram';
+        i.style.cssText='font-size:86px;line-height:1;display:block;width:auto;height:auto;min-height:86px;margin:0;color:'+RENK[t]+';';
+        if(i.parentElement!==a) i.parentElement.style.cssText='margin:0;width:auto;height:auto;font-size:86px;text-align:center;'; }
+      const ti=a.querySelector('.btn-title'); if(ti){ ti.textContent=AD[t]; ti.style.cssText='font-size:21px;font-weight:700;margin:0;'; }
+      a.querySelectorAll(':scope > *:not(i):not(.btn-title)').forEach(x=>{ if(!x.contains(i)&&!x.contains(ti)) x.style.display='none'; });
+    });
+  }
+  if(V.zoom) document.body.style.zoom=V.zoom;
   // plaka: profile.php'nin kendi plaka bloğu (profilde plaka girilince isim altında bu işaretleme basılır)
   if(h && V.plaka && !q('.license-plate-wrapper')) h.insertAdjacentHTML('afterend',
     '<div class="license-plate-wrapper" style="display:flex;justify-content:center;margin:15px 0;">'+
@@ -45,9 +66,6 @@ DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
     '<div class="plate-text" style="padding:0 15px;display:flex;align-items:center;justify-content:center;font-family:\\'Segoe UI\\',Roboto,Helvetica,Arial,sans-serif;font-size:26px;font-weight:800;color:#000;letter-spacing:1px;">'+
     V.plaka.toUpperCase()+'</div></div></div>');
   document.querySelectorAll('.contact-info').forEach(e=>e.remove());
-  document.querySelectorAll('a.social-list-btn').forEach(a=>{ if(/wa\\.me|whatsapp/i.test(a.href)){
-    a.href='https://www.linkedin.com/'; const i=a.querySelector('i'); if(i) i.className='fab fa-linkedin';
-    const t=a.querySelector('.btn-title'); if(t) t.textContent='LinkedIn'; }});
   return !!h})(%s)""" % json.dumps(VITRIN, ensure_ascii=False)
 
 prof = tempfile.mkdtemp()

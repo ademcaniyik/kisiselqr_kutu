@@ -525,38 +525,39 @@
     // gövde: temel dolgu (üst yüzeyler ışık alır)
     simetrik(ctx, GOVDE);
     const gg = ctx.createLinearGradient(0, 176, 0, 1480);
-    gg.addColorStop(0, '#0f1011'); gg.addColorStop(0.18, '#18191b'); gg.addColorStop(0.45, '#212326');
-    gg.addColorStop(0.62, '#272a2d'); gg.addColorStop(0.7, '#1f2124'); gg.addColorStop(0.93, '#2b2e32'); gg.addColorStop(1, '#43474c');
+    // Boya: beyaz/gümüş (14 Kasım, Adem; önceden siyah). Siyah zeminde araç seçilsin diye açık renk.
+    gg.addColorStop(0, '#7d838a'); gg.addColorStop(0.18, '#aeb4ba'); gg.addColorStop(0.45, '#d3d7db');
+    gg.addColorStop(0.62, '#e4e7ea'); gg.addColorStop(0.7, '#cdd1d5'); gg.addColorStop(0.93, '#e9ecee'); gg.addColorStop(1, '#f7f8f9');
     ctx.fillStyle = gg; ctx.fill();
     // yan yüzeyler kenara doğru koyulaşır (hacim)
     ctx.save(); simetrik(ctx, GOVDE); ctx.clip();
     const yg = ctx.createLinearGradient(-930, 0, 930, 0);
-    yg.addColorStop(0, 'rgba(0,0,0,0.55)'); yg.addColorStop(0.16, 'rgba(0,0,0,0)'); yg.addColorStop(0.84, 'rgba(0,0,0,0)'); yg.addColorStop(1, 'rgba(0,0,0,0.55)');
+    yg.addColorStop(0, 'rgba(0,0,0,0.42)'); yg.addColorStop(0.16, 'rgba(0,0,0,0)'); yg.addColorStop(0.84, 'rgba(0,0,0,0)'); yg.addColorStop(1, 'rgba(0,0,0,0.42)');
     ctx.fillStyle = yg; ctx.fillRect(-940, 150, 1880, 1350);
     ctx.restore();
 
     // kaput: yukarı bakan yüzey, gövdeden açık
     simetrik(ctx, KAPUT);
     const kg = ctx.createLinearGradient(0, 776, 0, 992);
-    kg.addColorStop(0, '#24272a'); kg.addColorStop(0.35, '#3b3f44'); kg.addColorStop(1, '#30343a');
+    kg.addColorStop(0, '#c9ced3'); kg.addColorStop(0.35, '#eef0f2'); kg.addColorStop(1, '#dde1e5');
     ctx.fillStyle = kg; ctx.fill();
     ctx.save(); simetrik(ctx, KAPUT); ctx.clip();
     ctx.fillStyle = yg; ctx.fillRect(-940, 760, 1880, 240);
     const hs = ctx.createRadialGradient(-140, 905, 10, -140, 905, 560);
-    hs.addColorStop(0, 'rgba(255,255,255,0.12)'); hs.addColorStop(1, 'rgba(255,255,255,0)');
+    hs.addColorStop(0, 'rgba(255,255,255,0.45)'); hs.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = hs; ctx.fillRect(-940, 760, 1880, 240);
     // kaput kıvrımları (ışık + gölge çifti)
     [[1, 0.2], [-1, 0.2]].forEach(([k]) => {
       ctx.strokeStyle = isik(0.16); ctx.lineWidth = lw(0.16);
       ctx.beginPath(); ctx.moveTo(k * 238, 786); ctx.quadraticCurveTo(k * 300, 880, k * 372, 990); ctx.stroke();
-      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.strokeStyle = 'rgba(0,0,0,0.22)';
       ctx.beginPath(); ctx.moveTo(k * 252, 786); ctx.quadraticCurveTo(k * 316, 880, k * 390, 990); ctx.stroke();
     });
     ctx.restore();
     // kaput ön kenarı parlaklığı + yan kapı (çamurluk) derz çizgileri
     ctx.strokeStyle = isik(0.42); ctx.lineWidth = lw(0.18);
     ctx.beginPath(); ctx.moveTo(-800, 806); ctx.quadraticCurveTo(-400, 792, 0, 776); ctx.quadraticCurveTo(400, 792, 800, 806); ctx.stroke();
-    ctx.strokeStyle = '#060707'; ctx.lineWidth = lw(0.16);
+    ctx.strokeStyle = 'rgba(40,44,48,0.55)'; ctx.lineWidth = lw(0.16);
     [1, -1].forEach(k => { ctx.beginPath(); ctx.moveTo(k * 788, 958); ctx.lineTo(k * 822, 832); ctx.stroke(); });
 
     // ön cam bölgesi: torpido gözü (cowl) + silecek
@@ -616,7 +617,7 @@
     ikiYan(ctx, YAN_CAM, () => { ctx.fillStyle = '#0b0d0f'; ctx.fill(); ctx.strokeStyle = isik(0.18); ctx.lineWidth = lw(0.1); ctx.stroke(); });
     ikiYan(ctx, SUTUN, () => {
       const pg = ctx.createLinearGradient(0, 1000, 0, 1420);
-      pg.addColorStop(0, '#1d1f22'); pg.addColorStop(1, '#2c2f33');
+      pg.addColorStop(0, '#b7bcc1'); pg.addColorStop(1, '#dfe2e5');
       ctx.fillStyle = pg; ctx.fill();
     });
     // tavan kenarı ve gövde silüeti (kenar ışığı)
@@ -630,7 +631,7 @@
     // yan aynalar
     ikiYan(ctx, AYNA, k => {
       const ag = ctx.createLinearGradient(0, 990, 0, 1115);
-      ag.addColorStop(0, '#16181a'); ag.addColorStop(1, '#30343a');
+      ag.addColorStop(0, '#a3a9af'); ag.addColorStop(1, '#e3e6e9');
       ctx.fillStyle = ag; ctx.fill();
       ctx.strokeStyle = isik(0.4); ctx.lineWidth = lw(0.14); ctx.stroke();
       ctx.strokeStyle = isik(0.5); ctx.lineWidth = lw(0.12);   // üst kenar ışığı
@@ -768,7 +769,7 @@
     ctx.fillStyle = '#08090a';
     ctx.beginPath(); ctx.moveTo(gx(-R), -R); ctx.lineTo(gx(R), R); ctx.lineTo(-R, R); ctx.lineTo(-R, -R); ctx.closePath(); ctx.fill();
     const pg = ctx.createLinearGradient(-R, 0, gx(0) - 6, 0);
-    pg.addColorStop(0, '#1a1c1f'); pg.addColorStop(1, '#34383d');
+    pg.addColorStop(0, '#b7bcc1'); pg.addColorStop(1, '#e3e6e9');
     ctx.fillStyle = pg;
     ctx.beginPath(); ctx.moveTo(gx(-R) - 6, -R); ctx.lineTo(gx(R) - 6, R); ctx.lineTo(-R, R); ctx.lineTo(-R, -R); ctx.closePath(); ctx.fill();
     ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1.3;
@@ -780,7 +781,7 @@
     ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 0.9;
     ctx.beginPath(); ctx.moveTo(-R, CAM_ALT + 1.8); ctx.lineTo(R, CAM_ALT + 0.5); ctx.stroke();
     const hg = ctx.createLinearGradient(0, CAM_ALT + 9, 0, R);
-    hg.addColorStop(0, '#3e4248'); hg.addColorStop(1, '#202326');
+    hg.addColorStop(0, '#e9ecee'); hg.addColorStop(1, '#bfc4c9');
     ctx.fillStyle = hg; ctx.fillRect(-R, CAM_ALT + 9, 2 * R, R);
     ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.lineWidth = 1.1;
     ctx.beginPath(); ctx.moveTo(-R, CAM_ALT + 9); ctx.lineTo(R, CAM_ALT + 9); ctx.stroke();

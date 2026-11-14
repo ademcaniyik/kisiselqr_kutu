@@ -9,7 +9,7 @@ Tasarım görsel dosyası değil, kod olarak çizilir: `tasarim1.js`, açınım�
 | `tasarim1.js` | Tüm panellerin çizimi, logo (vektörel yeniden çizim), ikonlar, sticker kopyası, telefon, gerçek oranlı araç ve büyüteç |
 | `qr_kodlar.js` | Gerçek QR matrisleri (ECC M): `KQR_QR_APP` → `https://mobile.kisiselqr.com`, `KQR_QR_DEMO` → `https://kisiselqr.com/qr/071qydlb` (demo profil). `araclar/qr_uret.py` üretir, elle düzenlemeyin |
 | `rozet_appstore_tr.svg`, `rozet_googleplay_tr.png` | Apple ve Google'ın resmi Türkçe mağaza rozetleri ("App Store'dan İndirin", "İndirin Google Play"); Apple marketing toolbox ve Google Play rozet sayfasından alındı, değiştirilmeden kullanılır |
-| `vitrin_profil_ekran.jpg` | **Tasarım 1'in telefon ekranı** (9 Ekim): gerçek profil sayfasının mobil ekran görüntüsü, sade araç profili olarak: "Ahmet Yılmaz", isim altında plaka 34 ABC 123 (sayfanın kendi plaka bloğu), "Araç Sahibine Bildir" ve 8 bildirim butonu. Bilgi satırı, sosyal bağlantılar ve telefon butonu yok (web sayfası `phone_hidden` açıkken böyle görünür; **uygulamada bu ayar henüz yok**, varsayılanda numara görünür). `araclar/demo_ekran_goruntusu.py` çeker. Telefon çiziminde üstte iPhone durum çubuğu var |
+| `vitrin_profil_ekran.jpg` | **Tasarım 1'in telefon ekranı** (9 Ekim): gerçek profil sayfasının mobil ekran görüntüsü, sade araç profili olarak: "Ahmet Yılmaz", isim altında plaka 34 ABC 123 (sayfanın kendi plaka bloğu), "Araç Sahibine Bildir" ve 8 bildirim butonu. 14 Kasım'dan beri isim ve plakanın altında büyük WhatsApp ve Instagram logo kutucukları var (vitrin düzeni; canlı sayfada satır görünümünde) ve içerik %130 büyütülüyor. Bilgi satırı ve telefon butonu yok (web sayfası `phone_hidden` açıkken böyle görünür; **uygulamada bu ayar henüz yok**, varsayılanda numara görünür). `araclar/demo_ekran_goruntusu.py` çeker. Telefon çiziminde üstte iPhone durum çubuğu var |
 | `demo_profil_ekran.jpg` | Ortak telefonun (Tasarım 2–4, `lib.phone` varsayılanı) 7 Ekim görüntüsü: Ahmet Yılmaz · Mimar · İstanbul, plaka, Instagram, LinkedIn. Adem'in isteğiyle 2–4'e dokunulmadığı için yerinde bırakıldı |
 
 ## Renkler (brif)
@@ -135,3 +135,5 @@ Kaynak: kasadaki "KisiselQR Rakip ve Kutu Analizi" §5. Tasarım 2–4'e dokunul
   - Arka yüzdeki örnek etiketin üstündeki sarı etiket artık tek kelime: "DENE".
   - SKU belirlendi: `KQR-AE-01` (Kişisel QR · Araç Etiketi · 1. varyant). PAP 21 satırında "[bekleniyor]" yerine yazıldı.
   - Euro başlık 2. katı 10 mm uzatıldı (34 → 44 mm): katlanırken fazlalık içe sıkıştırılıyor. Açınım 245 × 239 → 245 × 249 mm (`kutu_acinim.py` → `HDR_TUCK`).
+  - Ön yüzdeki araç beyaz/gümüş boyandı (önceden siyah; siyah zeminde seçilmiyordu). Büyüteçteki A sütunu ve kaput da aynı renk.
+  - Telefon ekranı (`vitrin_profil_ekran.jpg`) yeniden çekildi: WhatsApp ve Instagram büyük logo kutucukları, içerik %130. Aynı ekran kılavuzdaki "Okutan kişi ne görür?" telefonunda da kullanılıyor.
