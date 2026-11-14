@@ -1028,7 +1028,7 @@
     const kb = ry0 - rh / 4 - 0.3, pad = 1.4;                                // 0,3: kontur rozet boşluğuna taşmasın
     const hs = 8.5 * PT, hY = ustAlt + 4.6;
     // Orta-sol: örnek sticker (ürünün birebir kopyası, 5:8, gölgeli; QR demo profile gider) ve üstünde
-    // "ÖRNEK · Okut, dene" etiketi (9 Ekim: lider rakipte "Kodu Okut Dene" var; psikoloji: deneme kancası).
+    // "DENE" etiketi (9 Ekim: lider rakipte "Kodu Okut Dene" var; psikoloji: deneme kancası).
     // Etiket QR'ın üstüne binmez (binerse okunmaz). Boy, sağdaki blokla aynı yüksekliğe sığacak kadar.
     // Sol sütunun üstü güven satırlarının hemen altı (sağ sütundaki QR yazılarından bağımsız)
     const etH = 5.6, etAra = 0.9, ustS = gy0 + (guven.length - 1) * 3.15 + 1.8;
@@ -1040,12 +1040,10 @@
     const kh = pad + 2.6 + govde.length * 2.95 + 0.9 + pad * 0.6, ky = kb - kh;
 
     const blokH = etH + etAra + sw * 1.6, by0 = (ustS + kb - blokH) / 2;
-    // Etiket iki satır ("ÖRNEK" / "Okut, dene"), genişliği örnek etiketi aşmaz. 6 Kasım: tek satırda 6 pt'de bile
-    // ~22 mm tutuyordu, sağdaki "Uygulamada ayrıca" başlığına biniyordu.
-    const etS = 6.8 * PT;
+    // Etiket tek kelime: "DENE" (14 Kasım, Adem; önceden iki satır "ÖRNEK" / "Okut, dene"). Genişliği örnek etiketi aşmaz.
+    const etS = 9 * PT;
     ctx.fillStyle = C.Y; rr(ctx, sx, by0, sw, etH, 1.2); ctx.fill();
-    txt(ctx, 'ÖRNEK', sx + sw / 2, by0 + 2.45, { size: etS, w: 800, color: C.K100, align: 'center' });
-    txt(ctx, 'Okut, dene', sx + sw / 2, by0 + 4.85, { size: etS, w: 700, color: C.K100, align: 'center' });
+    txt(ctx, 'DENE', sx + sw / 2, by0 + etH / 2 + etS * 0.727 / 2, { size: etS, w: 900, color: C.K100, align: 'center' });
     sticker(ctx, sx, by0 + etH + etAra, sw, { shadow: 2.2 * (px || 10), edge: 14 });
 
     // Orta-sağ: "Uygulamada ayrıca" + 6 ikonlu özellik, 3 sütun × 2 satır (9 Ekim: güven satırlarına yer açmak için)
@@ -1131,7 +1129,7 @@
     }
     ctx.restore();
     txt(ctx, 'PAP 21', L + 5.0, pry, { size: ls, w: 700, color: lc });
-    txt(ctx, 'SKU: [bekleniyor]', L + 14.2, pry, { size: ls, w: 400, color: lc });
+    txt(ctx, 'SKU: KQR-AE-01', L + 14.2, pry, { size: ls, w: 400, color: lc });
     // Apple atıf satırı (yasal bilgi: şartname min. 6 pt; tam genişlik, alttan yukarı; son satır alt kenardan ≥ 4 mm)
     const as = 6 * PT;
     const apple = wrap(ctx, "Apple ve Apple logosu, Apple Inc.'in ABD'de ve diğer ülkelerde tescilli ticari markalarıdır. " +

@@ -8,10 +8,10 @@ Kaynak: Candemsoft_Ambalaj_Sartnamesi.pdf v1.0 · Tarih: 22.09.2026 · Üreteç:
 |---|---|
 | Kutu tipi | Euro askı delikli çift kat başlık + alt reverse-tuck slit lock, yan yapıştırmalı |
 | İç ölçü (G × D × Y) | 96 × 18 × 136 mm |
-| **Açınım (kesim) toplam ölçüsü** | **245 × 239 mm** (G × Y) |
-| Taşma dahil | 251 × 245 mm |
+| **Açınım (kesim) toplam ölçüsü** | **245 × 249 mm** (G × Y) |
+| Taşma dahil | 251 × 255 mm |
 | Karton | 350 g/m² GC1, t = 0,45 mm → bigi payı +0,5 mm |
-| Kesilmiş karton alanı | ≈ 472,4 cm² |
+| Kesilmiş karton alanı | ≈ 481,9 cm² |
 
 ## 2. Panel ve kapak ölçüleri (bigi-bigi, mm)
 
@@ -23,7 +23,7 @@ Dizilim (dış/baskı yüzünden, soldan sağa): **Sol – Ön – Sağ – Arka
 | Sol / Sağ yan | 18,5 × 136,5 | iç 18 + 0,5 |
 | Tutkal payı | 15 × 136,5 | uçlar 15° eğimli, Sol yan iç yüzüne yapışır |
 | Euro başlık 1. kat | 96,5 × 35 | Arka’nın devamı (bigi yok) |
-| Euro başlık 2. kat | 95,5 × 34 | bigiden aşağı katlanır, köşe R3 |
+| Euro başlık 2. kat | 95,5 × 44 | bigiden aşağı katlanır, köşe R3 |
 | Üst kapak | 96,5 × 18,5 | Ön’e bağlı, kalıcı yapıştırılır |
 | Üst yapıştırma dili | 94,5 × 12 | başlık katları arasına; **dış yüzü baskısız/selefonsuz** |
 | Toz kapakları (4 adet) | 18,5 × 25 | yanlardan 1 mm boşluk, uç pahlı |
@@ -43,7 +43,8 @@ Dizilim (dış/baskı yüzünden, soldan sağa): **Sol – Ön – Sağ – Arka
 | İç yükseklik (Y) 136 ±1 | ✅ | bigi-bigi 136,5 → iç ≈ 136,05 mm |
 | Üst kapak serbest kenarı Arka düzlemine oturuyor | ✅ | z farkı 0.0000 mm |
 | Başlık 1. ve 2. kat Euro delikleri üst üste | ✅ | eksen kayması 0.0000 mm, katlar arası 0.90 mm |
-| Başlık 2. kat alt kenarı üst kapağa çarpmıyor | ✅ | boşluk 1 mm |
+| Başlık 2. katın görünen kısmı üst kapağa çarpmıyor | ✅ | boşluk 1 mm |
+| Başlık 2. kat sıkıştırma payı | ✅ | 2. kat 44 mm, 1. kat 35 mm: 9 mm gövde üstünü geçer, katlanırken içe sıkıştırılır |
 | Üst yapıştırma dili Euro deliğe ulaşmıyor | ✅ | dil üstü ile delik altı arası 5 mm |
 | Geçme dili iç genişliğe sığıyor | ✅ | dil 94,5 mm / iç 96 mm |
 | Geçme dili kutu içine, Ön panelin arkasına giriyor | ✅ | dil ucu Ön iç yüzünden 0,45 mm içeride |
@@ -60,15 +61,15 @@ Dizilim (dış/baskı yüzünden, soldan sağa): **Sol – Ön – Sağ – Arka
 | Taşıyıcı kart iç ölçüye sığıyor | ✅ | 92×132 / 96×136 |
 | Paket kalınlığı derinliğe sığıyor (varsayım) | ✅ | 8 / 18 mm – boşluk 10 mm |
 | Kesim konturu panellerin birleşimiyle birebir aynı | ✅ | fark alanı 0.000 mm² |
-| Açınım geçerli tek parça (kendini kesmiyor) | ✅ | alan 472,4 cm² |
-| A3 maket sayfasına sığıyor | ✅ | 245×239 mm |
+| Açınım geçerli tek parça (kendini kesmiyor) | ✅ | alan 481,9 cm² |
+| A3 maket sayfasına sığıyor | ✅ | 245×249 mm |
 
 ## 4. Varsayımlar
 
 - Bigi payı = karton kalınlığı yuvarlaması: +0,5 mm her panelde (G, D, Y). Matbaanın makine/karton standardı farklıysa tek parametreyle değişir.
 - Paket kalınlığı 8 mm varsayıldı (taşıyıcı kart + etiket + aktivasyon kartı + saşe mendil). D = 18 korunduğu için ~10 mm boşluk var.
 - Euro başlık Arka düzleminde; 2. kat öne katlanır, baskılı yüzü öne bakar (şartname 3.1 “ön yüz tarafı”).
-- Başlık 2. kat 1 mm kısa, yanlardan 0,5 mm içeride; katlandığında kenarlardan taşmaz.
+- Başlık 2. kat 44 mm: görünen kısmı 1. kattan 1 mm kısa, ucuna 10 mm içe sıkıştırma payı eklendi (14 Kasım). Yanlardan 0,5 mm içeride; katlandığında kenarlardan taşmaz.
 - Üst kısım kalıcı yapıştırılır (kapak + dil başlık katları arasında); kutu yalnız alttan açılır.
 - “8 mm aşağıda” ifadesi, deliğin (Ø10 dairenin) üst kenarı olarak yorumlandı.
 - Slit lock detayı temsilidir (uçlarda 5 mm kesik); matbaanın standart kilit detayı ile değiştirilmelidir.
@@ -97,7 +98,7 @@ Dizilim (dış/baskı yüzünden, soldan sağa): **Sol – Ön – Sağ – Arka
 - Slit lock ölçü standardınız (5 mm kesik yerine) ve minimum bıçak köşe radüsünüz?
 - Ø20 void mühür etiketini kim tedarik edecek ve uygulayacak (elle/otomatik)? Konum toleransı ± kaç mm?
 - Beyaz maket numunesi (bıçak testi) teslim süresi ve adedi?
-- 245 × 239 mm açınımın 70×100 tabakaya kaç adet yerleştiği ve fire oranı?
+- 245 × 249 mm açınımın 70×100 tabakaya kaç adet yerleştiği ve fire oranı?
 - Gerçek içerik kalınlığı ~8 mm çıkarsa D’yi küçültelim mi, yoksa içerik oynamasın diye iç destek kartonu mu ekleyelim?
 
 ## 7. Dosyalar ve sınırlamalar

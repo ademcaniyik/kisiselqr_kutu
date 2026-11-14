@@ -54,7 +54,7 @@ Kaynak: kasadaki "KisiselQR Rakip ve Kutu Analizi" §5. Tasarım 2–4'e dokunul
 - **Arka yüz:**
   - Açıklama kısaldı. Altında 3 güven satırı var, hepsi koddan doğrulandı: okutanın uygulama indirmesi gerekmez · bildirimleri istediğin an kapatabilirsin · bilgilerin değişse de etiket aynı kalır.
   - Uygulama QR'ının altında sistem gereksinimi: "iOS 15+ · Android 7+" (App Store sayfası; Android minSdk 24).
-  - Örnek sticker'ın üstünde sarı **"ÖRNEK · Okut, dene"** etiketi; etiket QR'ın üstüne binmez. Sticker boyu sağdaki bloğa göre ayarlanıyor (~18 mm).
+  - Örnek sticker'ın üstünde sarı **"DENE"** etiketi (14 Kasım'a kadar "ÖRNEK · Okut, dene"); etiket QR'ın üstüne binmez. Sticker boyu sağdaki bloğa göre ayarlanıyor (~18 mm).
   - "Uygulamada ayrıca" 3 sütun × 2 satır, kısa adlarla.
   - Aktivasyon uyarısı: "**Etiketini** kamerayla değil, uygulamadan okut." Kutudaki örnek kamerayla okutulduğu için talimatlar çelişmesin diye.
 - **Yasal bant (37 mm):**
@@ -130,3 +130,8 @@ Kaynak: kasadaki "KisiselQR Rakip ve Kutu Analizi" §5. Tasarım 2–4'e dokunul
 - Sticker QR'ı canlıdaki demo profile gider (`kisiselqr.com/qr/071qydlb`). Orada hâlâ "Test Kullancısı" adı ve dolgu bir numara görünüyor; bildirim butonları açık. Demo profil de ön yüzdeki vitrinle aynı yapılırsa (ad, numarayı gizle, WhatsApp yerine LinkedIn) rafta okutan aynı profili görür.
 - Matbaa PDF'inde toplam mürekkep %300'le sınırlı (en yüksek %298). Önceden neredeyse siyah gürültülü piksellerde %340'a çıkıyordu.
 - Bu bir konsept önizlemesidir. Baskıya hazır PDF/X, katmanlar (Bicak, Lak_Lokal, Metin, Grafik, Tasma, Muhur_Alani, Lot_Alani) ve outline edilmiş fontlar Aşama 3'te hazırlanacak.
+
+- **14 Kasım 2026:**
+  - Arka yüzdeki örnek etiketin üstündeki sarı etiket artık tek kelime: "DENE".
+  - SKU belirlendi: `KQR-AE-01` (Kişisel QR · Araç Etiketi · 1. varyant). PAP 21 satırında "[bekleniyor]" yerine yazıldı.
+  - Euro başlık 2. katı 10 mm uzatıldı (34 → 44 mm): katlanırken fazlalık içe sıkıştırılıyor. Açınım 245 × 239 → 245 × 249 mm (`kutu_acinim.py` → `HDR_TUCK`).

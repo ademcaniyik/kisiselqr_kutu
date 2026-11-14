@@ -40,6 +40,7 @@ SLIT = 5.0            # slit lock kesik boyu
 TOPGLUE_H = 12.0      # üst kapak yapıştırma dili
 TOPGLUE_INSET = 1.0
 HDR_GAP = 1.0         # başlık 2. kat kısaltma (katlama payı)
+HDR_TUCK = 10.0       # başlık 2. kat ek boyu: katlanırken içe sıkıştırılır (14 Kasım 2026, Adem)
 HDR_INSET = 0.5       # başlık 2. kat yan boşluğu
 HDR_R = 3.0           # başlık üst köşe radüsü
 GLUE_TAPER_DEG = 15.0 # tutkal payı uç eğimi
@@ -53,7 +54,8 @@ CARRIER = (92.0, 132.0); ACT_CARD = (85.6, 54.0); WIPE = (60.0, 80.0)
 
 ALLOW = math.ceil(T * 2 - 1e-9) / 2          # bigi payı (t=0,45 → 0,5)
 gp, dp, yp = G + ALLOW, D + ALLOW, Y + ALLOW   # bigi-bigi panel ölçüleri
-H2 = H - HDR_GAP
+H2 = H - HDR_GAP + HDR_TUCK
+H2V = H - HDR_GAP     # 2. katın görünen boyu (sıkıştırma payı hariç)
 
 # kolonlar (dış/baskı yüzünden bakış, soldan sağa)
 xS0 = 0.0; xS1 = dp                 # Sol yan
@@ -289,7 +291,7 @@ def build():
     safes = [
         (xS0 + S, yT + S, xS1 - S, yBt - S), (xF0 + S, yT + S, xF1 - S, yBt - S),
         (xR0 + S, yT + S, xR1 - S, yBt - S), (xB0 + S, yF + S, xB1 - S, yBt - S),
-        (xB0 + hi + S, ytop + S, xB1 - hi - S, yF - S),
+        (xB0 + hi + S, yF - H2V + S, xB1 - hi - S, yF - S),
         (xF0 + S, yT - dp + S, xF1 - S, yT - S), (xB0 + S, yBt + S, xB1 - S, yc - S),
     ]
     for (a, b, c, d) in safes:
@@ -328,6 +330,9 @@ def build():
     dl.text(L, 'label', xBc, yF - 5.5, 'BAŞLIK – 2. KAT (ön yüz)', 2.4, rot=180, bold=True)
     dl.text(L, 'note', xBc, 5.0, 'DİKKAT: Bu panelin grafiği açınımda 180° TERS yerleşir (katlanınca düz okunur)', 1.5)
     dl.text(L, 'note', xBc, 7.6, 'bigiden aşağı katlanır, iç yüzü tutkallı', 1.5)
+    if HDR_TUCK > 0:
+        dl.path(L, 'dim', line(xB0 + hi, yF - H2V, xB1 - hi, yF - H2V))
+        dl.text(L, 'note', xBc, ytop + HDR_TUCK / 2 + 0.5, f'İÇE SIKIŞTIRMA PAYI {fmt(HDR_TUCK)} mm (katlanınca görünmez)', 1.6, rot=180)
     ttl(xFc, yT - dp / 2 - 1, 'ÜST KAPAK', f'{fmt(gp)} × {fmt(dp)}', s1=2.6, s2=1.7, gap=3)
     dl.text(L, 'label', xFc, yT - dp - TOPGLUE_H / 2 - 1.4, f'ÜST YAPIŞTIRMA DİLİ {fmt(gp - 2 * gi)} × {fmt(TOPGLUE_H)}', 1.9, bold=True)
     dl.text(L, 'note', xFc, yT - dp - TOPGLUE_H / 2 + 1.6, 'dış yüzü baskısız/selefonsuz – başlık katları arasına yapışır', 1.4)
@@ -829,8 +834,11 @@ def checks(flat, P):
     dxy = math.hypot(c1[0] - c2[0], c1[1] - c2[1])
     ok('Başlık 1. ve 2. kat Euro delikleri üst üste', dxy < 0.01, f'eksen kayması {dxy:.4f} mm, katlar arası {abs(c1[2] - c2[2]):.2f} mm')
     # başlık 2. kat alt kenarı – üst kapak
-    b2 = wpt(Wm, 'Baslik2', (xBc, ytop)); gap = b2[1] - ys[0]
-    ok('Başlık 2. kat alt kenarı üst kapağa çarpmıyor', gap > 0, f'boşluk {fmt(gap)} mm')
+    b2 = wpt(Wm, 'Baslik2', (xBc, yF - H2V)); gap = b2[1] - ys[0]
+    ok('Başlık 2. katın görünen kısmı üst kapağa çarpmıyor', gap > 0, f'boşluk {fmt(gap)} mm')
+    if HDR_TUCK > 0:
+        ok('Başlık 2. kat sıkıştırma payı', HDR_TUCK > HDR_GAP,
+           f'2. kat {fmt(H2)} mm, 1. kat {fmt(H)} mm: {fmt(HDR_TUCK - HDR_GAP)} mm gövde üstünü geçer, katlanırken içe sıkıştırılır')
     # üst yapıştırma dili Euro deliğe girmiyor
     dtop = wpt(Wm, 'UstDil', (xFc, yT - dp - TOPGLUE_H))[1]
     hole_bottom = wpt(Wm, 'Arka', (xBc, yF + HOLE_TOP + 2 * RC))[1]
@@ -940,7 +948,7 @@ def report(R, bleed):
         f'Bigi payı = karton kalınlığı yuvarlaması: +{fmt(ALLOW)} mm her panelde (G, D, Y). Matbaanın makine/karton standardı farklıysa tek parametreyle değişir.',
         f'Paket kalınlığı {fmt(STACK)} mm varsayıldı (taşıyıcı kart + etiket + aktivasyon kartı + saşe mendil). D = {fmt(D)} korunduğu için ~{fmt(D - STACK)} mm boşluk var.',
         'Euro başlık Arka düzleminde; 2. kat öne katlanır, baskılı yüzü öne bakar (şartname 3.1 “ön yüz tarafı”).',
-        f'Başlık 2. kat {fmt(HDR_GAP)} mm kısa, yanlardan {fmt(HDR_INSET)} mm içeride; katlandığında kenarlardan taşmaz.',
+        f'Başlık 2. kat {fmt(H2)} mm: görünen kısmı 1. kattan {fmt(HDR_GAP)} mm kısa, ucuna {fmt(HDR_TUCK)} mm içe sıkıştırma payı eklendi (14 Kasım). Yanlardan {fmt(HDR_INSET)} mm içeride; katlandığında kenarlardan taşmaz.',
         'Üst kısım kalıcı yapıştırılır (kapak + dil başlık katları arasında); kutu yalnız alttan açılır.',
         '“8 mm aşağıda” ifadesi, deliğin (Ø10 dairenin) üst kenarı olarak yorumlandı.',
         'Slit lock detayı temsilidir (uçlarda 5 mm kesik); matbaanın standart kilit detayı ile değiştirilmelidir.',
