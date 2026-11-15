@@ -289,6 +289,7 @@
   // SCREEN: ortak telefon (Tasarım 2–4, lib.phone varsayılanı). SCREEN_T1: Tasarım 1'in sade vitrin ekranı
   // (ad + plaka + bildirim butonları, 9 Ekim). 2–4'e dokunulmadığı için iki ayrı dosya.
   let SCREEN = null, SCREEN_T1 = null, ARAC_FOTO = null;
+  let SON_YASAL = null;   // test: yasal bandın son satırı (mm) ve alt güvenli sınır
   function resimAl(ad) {
     return new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = BASE + ad; });
   }
@@ -1122,34 +1123,47 @@
     const eanW = 29.8, eanH = 20.7, ex = w - 8 - eanW, ey = h - 10 - eanH, solW = ex - L - 3;
     let ly = bY + 3.6;
     // 15 Kasım (Adem): kutu içeriğine mendil ve kılavuz eklendi; destek info@; PAP 21 ve Apple atıf satırı kaldırıldı.
-    [[['Kutu içeriği: ', 700], ['1 QR Etiket (5 × 8 cm),', 400]],
-     [['yüzey temizleme mendili, kullanım kılavuzu', 400]],
-     [['UV dayanımlı · camın içine', 600]],
-     [['Üretici: Candemsoft', 700]],
-     [['[Adres – Candemsoft onayı bekleniyor]', 400]],
+    // 15 Kasım (Adem, 2): "UV dayanımlı · camın içine" kaldırıldı; üretici ve adres Arte Bilişim. Uzun satırlar
+    // sözcük sınırından alt satıra kayar (devam satırları girintisiz, aynı ağırlıkta).
+    const URETICI = 'Arte Bilişim Teknoloji Danışmanlık Tic. Ltd. Şti.';
+    const ADRES = 'Reşitpaşa Mah. İstinye Bayırı Cad. Vadi Blk. 2 A2 Kat: 2 No: 11 34460 Maslak / İstanbul';
+    const LH = 2.45;
+    const satir = parcalar => {
+      let x = L;
+      parcalar.forEach(([s2, wt], j) => {
+        const sozcuk = s2.split(' ');
+        let cur = '';
+        sozcuk.forEach(sz => {
+          const t = cur ? cur + ' ' + sz : sz;
+          if (x + tw(ctx, t, ls, wt) <= L + solW || !cur) { cur = t; return; }
+          txt(ctx, cur, x, ly, { size: ls, w: wt, color: lc }); ly += LH; x = L; cur = sz;
+        });
+        x += txt(ctx, cur + (j < parcalar.length - 1 && !/\s$/.test(cur) ? ' ' : ''), x, ly, { size: ls, w: wt, color: lc });
+      });
+      ly += LH;
+    };
+    [[['Kutu içeriği: ', 700], ['1 QR Etiket (5 × 8 cm), yüzey temizleme mendili, kullanım kılavuzu', 400]],
+     [['Üretici: ', 700], [URETICI, 400]],
+     [['Adres: ', 700], [ADRES, 400]],
      [['Destek: ', 700], ['info@kisiselqr.com', 400]],
      [['KVKK Aydınlatma Metni: ', 700], ['kisiselqr.com/kvkk', 400]],
      [['Acil durum hizmeti değildir; tehlikede 112.', 600]],
      [['Ödeme ya da şifre istemez; adres kisiselqr.com', 400]],
-     [["Türkiye'de üretilmiştir.", 600]]].forEach(parcalar => {
-      const boy = parcalar.reduce((t, [s2, wt]) => t + tw(ctx, s2, ls, wt), 0) <= solW ? ls : 6 * PT;
-      let x = L;
-      parcalar.forEach(([s2, wt]) => { x += txt(ctx, s2, x, ly, { size: boy, w: wt, color: lc }); });
-      ly += 2.45;
-    });
-    // geri dönüşüm işareti + SKU (listenin hemen altında)
-    const pry = ly + 0.4;
-    ctx.save(); ctx.translate(L + 2.1, pry - 0.9);
-    ctx.strokeStyle = lc; ctx.fillStyle = lc; ctx.lineWidth = 0.32;
+     [["Türkiye'de üretilmiştir.", 600]]].forEach(satir);
+    SON_YASAL = { alt: ly - LH, sinir: h - SAFE };
+    // geri dönüşüm işareti + SKU: EAN kutusunun altında ortalı (listeyle çakışmaz)
+    const skuS = 'SKU: KQR-AE-01', skuW = 4.4 + tw(ctx, skuS, ls, 400), pry = ey + eanH + 3.6, skx = ex + (eanW - skuW) / 2;
+    ctx.save(); ctx.translate(skx + 1.75, pry - 0.9);
+    ctx.strokeStyle = lc; ctx.fillStyle = lc; ctx.lineWidth = 0.28;
     for (let k = 0; k < 3; k++) {
       ctx.save(); ctx.rotate(k * 2 * Math.PI / 3);
-      ctx.beginPath(); ctx.arc(0, 0, 1.75, -Math.PI * 0.95, -Math.PI * 0.45); ctx.stroke();
-      const a = -Math.PI * 0.45, ax = 1.75 * Math.cos(a), ay = 1.75 * Math.sin(a);
-      ctx.beginPath(); ctx.moveTo(ax + 0.55, ay + 0.05); ctx.lineTo(ax - 0.25, ay - 0.5); ctx.lineTo(ax - 0.3, ay + 0.45); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.arc(0, 0, 1.45, -Math.PI * 0.95, -Math.PI * 0.45); ctx.stroke();
+      const a = -Math.PI * 0.45, ax = 1.45 * Math.cos(a), ay = 1.45 * Math.sin(a);
+      ctx.beginPath(); ctx.moveTo(ax + 0.5, ay + 0.05); ctx.lineTo(ax - 0.22, ay - 0.45); ctx.lineTo(ax - 0.27, ay + 0.4); ctx.closePath(); ctx.fill();
       ctx.restore();
     }
     ctx.restore();
-    txt(ctx, 'SKU: KQR-AE-01', L + 5.0, pry, { size: ls, w: 400, color: lc });
+    txt(ctx, skuS, skx + 4.4, pry, { size: ls, w: 400, color: lc });
     // EAN-13 yer tutucu – numara Candemsoft'tan gelecek (sahte barkod çizilmez)
     ctx.fillStyle = C.W; ctx.fillRect(ex, ey, eanW, eanH);
     ctx.strokeStyle = lc; ctx.lineWidth = 0.2; ctx.setLineDash([0.8, 0.6]); ctx.strokeRect(ex, ey, eanW, eanH); ctx.setLineDash([]);
@@ -1299,6 +1313,6 @@
   const lib = { geom, trace, panelPath, rectPts, rr, font, tw, txt, wrap, inPanel, logo, logoIcon, logoWidth,
                 ICONS, drawQR, appQR, sticker, phone, drawDieline, magazaRozetleri, PT, SAFE, BLEED, FONT, STK_FONT, colors: C,
                 // kullanım kılavuzu (kilavuz.html) kutuyla aynı çizimleri kullanır: adım kutucukları, ek özellik ikonları, vitrin ekranı
-                adimCizim, EK_IKON, EK_OZELLIK, etiket2, vitrinEkrani: () => SCREEN_T1 };
+                adimCizim, EK_IKON, EK_OZELLIK, etiket2, vitrinEkrani: () => SCREEN_T1, sonYasal: () => SON_YASAL };
   window.KQRTasarim1 = { render, renderIc, drawDieline, ready, sticker, etiket2, colors: C, lib };
 })();
