@@ -137,3 +137,8 @@ Kaynak: kasadaki "KisiselQR Rakip ve Kutu Analizi" §5. Tasarım 2–4'e dokunul
   - Euro başlık 2. katı 10 mm uzatıldı (34 → 44 mm): katlanırken fazlalık içe sıkıştırılıyor. Açınım 245 × 239 → 245 × 249 mm (`kutu_acinim.py` → `HDR_TUCK`).
   - Ön yüzdeki araç beyaz/gümüş boyandı (önceden siyah; siyah zeminde seçilmiyordu). Büyüteçteki A sütunu ve kaput da aynı renk.
   - Telefon ekranı (`vitrin_profil_ekran.jpg`) yeniden çekildi: WhatsApp ve Instagram büyük logo kutucukları, içerik %130. Aynı ekran kılavuzdaki "Okutan kişi ne görür?" telefonunda da kullanılıyor.
+
+- **15 Kasım 2026 (Adem):**
+  - Ön yüzdeki araç fotoğraf gerçekliğinde: ChatGPT ile üretilmiş markasız beyaz sedan (`arac_foto.jpg`, kenarları siyaha yumuşatılmış, 'lighten' ile basılır). Vektör araç (`arabaOn`) yedek olarak duruyor.
+  - Arka yüz: "En az 2 yıl hizmet." ("ücretsiz değişim" kaldırıldı); "iOS 15+ · Android 7+" kaldırıldı; kutu içeriğine yüzey temizleme mendili ve kullanım kılavuzu eklendi; destek info@kisiselqr.com; "PAP 21" ve Apple atıf satırı kaldırıldı (geri dönüşüm işareti ve SKU kaldı).
+  - Kılavuz aynı ifadelere çekildi (hizmet, destek, iOS/Android, SSS'deki ücretsiz değişim sözü).

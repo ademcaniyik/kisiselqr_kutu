@@ -53,7 +53,7 @@
 
     const iw = 23, ih = iw * 12.5 / 15.5, tx = x0 + iw + 3.4, tw = cw - iw - 3.4;
     const bloklar = [
-      { b: 'Uygulamayı indir', s: 'App Store ya da Google Play\'de "Kişisel QR"ı ara veya yandaki karekodu okut. Uygulama ücretsiz; iOS 15+ ve Android 7+ telefonlarda çalışır.', ciz: (x, y) => {
+      { b: 'Uygulamayı indir', s: 'App Store ya da Google Play\'de "Kişisel QR"ı ara veya yandaki karekodu okut. Uygulama ücretsiz.', ciz: (x, y) => {
           L.rr(ctx, x, y, iw, ih, 1.4); ctx.fillStyle = C.W; ctx.fill(); ctx.lineWidth = 0.3; ctx.strokeStyle = C.K100; ctx.stroke();
           const q = ih - 3; L.appQR(ctx, x + iw - q - 1.6, y + 1.5, q);   // sağa yaslı: sol üstteki numara dairesi konum karesine binmesin
         } },
@@ -156,7 +156,7 @@
       ['Bildirim almak istemiyorum.', '"Profili Düzenle → Bildirim İzinleri"ni kapat. İstediğin an yeniden açabilirsin.'],
       ['Bilgilerim değişti.', 'Uygulamadan güncelle. Etiket aynı kalır, yeniden yapıştırman gerekmez.'],
       ['Telefonumu değiştirdim.', 'Yeni telefona uygulamayı kur, aynı Google ya da Apple hesabıyla giriş yap.'],
-      ['Etiket hasar gördü, okunmuyor.', 'kisiselqr.com\'dan WhatsApp ile yaz. 2 yıl içinde ücretsiz değiştiriyoruz.'],
+      ['Etiket hasar gördü, okunmuyor.', 'info@kisiselqr.com adresine yaz, birlikte çözelim.'],
     ];
     sss.forEach(([s, c]) => {
       y = para(ctx, s, x0, y, cw, 7.1 * PT, { w: 800 }) + 0.3;
@@ -178,8 +178,8 @@
     const satirlar = [
       [['Güvenliğin için: ', 800], ['ödeme ya da şifre istemeyiz; adres kisiselqr.com', 400]],
       [['Acil durum hizmeti değildir; ', 800], ['tehlikede 112\'yi ara.', 400]],
-      [['Destek: ', 800], ['kisiselqr.com (WhatsApp) · ', 400], ['KVKK: ', 800], ['kisiselqr.com/kvkk', 400]],
-      [['Hizmet: ', 800], ['en az 3 yıl hizmet, 2 yıl ücretsiz değişim.', 400]],
+      [['Destek: ', 800], ['info@kisiselqr.com · ', 400], ['KVKK: ', 800], ['kisiselqr.com/kvkk', 400]],
+      [['Hizmet: ', 800], ['en az 2 yıl hizmet.', 400]],
     ];
     satirlar.forEach(parcalar => {
       let x = x0;

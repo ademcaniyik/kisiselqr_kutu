@@ -288,13 +288,13 @@
   const BASE = (document.currentScript && document.currentScript.src || '').replace(/[^/]*$/, '');
   // SCREEN: ortak telefon (Tasarım 2–4, lib.phone varsayılanı). SCREEN_T1: Tasarım 1'in sade vitrin ekranı
   // (ad + plaka + bildirim butonları, 9 Ekim). 2–4'e dokunulmadığı için iki ayrı dosya.
-  let SCREEN = null, SCREEN_T1 = null;
+  let SCREEN = null, SCREEN_T1 = null, ARAC_FOTO = null;
   function resimAl(ad) {
     return new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = BASE + ad; });
   }
   function loadScreen() {
-    return Promise.all([resimAl('demo_profil_ekran.jpg'), resimAl('vitrin_profil_ekran.jpg')])
-      .then(([a, b]) => { SCREEN = a; SCREEN_T1 = b || a; });
+    return Promise.all([resimAl('demo_profil_ekran.jpg'), resimAl('vitrin_profil_ekran.jpg'), resimAl('arac_foto.jpg')])
+      .then(([a, b, c]) => { SCREEN = a; SCREEN_T1 = b || a; ARAC_FOTO = c; });
   }
 
   // Mağaza rozetleri: Apple ve Google'ın resmi Türkçe rozet görselleri (değiştirilmeden kullanılır).
@@ -379,7 +379,8 @@
     const vTop = 39, vBot = slogY - 1;
     ctx.save();
     ctx.beginPath(); ctx.rect(-BLEED, vTop, w + 2 * BLEED, vBot - vTop); ctx.clip();
-    const st = arabaOn(ctx, { cx: 36.5, yer: 93.8, s: 0.028, px });
+    const st = ARAC_FOTO ? arabaFoto(ctx, { cx: 36.5, yer: 93.8, gen: 2076 * 0.028 })
+                         : arabaOn(ctx, { cx: 36.5, yer: 93.8, s: 0.028, px });
     ctx.restore();
 
     // Telefon mockup (~28 × 56 mm), sağa yakın; ekran lokal UV lak
@@ -716,6 +717,24 @@
     return st;
   }
 
+  // Fotoğraf gerçekliğinde araç (15 Kasım, Adem): ChatGPT ile üretilmiş markasız beyaz sedan, siyah stüdyo zemini
+  // (arac_foto.jpg, 1015 × 904 px kırpım). Zemini siyah olduğu için 'lighten' ile basılır: kutunun siyahına dikişsiz
+  // oturur. FOTO değerleri kırpılmış görselin pikseli: araç ekseni, lastiklerin zemine bastığı çizgi, ayna-ayna yarı
+  // genişlik ve camın sol alt köşesindeki sticker'ın sol kenarı / alt kenarı. Görsel yoksa vektör araç (arabaOn) çizilir.
+  const FOTO = { cx: 507.5, yer: 735, yariGen: 477.5, stkX: 222, stkAlt: 232 };
+  function arabaFoto(ctx, o) {
+    const im = ARAC_FOTO, k = o.gen / (2 * FOTO.yariGen);          // mm / px
+    const x0 = o.cx - FOTO.cx * k, y0 = o.yer - FOTO.yer * k;
+    ctx.save(); ctx.globalCompositeOperation = 'lighten';
+    ctx.drawImage(im, x0, y0, im.naturalWidth * k, im.naturalHeight * k);
+    ctx.restore();
+    const u = FOTO.yariGen / 1038 * k;                              // mm / vektör birimi (gerçek mm): vektörle aynı ölçek
+    const st = { x: x0 + FOTO.stkX * k, w: ARAC.STK_W * u, h: ARAC.STK_H * ARAC.CAM_K * u };
+    st.y = y0 + FOTO.stkAlt * k - st.h;
+    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); sticker(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
+    return st;
+  }
+
   // Büyüteç: camın sol alt köşesinin yakın planı (dik bakış). k = kutu mm / gerçek mm.
   // Sticker gerçek oranıyla durur: A sütunu, serigrafi bandı, torpido ve kaputla birlikte.
   function buyutec(ctx, bx, by, br, st, px) {
@@ -995,8 +1014,7 @@
     appQR(ctx, qx + qz, qy + qz, qs);
     txt(ctx, 'Uygulamayı indir', qx + box / 2, qy + box + 3.9, { size: 7.5 * PT, w: 700, color: C.W, align: 'center' });
     txt(ctx, 'mobile.kisiselqr.com', qx + box / 2, qy + box + 7.1, { size: 7 * PT, w: 600, color: C.Y, align: 'center' });
-    // Sistem gereksinimi (kategori normu): App Store sayfası iOS 15.0+, Android minSdk 24 (Android 7.0), 9 Ekim
-    txt(ctx, 'iOS 15+ · Android 7+', qx + box / 2, qy + box + 10.2, { size: 7 * PT, w: 500, color: C.KB, align: 'center' });
+    // 15 Kasım: "iOS 15+ · Android 7+" satırı kaldırıldı (Adem).
 
     // Üst-sol: başlık + açıklama (QR'ın solunda). Yapıştırma yeri belirtilmez: etiket dilenen yere yapıştırılır.
     txt(ctx, 'Nasıl çalışır?', L, 9.6, { size: 12 * PT, w: 800, color: C.Y });
@@ -1007,11 +1025,11 @@
     const ds = 7.5 * PT;
     const dl = wrap(ctx, desc, qx - 3 - L, ds, 500);
     dl.forEach((ln, i) => txt(ctx, ln, L, 14.8 + i * 3.45, { size: ds, w: 500, color: C.W }));
-    // 4. satır (10 Ekim): hizmet ve değişim taahhüdü. 2 yıl = ayıplı malda yasal sorumluluk süresi; "garanti"
-    // kelimesi bilerek yok (garanti belgesi yükümlülüğü doğurmasın). Koşullar sitede yazılmalı.
+    // 4. satır: hizmet taahhüdü. 15 Kasım (Adem): "En az 2 yıl hizmet."; "ücretsiz değişim" kaldırıldı (önceden
+    // "En az 3 yıl hizmet, 2 yıl ücretsiz değişim."). "garanti" kelimesi bilerek yok (garanti belgesi yükümlülüğü doğurmasın).
     // "okutana uygulama gerekmez" açıklamaya ve etikete taşındı; güven satırları 3'te kalır (orta blok sığsın)
     const guven = ['Bildirimleri istediğin an kapatabilirsin.', 'Bilgilerin değişse de etiket aynı kalır.',
-                   'En az 3 yıl hizmet, 2 yıl ücretsiz değişim.'];
+                   'En az 2 yıl hizmet.'];
     const gy0 = 14.8 + (dl.length - 1) * 3.45 + 4.2;
     guven.forEach((g, i) => {
       const y = gy0 + i * 3.15;
@@ -1094,8 +1112,8 @@
     });
 
     // Alt yasal bant (sarı zemin, K100): kutu içeriği, üretici, destek, KVKK, menşe | EAN-13 (bigiden 10 mm, kural ≥ 8)
-    // En altta tam genişlikte Apple marka atıf satırı: App Store rozeti kullanıldığı için Apple'ın kılavuzu ister
-    // (çevirisi serbest). Google Play rozet kılavuzunda böyle bir şart yok.
+    // Apple marka atıf satırı 15 Kasım'da kaldırıldı (Adem). App Store rozet kılavuzu bu satırı ister; matbaadan önce
+    // yeniden düşünülebilir.
     // 9 Ekim eklemeleri: etiket ölçüsü, dayanım (Candemsoft test raporu gelene kadar yer tutucu; sitede
     // "su geçirmez & UV dayanımlı" yazıyor ama kanıt gerekli), "acil durum hizmeti değildir", sahte QR uyarısı.
     // 29 Ekim: "Su geçirmez" kaldırıldı (Adem): etiket camın iç yüzüne yapışıyor, suyla temas etmiyor.
@@ -1103,11 +1121,13 @@
     const ls = 6.5 * PT, lc = C.K100;
     const eanW = 29.8, eanH = 20.7, ex = w - 8 - eanW, ey = h - 10 - eanH, solW = ex - L - 3;
     let ly = bY + 3.6;
-    [[['Kutu içeriği: ', 700], ['1 QR Etiket (5 × 8 cm)', 400]],
+    // 15 Kasım (Adem): kutu içeriğine mendil ve kılavuz eklendi; destek info@; PAP 21 ve Apple atıf satırı kaldırıldı.
+    [[['Kutu içeriği: ', 700], ['1 QR Etiket (5 × 8 cm),', 400]],
+     [['yüzey temizleme mendili, kullanım kılavuzu', 400]],
      [['UV dayanımlı · camın içine', 600]],
      [['Üretici: Candemsoft', 700]],
      [['[Adres – Candemsoft onayı bekleniyor]', 400]],
-     [['Destek: ', 700], ['kisiselqr.com (WhatsApp)', 400]],
+     [['Destek: ', 700], ['info@kisiselqr.com', 400]],
      [['KVKK Aydınlatma Metni: ', 700], ['kisiselqr.com/kvkk', 400]],
      [['Acil durum hizmeti değildir; tehlikede 112.', 600]],
      [['Ödeme ya da şifre istemez; adres kisiselqr.com', 400]],
@@ -1117,8 +1137,8 @@
       parcalar.forEach(([s2, wt]) => { x += txt(ctx, s2, x, ly, { size: boy, w: wt, color: lc }); });
       ly += 2.45;
     });
-    // geri dönüşüm + PAP 21 + SKU
-    const pry = bY + 27.0;
+    // geri dönüşüm işareti + SKU (listenin hemen altında)
+    const pry = ly + 0.4;
     ctx.save(); ctx.translate(L + 2.1, pry - 0.9);
     ctx.strokeStyle = lc; ctx.fillStyle = lc; ctx.lineWidth = 0.32;
     for (let k = 0; k < 3; k++) {
@@ -1129,13 +1149,7 @@
       ctx.restore();
     }
     ctx.restore();
-    txt(ctx, 'PAP 21', L + 5.0, pry, { size: ls, w: 700, color: lc });
-    txt(ctx, 'SKU: KQR-AE-01', L + 14.2, pry, { size: ls, w: 400, color: lc });
-    // Apple atıf satırı (yasal bilgi: şartname min. 6 pt; tam genişlik, alttan yukarı; son satır alt kenardan ≥ 4 mm)
-    const as = 6 * PT;
-    const apple = wrap(ctx, "Apple ve Apple logosu, Apple Inc.'in ABD'de ve diğer ülkelerde tescilli ticari markalarıdır. " +
-                            "App Store, Apple Inc.'in hizmet markasıdır.", w - 2 * L, as, 400);
-    apple.forEach((ln, i) => txt(ctx, ln, L, h - SAFE - 0.5 - (apple.length - 1 - i) * 2.4, { size: as, w: 400, color: lc }));
+    txt(ctx, 'SKU: KQR-AE-01', L + 5.0, pry, { size: ls, w: 400, color: lc });
     // EAN-13 yer tutucu – numara Candemsoft'tan gelecek (sahte barkod çizilmez)
     ctx.fillStyle = C.W; ctx.fillRect(ex, ey, eanW, eanH);
     ctx.strokeStyle = lc; ctx.lineWidth = 0.2; ctx.setLineDash([0.8, 0.6]); ctx.strokeRect(ex, ey, eanW, eanH); ctx.setLineDash([]);
