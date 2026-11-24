@@ -297,14 +297,16 @@ function olustur(CFG) {
   }
   // SCREEN: ortak telefon (Tasarım 2–4, lib.phone varsayılanı). SCREEN_T1: Tasarım 1'in sade vitrin ekranı
   // (ad + plaka + bildirim butonları, 9 Ekim). 2–4'e dokunulmadığı için iki ayrı dosya.
-  let SCREEN = null, SCREEN_T1 = null, ARAC_FOTO = null;
+  let SCREEN = null, SCREEN_T1 = null, ARAC_FOTO = null, VITRIN_KOPYA = null;   // CFG.vitrinEkran: kopyanın telefon ekranı (tam URL)
   let SON_YASAL = null;   // test: yasal bandın son satırı (mm) ve alt güvenli sınır
   function resimAl(ad) {
     return new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = BASE + ad; });
   }
   function loadScreen() {
     return Promise.all([resimAl('demo_profil_ekran.jpg'), resimAl('vitrin_profil_ekran.jpg'), resimAl('arac_foto.jpg')])
-      .then(([a, b, c]) => { SCREEN = a; SCREEN_T1 = b || a; ARAC_FOTO = c; });
+      .then(([a, b, c]) => { SCREEN = a; SCREEN_T1 = b || a; ARAC_FOTO = c; })
+      .then(() => CFG.vitrinEkran && new Promise(res => { const im = new Image();
+        im.onload = () => { VITRIN_KOPYA = im; res(); }; im.onerror = () => res(); im.src = CFG.vitrinEkran; }));
   }
 
   // Mağaza rozetleri: Apple ve Google'ın resmi Türkçe rozet görselleri (değiştirilmeden kullanılır).
@@ -378,7 +380,7 @@ function olustur(CFG) {
     // Üst: marka. Ürünün adı başlığa geçtiği için logo büyüdü (10 → 13 mm, sarı, lokal UV lak): marka sönük kalmaz.
     const LH = 13, LY = SAFE + 1.5;
     logo(ctx, L, LY, LH, C.Y);
-    txt(ctx, 'by Candemsoft', w - SAFE - 2, LY + LH - 0.01 * LH, { size: 7 * PT, w: 500, color: C.W, align: 'right' });
+    if (!CFG.byYok) txt(ctx, 'by Candemsoft', w - SAFE - 2, LY + LH - 0.01 * LH, { size: 7 * PT, w: 500, color: C.W, align: 'right' });
 
     // Başlık: ürünün ne olduğu (raftaki ilk soru). Tek satır, genişliğe sığan en büyük boy (≤ 26 pt); "AKILLI" sarı.
     let ts = 26 * PT;
@@ -399,10 +401,11 @@ function olustur(CFG) {
     ctx.restore();
 
     // Telefon mockup (~28 × 56 mm), sağa yakın; ekran lokal UV lak
-    phone(ctx, w - SAFE - 2 - 28, 39.5, 28, 56, px, SCREEN_T1);
+    phone(ctx, w - SAFE - 2 - 28, 39.5, 28, 56, px, VITRIN_KOPYA || SCREEN_T1);
 
     // Büyüteç: sticker'ın yakın planı (sol üstte, araçla telefonun arasında kalmaz)
-    buyutec(ctx, 12.9, 47.9, 8.7, st, px);
+    const BY = CFG.buyutec || { x: 12.9, y: 47.9, r: 8.7 };   // kopyada daha büyük mercek (Tasarım 2)
+    buyutec(ctx, BY.x, BY.y, BY.r, st, px);
 
     // Rozet: sarı zemin, siyah yazı, eğik etiket (lak almaz). Kategoriye en hızlı köprü: 9 Ekim'de 8,3 → 9 pt.
     // CFG.onRozetYok: kopyada çıkar (Tasarım 2: sloganla aynı fikri tekrarlıyordu)
@@ -756,7 +759,7 @@ function olustur(CFG) {
   // Büyüteç: camın sol alt köşesinin yakın planı (dik bakış). k = kutu mm / gerçek mm.
   // Sticker gerçek oranıyla durur: A sütunu, serigrafi bandı, torpido ve kaputla birlikte.
   function buyutec(ctx, bx, by, br, st, px) {
-    const k = 0.12;
+    const k = (CFG.buyutec && CFG.buyutec.k) || 0.12;
     // hedef işareti ve bağlantı çizgisi
     const hx = st.x + st.w / 2, hy = st.y + st.h / 2, hr = 1.9;
     const ang = Math.atan2(hy - by, hx - bx);

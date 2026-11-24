@@ -15,6 +15,7 @@
  */
 (function () {
   const T1 = window.KQRTasarim1;
+  const BASE2 = (document.currentScript && document.currentScript.src || '').replace(/[^/]*$/, '');   // assets/tasarim2/
   if (!T1 || !T1.olustur) return;
   const L = T1.lib;
   const SIYAH = '#0B0B0B', SARI = '#FDD309', BEYAZ = '#FFFFFF', SONUK = '#D6D6D6';
@@ -138,13 +139,19 @@
     sticker: yatayStk,
     stkOran: S.H / S.W, stkROran: S.R / S.W,
     stkW: S.W, stkH: S.H,               // camdaki gerçek ölçü
-    buyutecKay: [-6, -16],               // büyüteçte sol alt köşe görünsün (A sütunu ve serigrafi ile)
+    buyutecKay: [-15, -12],               // büyüteçte sol alt köşe görünsün (A sütunu ve serigrafi ile)
     mini1: { w: 5.6, x: 4.6 },          // "Yapıştır" adımı: camın köşesinde
     mini2: { w: 5.6, x: 2.6, y: 5.6 },  // "Aktif Et" adımı: telefonun solunda
     // Arka yüz (24 Kasım, Adem): EAN-13 yok; yasal metin tam genişlikte, bant inceldi. Kazanılan yerle örnek
     // sticker büyüdü (QR okunur kalsın), "Uygulamada ayrıca" 2 sütuna indi.
     // Ön yüz (24 Kasım, Adem): eğik "Artık numaratöre gerek yok" rozeti kalktı; sloganla aynı fikri tekrarlıyordu.
     onRozetYok: true,
+    byYok: true,                         // ön yüzde sağ üstteki "by Candemsoft" yok (24 Kasım, Adem)
+    // Telefon ekranında plakanın altında sayfanın kendi "Telefon ile Ara" butonu, örnek numarayla (24 Kasım, Adem).
+    // 0500 kullanılmayan bir GSM öneki: kutudaki numara gerçek bir kişiye ait olmasın.
+    vitrinEkran: BASE2 + 'vitrin_profil_ekran_tel.jpg',
+    // Büyüteç büyüdü, yakınlaştırma arttı: baskıda örnek sticker ve QR ayrıntısı seçilsin (Adem)
+    buyutec: { x: 15.6, y: 50.4, r: 11.2, k: 0.22 },
     lotYok: true,                        // sağ yan kapaktaki beyaz lot/tarih kutusu yok (24 Kasım, Adem)
     arka: {
       eanYok: true, bant: 29.5, ornekGen: 33, etH: 5.0, etOran: 0.5, etAra: 1.8, ustPay: 3.4, ozSutun: 2, aktTam: true, sutunAra: 4,

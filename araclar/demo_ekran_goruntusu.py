@@ -16,6 +16,8 @@ Vitrin: sayfanın kendisi (tasarım, CSS, butonlar) canlıdakiyle aynıdır; yal
 
 Gereksinim: Google Chrome, pip install websocket-client
 Kullanım:   python araclar/demo_ekran_goruntusu.py [url]
+            TELEFON="0500 123 45 67" OUT=assets/tasarim2/vitrin_profil_ekran_tel.jpg python araclar/demo_ekran_goruntusu.py
+            (TELEFON verilirse plakanın altına sayfanın kendi "Telefon ile Ara" butonu örnek numarayla eklenir: Tasarım 2)
 """
 import base64, json, os, subprocess, sys, tempfile, time, urllib.request
 import websocket
@@ -23,7 +25,7 @@ import websocket
 URL = sys.argv[1] if len(sys.argv) > 1 else 'https://kisiselqr.com/qr/071qydlb'
 # Tasarım 1 kendi ekranını kullanır (vitrin_profil_ekran.jpg). demo_profil_ekran.jpg, Tasarım 2–4'ün ortak
 # telefonunda kalan önceki görüntüdür (7 Ekim); Adem'in isteğiyle 2–4'e dokunulmuyor (9 Ekim).
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'tasarim1', 'vitrin_profil_ekran.jpg')
+OUT = os.environ.get('OUT') or os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'tasarim1', 'vitrin_profil_ekran.jpg')
 CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 W, H, DPR, PORT = 430, 932, 3, 9333
 CLICK = """(()=>{const c=[...document.querySelectorAll('button,a,[role=button],summary,div')]
@@ -33,7 +35,7 @@ CLICK = """(()=>{const c=[...document.querySelectorAll('button,a,[role=button],s
 
 # Vitrin: ad + plaka + WhatsApp/Instagram + bildirim butonları (14 Kasım). Bilgi satırı gösterilmez.
 VITRIN = {'isim': 'Ahmet Yılmaz', 'bilgi': '', 'plaka': '34 ABC 123',   # plaka: kutudaki araçla aynı
-          'sosyal': ['whatsapp', 'instagram'], 'zoom': 1.3}
+          'sosyal': ['whatsapp', 'instagram'], 'zoom': 1.3, 'telefon': os.environ.get('TELEFON', '')}
 DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
   const h=q('.profile-header h1'); if(h) h.textContent=V.isim;
   const im=q('.profile-photo'); if(im) im.alt=V.isim+' profil fotoğrafı';
@@ -66,6 +68,14 @@ DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
     '<div class="plate-text" style="padding:0 15px;display:flex;align-items:center;justify-content:center;font-family:\\'Segoe UI\\',Roboto,Helvetica,Arial,sans-serif;font-size:26px;font-weight:800;color:#000;letter-spacing:1px;">'+
     V.plaka.toUpperCase()+'</div></div></div>');
   document.querySelectorAll('.contact-info').forEach(e=>e.remove());
+  // telefon: profile.php'nin kendi telefon butonu (phone_hidden kapalıyken plakanın altında böyle basılır)
+  const pw=q('.license-plate-wrapper');
+  if(V.telefon && pw) pw.insertAdjacentHTML('afterend',
+    '<div class="contact-info" style="margin:0 !important;padding:0 !important;border:none !important;">'+
+    '<div class="contact-buttons-row" style="margin:4px 0 !important;gap:6px !important;">'+
+    '<a href="#" class="contact-btn phone-btn"><div class="btn-icon"><i class="fas fa-phone"></i></div>'+
+    '<div class="btn-content"><span class="btn-title">Telefon ile Ara</span><span class="btn-subtitle">'+V.telefon+'</span></div>'+
+    '<div class="btn-arrow"><i class="fas fa-chevron-right"></i></div></a></div></div>');
   return !!h})(%s)""" % json.dumps(VITRIN, ensure_ascii=False)
 
 prof = tempfile.mkdtemp()

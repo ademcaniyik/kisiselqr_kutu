@@ -13,3 +13,8 @@ dikey orijinal etiket (50 × 80 mm) yerine yatay sticker (80 × 50 mm).
   DENE, örnek sticker'ın üstünde ortalı sarı sekme (aşağı oklu). Örnek sticker ≈ 29 mm, QR ≈ 11 mm; OpenCV ile okundu,
   baskı provasında telefonla da denenmeli. Ayarlar `tasarim2.js` içindeki `arka: {...}` nesnesinde.
 - Eski "Sticker Kahraman" tasarımı git geçmişinde (`git show 447cd74:assets/tasarim2/tasarim2.js`).
+
+## Ön yüz (24 Kasım)
+- `vitrin_profil_ekran_tel.jpg`: telefon ekranı, Tasarım 1'in vitrin ekranıyla aynı ama plakanın altında sayfanın kendi "Telefon ile Ara" butonu var (örnek numara 0500 123 45 67; 0500 kullanılmayan bir GSM öneki). Üretim: `TELEFON="0500 123 45 67" OUT=assets/tasarim2/vitrin_profil_ekran_tel.jpg python araclar/demo_ekran_goruntusu.py`.
+- Büyüteç büyük (r 11,2 mm, yakınlaştırma 0,22): baskıda örnek sticker ve QR ayrıntısı seçilsin.
+- "by Candemsoft" yazısı ve eğik "Artık numaratöre gerek yok" rozeti yok; sağ yan kapakta lot kutusu yok.
