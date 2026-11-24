@@ -405,12 +405,15 @@ function olustur(CFG) {
     buyutec(ctx, 12.9, 47.9, 8.7, st, px);
 
     // Rozet: sarı zemin, siyah yazı, eğik etiket (lak almaz). Kategoriye en hızlı köprü: 9 Ekim'de 8,3 → 9 pt.
-    ctx.save();
-    ctx.translate(52, 88.6); ctx.rotate(-6 * Math.PI / 180);
-    ctx.fillStyle = C.Y; rr(ctx, -18.3, -5.1, 36.6, 10.2, 2.3); ctx.fill();
-    txt(ctx, 'Artık numaratöre', 0, -0.6, { size: 9 * PT, w: 800, color: C.K100, align: 'center' });
-    txt(ctx, 'gerek yok', 0, 2.95, { size: 9 * PT, w: 800, color: C.K100, align: 'center' });
-    ctx.restore();
+    // CFG.onRozetYok: kopyada çıkar (Tasarım 2: sloganla aynı fikri tekrarlıyordu)
+    if (!CFG.onRozetYok) {
+      ctx.save();
+      ctx.translate(52, 88.6); ctx.rotate(-6 * Math.PI / 180);
+      ctx.fillStyle = C.Y; rr(ctx, -18.3, -5.1, 36.6, 10.2, 2.3); ctx.fill();
+      txt(ctx, 'Artık numaratöre', 0, -0.6, { size: 9 * PT, w: 800, color: C.K100, align: 'center' });
+      txt(ctx, 'gerek yok', 0, 2.95, { size: 9 * PT, w: 800, color: C.K100, align: 'center' });
+      ctx.restore();
+    }
 
     // Slogan: "Herkese numaranı vermek zorunda değilsin." (iki satır, "numaranı" sarı; 14 pt)
     const sg = 14 * PT, sb1 = slogY + 0.73 * sg + 0.6, sb2 = sb1 + sg * 1.15;
@@ -1035,7 +1038,7 @@ function olustur(CFG) {
     txt(ctx, 'Nasıl çalışır?', L, 9.6, { size: 12 * PT, w: 800, color: C.Y });
     // 9 Ekim: açıklama kısaldı, altına koddan doğrulanmış 3 güven satırı geldi (rakip/psikoloji analizi)
     // 10 Ekim: etiket camın iç yüzüne yapıştırılır (Adem); yerin neresi olduğu yine belirtilmez
-    const desc = 'Etiketi aracının camına içten yapıştır. Okutan kişi uygulama indirmeden seçtiği uyarıyı gönderir, ' +
+    const desc = ARKA.aciklama || 'Etiketi aracının camına içten yapıştır. Okutan kişi uygulama indirmeden seçtiği uyarıyı gönderir, ' +
                  'bildirim telefonuna gelir. Numaranı istersen gizleyebilirsin. Aynı profil dijital kartvizitin olur.';
     const ds = 7.5 * PT;
     const dl = wrap(ctx, desc, qx - 3 - L, ds, 500);
@@ -1057,9 +1060,20 @@ function olustur(CFG) {
 
     // Alt sıra ölçüleri önce hesaplanır: rozet yığını (eşit genişlik) ve onun üstündeki aktivasyon kutusu,
     // orta bloğun alt sınırını belirler.
-    const bY = h - BACK_BAND, rh = 10, rw = ROZET_GEN(rh), gh = rw * GOOGLE_KIRP[3] / GOOGLE_KIRP[2];
-    const rx = R - rw, ry0 = bY - 3 - (rh + Math.max(rh, gh) / 4 + gh);   // Google'ın altında ≥ ¼ boşluk (3 mm)
-    const kb = ry0 - rh / 4 - 0.3, pad = 1.4;                                // 0,3: kontur rozet boşluğuna taşmasın
+    const bY = h - BACK_BAND, rh = ARKA.rozetH || 10, rw = ROZET_GEN(rh), gh = rw * GOOGLE_KIRP[3] / GOOGLE_KIRP[2];
+    const rx = R - rw, yigin = rh + Math.max(rh, gh) / 4 + gh;
+    let ry0 = bY - 3 - yigin;                                                // Google'ın altında ≥ ¼ boşluk (3 mm)
+    // Kurulum adımlarının ölçüleri (alt sıra). ARKA.altHiza: sıra yüksekliği adımlar ile rozet yığınının büyüğü,
+    // rozetler bu yükseklikte dikey ortalanır (Tasarım 2: küçük rozet, geniş adımlar)
+    const sX0 = L + 0.15, sX1 = rx - Math.max(rh, gh) / 4 - 0.3, sGap = 1.6, sW = (sX1 - sX0 - 2 * sGap) / 3, sH = ARKA.adimH || 12.5;
+    const adimlar = [['Temizle', 'Camı sil'], ['Yapıştır', 'Camın içine'], ['Aktif Et', 'Uygulamada okut']];
+    let sY = ry0 + 0.2, altUst = ry0;
+    if (ARKA.altHiza) {
+      const sat = Math.max(...adimlar.map(a => wrap(ctx, a[1], sW, 7 * PT, 500).length));
+      const adimYuk = 0.2 + sH + 6.2 + (sat - 1) * 2.9 + 0.8, altH = Math.max(yigin, adimYuk);
+      altUst = bY - 3 - altH; ry0 = altUst + (altH - yigin) / 2; sY = altUst + 0.2;
+    }
+    const kb = altUst - rh / 4 - 0.3, pad = 1.4;                             // 0,3: kontur rozet boşluğuna taşmasın
     const hs = 8.5 * PT, hY = ustAlt + 4.6;
     // Orta-sol: örnek sticker (ürünün birebir kopyası, 5:8, gölgeli; QR demo profile gider) ve üstünde
     // "DENE" etiketi (9 Ekim: lider rakipte "Kodu Okut Dene" var; psikoloji: deneme kancası).
@@ -1072,7 +1086,7 @@ function olustur(CFG) {
     // "Etiketini": kutudaki örnek kamerayla okutulur, kendi etiketin uygulamadan (talimatlar çelişmesin)
     const aktG = kx => {
       const kw = R - kx, ktx = kx + pad + 5.2, ktW = kx + kw - pad - ktx;
-      const govde = wrap(ctx, 'Etiketini kamerayla değil, uygulamadan okut.', ktW, kts, 500);
+      const govde = wrap(ctx, ARKA.aktGovde || 'Etiketini kamerayla değil, uygulamadan okut.', ktW, kts, 500);
       const kh = pad + 2.6 + govde.length * 2.95 + 0.9 + pad * 0.6;
       return { kx, kw, ktx, ktW, govde, kh, ky: kb - kh };
     };
@@ -1097,11 +1111,12 @@ function olustur(CFG) {
     stk(ctx, sx, by0 + etH + etAra, sw, { shadow: 2.2 * (px || 10), edge: 14 });
 
     // Orta-sağ: "Uygulamada ayrıca" + 6 ikonlu özellik, 3 sütun × 2 satır (9 Ekim: güven satırlarına yer açmak için)
-    const oSut = ARKA.ozSutun || 3, oSat = Math.ceil(EK_OZELLIK.length / oSut);
+    const EK = ARKA.ekOzellik || EK_OZELLIK;
+    const oSut = ARKA.ozSutun || 3, oSat = Math.ceil(EK.length / oSut);
     const ei = 5.0, eg = 1.0, es = 7 * PT, ecA = 1.4, ecW = (fw - (oSut - 1) * ecA) / oSut;
     const satY0 = hY + 2.3, satH = Math.min(8.6, (ky - 2.0 - satY0) / oSat);
     txt(ctx, 'Uygulamada ayrıca', fx, hY, { size: hs, w: 800, color: C.Y });
-    EK_OZELLIK.forEach(([ik, ad], i) => {
+    EK.forEach(([ik, ad], i) => {
       const ix = fx + (i % oSut) * (ecW + ecA), iy = satY0 + Math.floor(i / oSut) * satH, c = iy + ei / 2;
       ctx.save(); ctx.translate(ix, iy); ctx.scale(ei / 10, ei / 10); EK_IKON[ik](ctx); ctx.restore();
       const sat = wrap(ctx, ad, ecW - ei - eg, es, 500);
@@ -1127,14 +1142,11 @@ function olustur(CFG) {
       [[fx0, fy1, 1, 1], [fx0 + fs0, fy1, -1, 1], [fx0, fy1 + fs0, 1, -1], [fx0 + fs0, fy1 + fs0, -1, -1]].forEach(([x, y, dx, dy]) => {
         ctx.beginPath(); ctx.moveTo(x + dx * kl, y); ctx.lineTo(x, y); ctx.lineTo(x, y + dy * kl); ctx.stroke();
       });
-      txt(ctx, 'Aktivasyon için önce uygulamayı indir', ktx, ky + pad + 2.0, { size: kts, w: 700, color: C.Y });
+      txt(ctx, ARKA.aktBaslik || 'Aktivasyon için önce uygulamayı indir', ktx, ky + pad + 2.0, { size: kts, w: 700, color: C.Y });
       govde.forEach((ln, i) => txt(ctx, ln, ktx, ky + pad + 2.0 + 2.95 * (i + 1), { size: kts, w: 500, color: C.W }));
     }
     // sX1: büyük rozetin ¼ yükseklik boşluğu, kutucuk konturu (0,25 mm) taşsa da korunur
-    const sX0 = L + 0.15, sX1 = rx - Math.max(rh, gh) / 4 - 0.3, sGap = 1.6, sW = (sX1 - sX0 - 2 * sGap) / 3, sH = 12.5;
-    const sY = ry0 + 0.2;
     // alt yazılar kutucuk genişliğini aşmasın: 3. adımın taşan kelimesi rozetin ¼ boşluğuna girer ("Uygulamadan" girdi)
-    const adimlar = [['Temizle', 'Camı sil'], ['Yapıştır', 'Camın içine'], ['Aktif Et', 'Uygulamada okut']];
     adimlar.forEach(([t, alt], i) => {
       const x = sX0 + i * (sW + sGap);
       adimCizim(ctx, i, x, sY, sW, sH);
@@ -1224,7 +1236,7 @@ function olustur(CFG) {
   function sideRight(ctx, w, h) {
     yanKimlik(ctx, w, h);
     // lot / tarih kutucuğu: beyaz, laksız, SELEFONSUZ (inkjet)
-    ctx.fillStyle = C.W; ctx.fillRect((w - 10) / 2, h - 8 - 15, 10, 15);
+    if (!CFG.lotYok) { ctx.fillStyle = C.W; ctx.fillRect((w - 10) / 2, h - 8 - 15, 10, 15); }   // CFG.lotYok: kopyada yok
   }
 
   // ------------------------------------------------------------ EURO BAŞLIK

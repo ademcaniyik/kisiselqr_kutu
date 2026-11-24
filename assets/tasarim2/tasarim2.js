@@ -143,8 +143,20 @@
     mini2: { w: 5.6, x: 2.6, y: 5.6 },  // "Aktif Et" adımı: telefonun solunda
     // Arka yüz (24 Kasım, Adem): EAN-13 yok; yasal metin tam genişlikte, bant inceldi. Kazanılan yerle örnek
     // sticker büyüdü (QR okunur kalsın), "Uygulamada ayrıca" 2 sütuna indi.
+    // Ön yüz (24 Kasım, Adem): eğik "Artık numaratöre gerek yok" rozeti kalktı; sloganla aynı fikri tekrarlıyordu.
+    onRozetYok: true,
+    lotYok: true,                        // sağ yan kapaktaki beyaz lot/tarih kutusu yok (24 Kasım, Adem)
     arka: {
-      eanYok: true, bant: 28, ornekGen: 38, etH: 5.0, etOran: 0.5, etAra: 1.8, ustPay: 3.4, ozSutun: 2, aktTam: true, sutunAra: 4,
+      eanYok: true, bant: 29.5, ornekGen: 33, etH: 5.0, etOran: 0.5, etAra: 1.8, ustPay: 3.4, ozSutun: 2, aktTam: true, sutunAra: 4,
+      // Görsel denge (24 Kasım, Adem): kısa açıklama, tek satırlık özellik adları, küçük rozet + geniş adımlar,
+      // aktivasyon kutusu "DENE" çağrısıyla çelişmesin (örnek kamerayla denenir, kendi etiketin uygulamadan).
+      aciklama: 'Etiketi camın içine yapıştır. Okutan kişi uygulamasız uyarı gönderir, bildirim sana gelir. ' +
+                'Numaranı istersen gizleyebilirsin.',
+      ekOzellik: [['acil', 'Acil bilgiler'], ['kaza', 'Kaza tutanağı'], ['cekici', 'Yol yardımı'],
+                  ['lastik', 'Lastikçi, tamirci'], ['otopark', 'Otoparklar'], ['eczane', 'Nöbetçi eczane']],
+      aktBaslik: 'Kendi etiketini uygulamadan etkinleştir',
+      aktGovde: 'Uygulamayı indir, etiketini uygulamanın içinden okut. Kutudaki örneği kamerayla deneyebilirsin.',
+      rozetH: 8, adimH: 11.5, altHiza: true,
       yasal: (URETICI, ADRES) => [
         [['Kutu içeriği: ', 700], ['1 QR Etiket (8 × 5 cm), yüzey temizleme mendili, kullanım kılavuzu', 400]],
         [['Üretici: ', 700], [URETICI, 400]],
