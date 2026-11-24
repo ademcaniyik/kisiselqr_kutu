@@ -10,6 +10,12 @@
  *   KQRTasarim1.ready()                 Inter fontları yüklenince çözülür
  */
 (function () {
+// Görsel dosyalarının klasörü: kopyalar (Tasarım 2) başka bir dosyadan oluşturulsa da tasarim1/ altındakileri kullanır.
+const BASE = (document.currentScript && document.currentScript.src || '').replace(/[^/]*$/, '');
+// olustur(CFG): Tasarım 1'in tamamı. CFG boşsa Tasarım 1'in kendisi; Tasarım 2 aynı çizimi başka bir sticker'la
+// (CFG.sticker, oran, gerçek ölçü, küçük çizim ayarları) üretir. Varsayılanlar Tasarım 1'i birebir korur.
+function olustur(CFG) {
+  CFG = CFG || {};
   const C = {
     K: '#0A0A0A',   // Kişisel Siyah (geniş zemin, zengin siyah)
     Y: '#FDD309',   // Kişisel Sarı (Pantone 116 C yakını)
@@ -175,6 +181,10 @@
                 YEL: 593, DIV0: 1142, DIV1: 1149, QX: 64, QY: 102, QS: 638,
                 L1: 895, L2: 987, L3: 1077, LW: 718, URL_B: 1209, URL_W: 447 };
   const STK_FONT = 'Montserrat, "Arial Black", Arial, sans-serif';
+  // Kutuda çizilen sticker: Tasarım 1'de orijinal dikey etiket; kopyada CFG.sticker (aynı imza: ctx, x, y, w, opts).
+  const stk = (...a) => (CFG.sticker || sticker)(...a);
+  const STK_ORAN = CFG.stkOran || 1.6;                       // yükseklik / genişlik
+  const STK_R_ORAN = CFG.stkROran || STK.R / STK.W;          // köşe yarıçapı / genişlik
   function sticker(ctx, x, y, w, opts) {
     opts = opts || {};
     const h = w * 1.6;
@@ -285,7 +295,6 @@
     ctx.fillStyle = k; rr(ctx, bx + 0.16, by + 0.16, bw - 0.6, bh - 0.32, 0.12); ctx.fill();
     ctx.fillStyle = soluk; rr(ctx, bx + bw + 0.08, by + 0.27, 0.12, 0.28, 0.05); ctx.fill();
   }
-  const BASE = (document.currentScript && document.currentScript.src || '').replace(/[^/]*$/, '');
   // SCREEN: ortak telefon (Tasarım 2–4, lib.phone varsayılanı). SCREEN_T1: Tasarım 1'in sade vitrin ekranı
   // (ad + plaka + bildirim butonları, 9 Ekim). 2–4'e dokunulmadığı için iki ayrı dosya.
   let SCREEN = null, SCREEN_T1 = null, ARAC_FOTO = null;
@@ -323,6 +332,10 @@
   // Apple'ın buna kısıtı yok). Aradaki boşluk büyük rozetin ¼'ü. Döndürür: {w, h, gh (Google yüksekliği), ara}
   function magazaRozetleri(ctx, x, y, h) {
     const aw = ROZET_GEN(h), gh = aw * GOOGLE_KIRP[3] / GOOGLE_KIRP[2], ara = Math.max(h, gh) / 4;
+    if (CFG.rozetCiz) {   // kopyaya özel rozet çizimi (Tasarım 2: yalın, yazısız "İndirin"); yerleşim ölçüleri aynı
+      CFG.rozetCiz(ctx, { x, y, w: aw, h, gh, ara, google: ROZET.google, kirp: GOOGLE_KIRP });
+      return { w: aw, h: h + ara + gh, gh, ara };
+    }
     if (ROZET.apple) ctx.drawImage(ROZET.apple, x, y, aw, h);
     if (ROZET.google) ctx.drawImage(ROZET.google, GOOGLE_KIRP[0], GOOGLE_KIRP[1], GOOGLE_KIRP[2], GOOGLE_KIRP[3], x, y + h + ara, aw, gh);
     return { w: aw, h: h + ara + gh, gh, ara };
@@ -354,7 +367,8 @@
     // 3) baskısız alanlar: tutkal payı, üst yapıştırma dili (dış yüz)
     ['Tutkal', 'UstDil'].forEach(n => { ctx.fillStyle = C.RAW; panelPath(ctx, P[n].p); ctx.fill(); });
   }
-  const BACK_BAND = 37;     // arka yüz alt yasal bant (sarı). 30,5 → 32,5 (6 Ekim, Apple satırı) → 37 (9 Ekim: gereksinim, dayanım, 112, sahte QR)
+  const ARKA = CFG.arka || {};   // kopyalara özel arka yüz ayarları (Tasarım 1'de boş)
+  const BACK_BAND = ARKA.bant || 37;     // arka yüz alt yasal bant (sarı). 30,5 → 32,5 (6 Ekim, Apple satırı) → 37 (9 Ekim: gereksinim, dayanım, 112, sahte QR)
   const FRONT_BAND = 24;    // ön yüz alt sarı bant: ikon satırı + alt kenar
   const MUHUR_D = 20, MUHUR_PAY = 0.8;   // Ø20 void mühür etiketi: yarısı ön yüzün alt kenarında, ortada (kutu_acinim.py)
 
@@ -440,7 +454,7 @@
   // yukarı) ve kutuya s ölçeğiyle çizilir. Ölçüler: gövde 1836 × 1480, iz 1560, lastik 215, ayna açıklığı 2074.
   // Sticker (50 × 80 mm) camın sol alt köşesinde GERÇEK boyutunda durur; ayrıca büyüteçte yakından gösterilir.
   // Ön görünüşte cam eğik olduğu için dikey ölçüler CAM_K oranında kısalır.
-  const ARAC = { STK_X: -618, STK_Y: 1064, STK_W: 50, STK_H: 80, CAM_K: 0.45 };
+  const ARAC = { STK_X: -618, STK_Y: 1064, STK_W: CFG.stkW || 50, STK_H: CFG.stkH || 80, CAM_K: 0.45 };
 
   function yolCiz(ctx, segs, devam) {
     segs.forEach((g, i) => {
@@ -714,7 +728,7 @@
     // sticker: camın sol alt köşesinde gerçek boyutunda (önden bakışta dikeyde kısalır)
     const st = { x: o.cx + ARAC.STK_X * s, w: ARAC.STK_W * s, h: ARAC.STK_H * ARAC.CAM_K * s };
     st.y = o.yer - (ARAC.STK_Y * s) - st.h;
-    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); sticker(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
+    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); stk(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
     return st;
   }
 
@@ -732,7 +746,7 @@
     const u = FOTO.yariGen / 1038 * k;                              // mm / vektör birimi (gerçek mm): vektörle aynı ölçek
     const st = { x: x0 + FOTO.stkX * k, w: ARAC.STK_W * u, h: ARAC.STK_H * ARAC.CAM_K * u };
     st.y = y0 + FOTO.stkAlt * k - st.h;
-    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); sticker(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
+    ctx.save(); ctx.translate(st.x, st.y); ctx.scale(1, ARAC.CAM_K); stk(ctx, 0, 0, st.w, { yazisiz: true }); ctx.restore();
     return st;
   }
 
@@ -756,7 +770,7 @@
     ctx.save();
     ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.clip();
     ctx.translate(bx, by); ctx.scale(k, k);
-    ctx.translate(14, -12);                 // görüş merkezi sticker'ın sol altında: köşe görünsün
+    ctx.translate(...(CFG.buyutecKay || [14, -12]));   // görüş merkezi sticker'ın sol altında: köşe görünsün
     // yerel eksen (gerçek mm, y aşağı): sticker merkezi (0,0), boyut 50 × 80. Cam yüzüne dik bakış.
     const R = br / k + 40;
     const ic = y => -50 + 0.18 * (40 - y);          // serigrafinin iç kenarı (A sütunu tarafı)
@@ -773,7 +787,7 @@
     ctx.fillStyle = 'rgba(255,255,255,0.06)';
     ctx.beginPath(); ctx.moveTo(30, -R); ctx.lineTo(70, -R); ctx.lineTo(10, R); ctx.lineTo(-30, R); ctx.closePath(); ctx.fill();
     // sticker (gerçek tasarım)
-    sticker(ctx, -25, -40, 50, { edge: 3 });
+    stk(ctx, -25, 40 - ARAC.STK_H, ARAC.STK_W, { edge: 3 });   // sol alt köşe sabit (T1: -25, -40)
     // serigrafi bandı: alt kenar ve A sütunu kenarı (noktalı geçiş)
     ctx.fillStyle = '#050505';
     ctx.fillRect(-R, CAM_ALT - 12, 2 * R, R);
@@ -890,8 +904,8 @@
     };
     // küçük sticker: koyu zeminde seçilsin diye beyaz kenar payıyla
     const miniSticker = (kx, ky, kw) => {
-      ctx.fillStyle = C.W; rr(ctx, kx - 0.15, ky - 0.15, kw + 0.3, kw * 1.6 + 0.3, kw * 112 / 764 + 0.15); ctx.fill();
-      sticker(ctx, kx, ky, kw, { yazisiz: true });
+      ctx.fillStyle = C.W; rr(ctx, kx - 0.15, ky - 0.15, kw + 0.3, kw * STK_ORAN + 0.3, kw * STK_R_ORAN + 0.15); ctx.fill();
+      stk(ctx, kx, ky, kw, { yazisiz: true });
     };
     if (i === 0) {                            // Temizle: camı sil
       cam();
@@ -909,8 +923,8 @@
       });
     } else if (i === 1) {                     // Yapıştır: örnek olarak camın köşesine (ön yüzdeki konumu)
       cam();
-      const kw = 3.9;
-      miniSticker(x + 6.0, yb - 0.9 - kw * 1.6, kw);
+      const kw = CFG.mini1 ? CFG.mini1.w : 3.9;
+      miniSticker(x + (CFG.mini1 ? CFG.mini1.x : 6.0), yb - 0.9 - kw * STK_ORAN, kw);
       ctx.save(); ctx.translate(x + 11.6, y + 8.0); ctx.rotate(-0.75);
       ctx.fillStyle = C.KB; rr(ctx, -1.15, -3.6, 2.3, 6.4, 1.15); ctx.fill();
       ctx.fillStyle = '#C9C9C9'; rr(ctx, -0.75, -3.25, 1.5, 1.5, 0.5); ctx.fill();
@@ -919,10 +933,10 @@
       ctx.beginPath(); ctx.moveTo(x + 13.7, y + 1.8); ctx.lineTo(x + 11.0, y + 3.9); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(x + 11.0, y + 3.9); ctx.lineTo(x + 12.2, y + 3.9); ctx.moveTo(x + 11.0, y + 3.9); ctx.lineTo(x + 11.4, y + 2.8); ctx.stroke();
     } else {                                  // Aktif Et: etiketi uygulamanın içinden okut (kamerayla değil)
-      const kw = 4.2, kx = x + 3.0, ky = y + 3.9;
+      const m2 = CFG.mini2 || { w: 4.2, x: 3.0, y: 3.9 }, kw = m2.w, kx = x + m2.x, ky = y + m2.y;
       miniSticker(kx, ky, kw);
       ctx.fillStyle = 'rgba(253,211,9,0.28)';
-      ctx.beginPath(); ctx.moveTo(x + 9.6, y + 6.2); ctx.lineTo(kx + kw + 0.2, ky - 0.1); ctx.lineTo(kx + kw + 0.2, ky + kw * 1.6 + 0.1);
+      ctx.beginPath(); ctx.moveTo(x + 9.6, y + 6.2); ctx.lineTo(kx + kw + 0.2, ky - 0.1); ctx.lineTo(kx + kw + 0.2, ky + kw * STK_ORAN + 0.1);
       ctx.closePath(); ctx.fill();
       ctx.fillStyle = C.K; rr(ctx, x + 9.3, y + 1.4, 4.6, 9.4, 0.9); ctx.fill();
       ctx.strokeStyle = C.Y; ctx.lineWidth = 0.3; rr(ctx, x + 9.3, y + 1.4, 4.6, 9.4, 0.9); ctx.stroke();
@@ -1051,27 +1065,44 @@
     // "DENE" etiketi (9 Ekim: lider rakipte "Kodu Okut Dene" var; psikoloji: deneme kancası).
     // Etiket QR'ın üstüne binmez (binerse okunmaz). Boy, sağdaki blokla aynı yüksekliğe sığacak kadar.
     // Sol sütunun üstü güven satırlarının hemen altı (sağ sütundaki QR yazılarından bağımsız)
-    const etH = 5.6, etAra = 0.9, ustS = gy0 + (guven.length - 1) * 3.15 + 1.8;
-    const sw = Math.min(21.5, (kb - ustS - etH - etAra) / 1.6), sx = L + 0.75, fx = L + 0.75 + sw + 4, fw = R - fx;
-    const kx = fx, kw = R - fx;
-    const kts = 7 * PT, ktx = kx + pad + 5.2, ktW = kx + kw - pad - ktx;
+    const etH = ARKA.etH || 5.6, etAra = ARKA.etAra || 0.9, ustS = gy0 + (guven.length - 1) * 3.15 + (ARKA.ustPay || 1.8);
+    // Sütun genişliği dikey örnekten gelir (sağ blok kopyada da aynı kalsın); yatay sticker bu genişliğe oturur.
+    const kts = 7 * PT;
+    // Aktivasyon kutusu (x'e bağlı ölçüler). Tasarım 1'de özellik sütununun altında; ARKA.aktTam ile tam genişlik.
     // "Etiketini": kutudaki örnek kamerayla okutulur, kendi etiketin uygulamadan (talimatlar çelişmesin)
-    const govde = wrap(ctx, 'Etiketini kamerayla değil, uygulamadan okut.', ktW, kts, 500);
-    const kh = pad + 2.6 + govde.length * 2.95 + 0.9 + pad * 0.6, ky = kb - kh;
+    const aktG = kx => {
+      const kw = R - kx, ktx = kx + pad + 5.2, ktW = kx + kw - pad - ktx;
+      const govde = wrap(ctx, 'Etiketini kamerayla değil, uygulamadan okut.', ktW, kts, 500);
+      const kh = pad + 2.6 + govde.length * 2.95 + 0.9 + pad * 0.6;
+      return { kx, kw, ktx, ktW, govde, kh, ky: kb - kh };
+    };
+    const aktT = ARKA.aktTam ? aktG(L) : null;
+    const altS = aktT ? aktT.ky - 2.6 : kb;     // örnek sticker bloğunun alt sınırı
+    const sw = ARKA.ornekGen ? Math.min(ARKA.ornekGen, (altS - ustS - etH - etAra) / STK_ORAN)
+                             : Math.min(21.5, (altS - ustS - etH - etAra) / 1.6), sx = L + 0.75,
+          fx = L + 0.75 + sw + (ARKA.sutunAra || 4), fw = R - fx;
+    const { kx, kw, ktx, govde, kh, ky } = aktT || aktG(fx);
 
-    const blokH = etH + etAra + sw * 1.6, by0 = (ustS + kb - blokH) / 2;
+    const blokH = etH + etAra + sw * STK_ORAN, by0 = (ustS + altS - blokH) / 2;
     // Etiket tek kelime: "DENE" (14 Kasım, Adem; önceden iki satır "ÖRNEK" / "Okut, dene"). Genişliği örnek etiketi aşmaz.
     const etS = 9 * PT;
-    ctx.fillStyle = C.Y; rr(ctx, sx, by0, sw, etH, 1.2); ctx.fill();
+    // ARKA.etOran: etiket örneğin ortasında daha dar bir sekme olur, altındaki küçük dil örneği gösterir (Tasarım 2)
+    const etW = sw * (ARKA.etOran || 1), etX = sx + (sw - etW) / 2;
+    ctx.fillStyle = C.Y; rr(ctx, etX, by0, etW, etH, ARKA.etOran ? etH / 2 : 1.2); ctx.fill();
+    if (ARKA.etOran) {
+      ctx.beginPath(); ctx.moveTo(sx + sw / 2 - 1.3, by0 + etH - 0.05); ctx.lineTo(sx + sw / 2 + 1.3, by0 + etH - 0.05);
+      ctx.lineTo(sx + sw / 2, by0 + etH + etAra - 0.15); ctx.closePath(); ctx.fill();
+    }
     txt(ctx, 'DENE', sx + sw / 2, by0 + etH / 2 + etS * 0.727 / 2, { size: etS, w: 900, color: C.K100, align: 'center' });
-    sticker(ctx, sx, by0 + etH + etAra, sw, { shadow: 2.2 * (px || 10), edge: 14 });
+    stk(ctx, sx, by0 + etH + etAra, sw, { shadow: 2.2 * (px || 10), edge: 14 });
 
     // Orta-sağ: "Uygulamada ayrıca" + 6 ikonlu özellik, 3 sütun × 2 satır (9 Ekim: güven satırlarına yer açmak için)
-    const ei = 5.0, eg = 1.0, es = 7 * PT, ecA = 1.4, ecW = (fw - 2 * ecA) / 3;
-    const satY0 = hY + 2.3, satH = Math.min(8.6, (ky - 2.0 - satY0) / 2);
+    const oSut = ARKA.ozSutun || 3, oSat = Math.ceil(EK_OZELLIK.length / oSut);
+    const ei = 5.0, eg = 1.0, es = 7 * PT, ecA = 1.4, ecW = (fw - (oSut - 1) * ecA) / oSut;
+    const satY0 = hY + 2.3, satH = Math.min(8.6, (ky - 2.0 - satY0) / oSat);
     txt(ctx, 'Uygulamada ayrıca', fx, hY, { size: hs, w: 800, color: C.Y });
     EK_OZELLIK.forEach(([ik, ad], i) => {
-      const ix = fx + (i % 3) * (ecW + ecA), iy = satY0 + Math.floor(i / 3) * satH, c = iy + ei / 2;
+      const ix = fx + (i % oSut) * (ecW + ecA), iy = satY0 + Math.floor(i / oSut) * satH, c = iy + ei / 2;
       ctx.save(); ctx.translate(ix, iy); ctx.scale(ei / 10, ei / 10); EK_IKON[ik](ctx); ctx.restore();
       const sat = wrap(ctx, ad, ecW - ei - eg, es, 500);
       const y0 = sat.length > 1 ? c - 0.475 - (sat.length - 2) * 2.75 / 2 : c + 0.9;
@@ -1120,7 +1151,7 @@
     // 29 Ekim: "Su geçirmez" kaldırıldı (Adem): etiket camın iç yüzüne yapışıyor, suyla temas etmiyor.
     // Sol sütun genişliği EAN'a kadar (≈ 51,7 mm); sığmayan satır 6 pt'ye iner (şartname: yasal ≥ 6 pt).
     const ls = 6.5 * PT, lc = C.K100;
-    const eanW = 29.8, eanH = 20.7, ex = w - 8 - eanW, ey = h - 10 - eanH, solW = ex - L - 3;
+    const eanW = 29.8, eanH = 20.7, ex = w - 8 - eanW, ey = h - 10 - eanH, solW = ARKA.eanYok ? R - L : ex - L - 3;
     let ly = bY + 3.6;
     // 15 Kasım (Adem): kutu içeriğine mendil ve kılavuz eklendi; destek info@; PAP 21 ve Apple atıf satırı kaldırıldı.
     // 15 Kasım (Adem, 2): "UV dayanımlı · camın içine" kaldırıldı; üretici ve adres Arte Bilişim. Uzun satırlar
@@ -1142,17 +1173,19 @@
       });
       ly += LH;
     };
-    [[['Kutu içeriği: ', 700], ['1 QR Etiket (5 × 8 cm), yüzey temizleme mendili, kullanım kılavuzu', 400]],
+    (ARKA.yasal ? ARKA.yasal(URETICI, ADRES) : [[['Kutu içeriği: ', 700], ['1 QR Etiket (5 × 8 cm), yüzey temizleme mendili, kullanım kılavuzu', 400]],
      [['Üretici: ', 700], [URETICI, 400]],
      [['Adres: ', 700], [ADRES, 400]],
      [['Destek: ', 700], ['info@kisiselqr.com', 400]],
      [['KVKK Aydınlatma Metni: ', 700], ['kisiselqr.com/kvkk', 400]],
      [['Acil durum hizmeti değildir; tehlikede 112.', 600]],
      [['Ödeme ya da şifre istemez; adres kisiselqr.com', 400]],
-     [["Türkiye'de üretilmiştir.", 600]]].forEach(satir);
+     [["Türkiye'de üretilmiştir.", 600]]]).forEach(satir);
     SON_YASAL = { alt: ly - LH, sinir: h - SAFE };
     // geri dönüşüm işareti + SKU: EAN kutusunun altında ortalı (listeyle çakışmaz)
-    const skuS = 'SKU: KQR-AE-01', skuW = 4.4 + tw(ctx, skuS, ls, 400), pry = ey + eanH + 3.6, skx = ex + (eanW - skuW) / 2;
+    // EAN'sız kopyada (Tasarım 2) son yasal satırın hizasında, sağa yaslı
+    const skuS = 'SKU: KQR-AE-01', skuW = 4.4 + tw(ctx, skuS, ls, 400);
+    const pry = ARKA.eanYok ? ly - LH : ey + eanH + 3.6, skx = ARKA.eanYok ? R - skuW : ex + (eanW - skuW) / 2;
     ctx.save(); ctx.translate(skx + 1.75, pry - 0.9);
     ctx.strokeStyle = lc; ctx.fillStyle = lc; ctx.lineWidth = 0.28;
     for (let k = 0; k < 3; k++) {
@@ -1165,6 +1198,7 @@
     ctx.restore();
     txt(ctx, skuS, skx + 4.4, pry, { size: ls, w: 400, color: lc });
     // EAN-13 yer tutucu – numara Candemsoft'tan gelecek (sahte barkod çizilmez)
+    if (ARKA.eanYok) return;
     ctx.fillStyle = C.W; ctx.fillRect(ex, ey, eanW, eanH);
     ctx.strokeStyle = lc; ctx.lineWidth = 0.2; ctx.setLineDash([0.8, 0.6]); ctx.strokeRect(ex, ey, eanW, eanH); ctx.setLineDash([]);
     txt(ctx, 'EAN-13', ex + eanW / 2, ey + 8.4, { size: 2.9, w: 700, color: lc, align: 'center' });
@@ -1314,5 +1348,8 @@
                 ICONS, drawQR, appQR, sticker, phone, drawDieline, magazaRozetleri, PT, SAFE, BLEED, FONT, STK_FONT, colors: C,
                 // kullanım kılavuzu (kilavuz.html) kutuyla aynı çizimleri kullanır: adım kutucukları, ek özellik ikonları, vitrin ekranı
                 adimCizim, EK_IKON, EK_OZELLIK, etiket2, vitrinEkrani: () => SCREEN_T1, sonYasal: () => SON_YASAL };
-  window.KQRTasarim1 = { render, renderIc, drawDieline, ready, sticker, etiket2, colors: C, lib };
+  return { render, renderIc, drawDieline, ready, sticker, etiket2, colors: C, lib };
+}
+window.KQRTasarim1 = olustur({});
+window.KQRTasarim1.olustur = olustur;
 })();
