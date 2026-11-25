@@ -16,7 +16,7 @@ Vitrin: sayfanın kendisi (tasarım, CSS, butonlar) canlıdakiyle aynıdır; yal
 
 Gereksinim: Google Chrome, pip install websocket-client
 Kullanım:   python araclar/demo_ekran_goruntusu.py [url]
-            TELEFON="0500 123 45 67" OUT=assets/tasarim2/vitrin_profil_ekran_tel.jpg python araclar/demo_ekran_goruntusu.py
+            TELEFON="0500 123 45 67" IKON=54 OUT=assets/tasarim2/vitrin_profil_ekran_tel.jpg python araclar/demo_ekran_goruntusu.py
             (TELEFON verilirse plakanın altına sayfanın kendi "Telefon ile Ara" butonu örnek numarayla eklenir: Tasarım 2)
 """
 import base64, json, os, subprocess, sys, tempfile, time, urllib.request
@@ -35,7 +35,8 @@ CLICK = """(()=>{const c=[...document.querySelectorAll('button,a,[role=button],s
 
 # Vitrin: ad + plaka + WhatsApp/Instagram + bildirim butonları (14 Kasım). Bilgi satırı gösterilmez.
 VITRIN = {'isim': 'Ahmet Yılmaz', 'bilgi': '', 'plaka': '34 ABC 123',   # plaka: kutudaki araçla aynı
-          'sosyal': ['whatsapp', 'instagram'], 'zoom': 1.3, 'telefon': os.environ.get('TELEFON', '')}
+          'sosyal': ['whatsapp', 'instagram'], 'zoom': 1.3, 'telefon': os.environ.get('TELEFON', ''),
+          'ikon': int(os.environ.get('IKON', '86'))}   # IKON: sosyal logo boyu px (Tasarım 2: 54, küçük kutucuk)
 DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
   const h=q('.profile-header h1'); if(h) h.textContent=V.isim;
   const im=q('.profile-photo'); if(im) im.alt=V.isim+' profil fotoğrafı';
@@ -50,11 +51,11 @@ DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
       [...l.children].forEach(c=>{ if(!c.querySelector('a.social-list-btn') && !c.matches('a.social-list-btn')) c.remove(); });
     });
     document.querySelectorAll('a.social-list-btn').forEach(a=>{ const t=tur(a);
-      a.style.cssText+=';order:'+(t==='whatsapp'?0:1)+';display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px 6px;margin:0;height:auto;min-height:0;max-height:none;overflow:visible;border:2px solid '+RENK[t]+';';
+      a.style.cssText+=';order:'+(t==='whatsapp'?0:1)+';display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+(V.ikon<86?6:10)+'px;padding:'+(V.ikon<86?10:16)+'px 6px;margin:0;height:auto;min-height:0;max-height:none;overflow:visible;border:2px solid '+RENK[t]+';';
       const i=a.querySelector('i'); if(i){ i.className=t==='whatsapp'?'fab fa-whatsapp':'fab fa-instagram';
-        i.style.cssText='font-size:86px;line-height:1;display:block;width:auto;height:auto;min-height:86px;margin:0;color:'+RENK[t]+';';
-        if(i.parentElement!==a) i.parentElement.style.cssText='margin:0;width:auto;height:auto;font-size:86px;text-align:center;'; }
-      const ti=a.querySelector('.btn-title'); if(ti){ ti.textContent=AD[t]; ti.style.cssText='font-size:21px;font-weight:700;margin:0;'; }
+        i.style.cssText='font-size:'+V.ikon+'px;line-height:1;display:block;width:auto;height:auto;min-height:'+V.ikon+'px;margin:0;color:'+RENK[t]+';';
+        if(i.parentElement!==a) i.parentElement.style.cssText='margin:0;width:auto;height:auto;font-size:'+V.ikon+'px;text-align:center;'; }
+      const ti=a.querySelector('.btn-title'); if(ti){ ti.textContent=AD[t]; ti.style.cssText='font-size:'+(V.ikon<86?17:21)+'px;font-weight:700;margin:0;'; }
       a.querySelectorAll(':scope > *:not(i):not(.btn-title)').forEach(x=>{ if(!x.contains(i)&&!x.contains(ti)) x.style.display='none'; });
     });
   }
