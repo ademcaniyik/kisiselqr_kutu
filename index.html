@@ -297,6 +297,25 @@ figcaption{font-size:13px; color:var(--muted); margin-top:8px}
 <h2>7. Dosyalar ve sınırlamalar</h2>
 <ul><li><code>Candemsoft_QR-Kutu_Acinim_v1.pdf</code>: 1:1, PDF katmanları (OCG), Bıçak = Separation “Bicak” (%100 M alternatif), 0,25 pt, overprint. Taslak PDF, PDF/X değildir; Illustrator PDF katmanlarını açarken birleştirebilir.</li><li><code>Candemsoft_QR-Kutu_Acinim_v1.svg</code>: width/height mm, viewBox 1 birim = 1 mm; katmanlar <code>&lt;g id&gt;</code> + <code>data-name</code> (Illustrator’da katman adı). SVG’de spot renk/overprint yoktur, Bıçak ekranda #EC008C’dir. Illustrator’da spot renk olarak yeniden atanmalıdır.</li><li><code>Candemsoft_QR-Kutu_BeyazMaket_A3_v1.pdf</code>: A3, %100, 50 mm yatay + dikey kontrol çizgisi.</li><li><code>Candemsoft_QR-Kutu_3D_Onizleme.html</code>: katlama animasyonlu 3D önizleme.</li><li><code>kutu_acinim.py</code>: parametrik üreteç. G, D, Y, T, H, GL ve STACK en üstte; tek komutla tüm dosyalar ve bu rapor yeniden üretilir.</li><li>Bilgi katmanındaki metinler font olarak durur (baskıya çıkmaz). Aşama 3’te outline edilecek.</li></ul>
   </section>
+  <section aria-labelledby="hkucuk" id="kucuk-kiyas">
+    <h2 id="hkucuk" data-menu="Tasarım 2: %10 küçük kıyas">Tasarım 2: %100 ve %90 Kıyası</h2>
+    <p class="hint" style="margin:0 0 12px">Aynı ölçekte: solda bugünkü kutu, sağda her şeyi %10 küçültülmüş hali (kutu, yazılar, görseller birlikte). Yalnız kıyas içindir; Tasarım 2'nin kendisi değişmedi.</p>
+    <div class="kk-grid">
+      <figure><figcaption>%100 · ön yüz 96,5 × 136,5 mm</figcaption><div class="kk-kutu"><canvas id="kk-100" style="width:100%"></canvas></div></figure>
+      <figure><figcaption>%90 · ön yüz 86,9 × 122,9 mm</figcaption><div class="kk-kutu"><canvas id="kk-90" style="width:90%"></canvas></div></figure>
+      <figure><figcaption>%100 · arka yüz yakın plan</figcaption><div class="kk-kutu"><canvas id="kk-100a" style="width:100%"></canvas></div></figure>
+      <figure><figcaption>%90 · arka yüz yakın plan</figcaption><div class="kk-kutu"><canvas id="kk-90a" style="width:90%"></canvas></div></figure>
+    </div>
+    <div class="tbl"><table><thead><tr><th></th><th>%100 (bugün)</th><th>%90</th><th>Not</th></tr></thead><tbody>
+      <tr><td>Ön yüz</td><td>96,5 × 136,5 mm</td><td>86,9 × 122,9 mm</td><td></td></tr>
+      <tr><td>Kutu iç ölçüsü</td><td>96 × 18 × 136 mm</td><td>86,4 × 16,2 × 122,4 mm</td><td></td></tr>
+      <tr><td>İçerik taşıyıcı kart</td><td>92 × 132 mm</td><td>sığmaz</td><td><strong>Taşıyıcı küçülmeli</strong> (en fazla ≈ 82 × 118 mm)</td></tr>
+      <tr><td>Aktivasyon kartı</td><td>85,6 × 54 mm</td><td>85,6 mm, iç genişlik 86,4 mm</td><td><strong>Neredeyse hiç pay yok</strong>; kart küçülmeli ya da dikey konmalı</td></tr>
+      <tr><td>Etiket</td><td>80 × 50 mm</td><td>80 × 50 mm (aynı)</td><td>Etiket kutuyla küçülmez</td></tr>
+      <tr><td>Yasal metin</td><td>6,5 pt</td><td>5,85 pt</td><td><strong>6 pt altına düşer</strong>; yeniden dizilmeli</td></tr>
+      <tr><td>Slogan / başlık</td><td>14 pt</td><td>12,6 pt</td><td>Rafta okunur kalır</td></tr>
+    </tbody></table></div>
+  </section>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -1325,6 +1344,37 @@ const GEO = {"version":"v1","W":245.0,"H":249.0,"T":0.45,"inner":[96.0,18.0,136.
 })();
 </script>
 
+<style>
+  .kk-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .kk-grid figure{margin:0}
+  .kk-grid figcaption{font-weight:700;margin-bottom:6px}
+  .kk-kutu{display:flex;justify-content:center;align-items:flex-start}
+  .kk-kutu canvas{display:block;height:auto}
+  @media (max-width:640px){.kk-grid{grid-template-columns:1fr}}
+</style>
+<script>
+// Tasarım 2 %10 küçük kıyası: aynı çizim iki kez; %90'ı aynı px/mm ölçeğinde %90 genişlikte gösterilir
+(function () {
+  const M = window.KQRTasarim2; if (!M || typeof GEO === 'undefined') return;
+  const K = 6, fr = GEO.frontRect;
+  (M.ready ? M.ready() : Promise.resolve()).then(() => {
+    const kaynak = document.createElement('canvas');
+    kaynak.width = GEO.W * K; kaynak.height = GEO.H * K;
+    const c = kaynak.getContext('2d');
+    c.fillStyle = '#fff'; c.fillRect(0, 0, kaynak.width, kaynak.height);
+    c.setTransform(K, 0, 0, K, 0, 0); M.render(c, GEO, { px: K });
+    // ön yüz ve arka yüz (ön yüzle aynı yükseklik, sağında yan panel + arka) dikdörtgenleri, mm
+    const on = [fr[0], fr[1], fr[2] - fr[0], fr[3] - fr[1]];
+    const arka = [133.5, fr[1] + (fr[3] - fr[1]) * 0.55, 96.5, (fr[3] - fr[1]) * 0.45];
+    const ciz = (id, r) => {
+      const cv = document.getElementById(id); if (!cv) return;
+      cv.width = r[2] * K; cv.height = r[3] * K;
+      cv.getContext('2d').drawImage(kaynak, r[0] * K, r[1] * K, r[2] * K, r[3] * K, 0, 0, cv.width, cv.height);
+    };
+    ciz('kk-100', on); ciz('kk-90', on); ciz('kk-100a', arka); ciz('kk-90a', arka);
+  });
+})();
+</script>
 <script src="assets/menu.js"></script>
 </body>
 </html>
