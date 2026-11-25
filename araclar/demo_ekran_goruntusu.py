@@ -68,6 +68,10 @@ DOLDUR = """((V)=>{const q=s=>document.querySelector(s);
     '<div class="plate-text" style="padding:0 15px;display:flex;align-items:center;justify-content:center;font-family:\\'Segoe UI\\',Roboto,Helvetica,Arial,sans-serif;font-size:26px;font-weight:800;color:#000;letter-spacing:1px;">'+
     V.plaka.toUpperCase()+'</div></div></div>');
   document.querySelectorAll('.contact-info').forEach(e=>e.remove());
+  // canlı sayfanın plakası (25 Kasım: 68 px, yazı 8,5vw) zoom ile ekrana sığmayınca mavi TR şeridi sıkışıp "TR" taşıyordu:
+  // şerit daralmasın, yazı sığacak boyda kalsın
+  document.querySelectorAll('.license-plate .tr-section').forEach(e=>{ e.style.flexShrink='0'; });
+  document.querySelectorAll('.license-plate .plate-text').forEach(e=>{ e.style.fontSize='30px'; e.style.padding='0 14px'; });
   // telefon: profile.php'nin kendi telefon butonu (phone_hidden kapalıyken plakanın altında böyle basılır)
   const pw=q('.license-plate-wrapper');
   if(V.telefon && pw) pw.insertAdjacentHTML('afterend',
