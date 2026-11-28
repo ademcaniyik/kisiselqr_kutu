@@ -162,7 +162,8 @@
       ekOzellik: [['acil', 'Acil bilgiler'], ['kaza', 'Kaza tutanağı'], ['cekici', 'Yol yardımı'],
                   ['lastik', 'Lastikçi, tamirci'], ['otopark', 'Otoparklar'], ['eczane', 'Nöbetçi eczane']],
       aktBaslik: 'Kendi etiketini uygulamadan etkinleştir',
-      aktGovde: 'Uygulamayı indir, etiketini uygulamanın içinden okut. Kutudaki örneği kamerayla deneyebilirsin.',
+      // 28 Kasım (Adem): "Kutudaki örneği kamerayla deneyebilirsin." cümlesi kaldırıldı.
+      aktGovde: 'Uygulamayı indir, etiketini uygulamanın içinden okut.',
       rozetH: 8, adimH: 11.5, altHiza: true,
       yasal: (URETICI, ADRES) => [
         [['Kutu içeriği: ', 700], ['1 QR Etiket (8 × 5 cm), yüzey temizleme mendili, kullanım kılavuzu', 400]],
